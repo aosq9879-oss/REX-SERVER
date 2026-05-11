@@ -2,10 +2,17 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REX Official | الهوية والدستور</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>REX | التقرير الإداري الفخم</title>
     <!-- الخطوط -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Orbitron:wght@400;700&family=Tajawal:wght@400;500;700;800&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Orbitron:wght@500;700&family=Tajawal:wght@400;500;700;800&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 (أيقونات) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js للرسوم البيانية -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- html2canvas + jspdf لإنشاء PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -14,282 +21,469 @@
         }
 
         body {
-            background-color: #0B0B0B;
-            color: #E0E0E0;
+            background: #050505;
             font-family: 'Tajawal', 'Cairo', 'Montserrat', sans-serif;
-            line-height: 1.6;
-            padding: 2rem 1rem;
-        }
-
-        /* الحاوية الأساسية */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: #0B0B0B;
-            border: 1px solid #2a2a2a;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-        }
-
-        /* رأس الصفحة */
-        .header {
-            text-align: center;
-            padding: 3rem 2rem 2rem;
-            border-bottom: 2px solid #D4AF37;
+            color: #e0e0e0;
+            padding: 2rem 1.5rem;
             position: relative;
         }
 
-        /* الشعار SVG (درع + X متداخل) */
-        .logo {
-            margin-bottom: 1.5rem;
+        /* خلفية النجوم المتحركة */
+        .stars-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .star {
+            position: absolute;
+            background-color: #D4AF37;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: twinkle 4s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(1);}
+            100% { opacity: 1; transform: scale(1.2);}
         }
 
-        .logo svg {
-            width: 100px;
-            height: 100px;
-            filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.4));
+        /* الحاوية الرئيسية للتقرير */
+        .report-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #0a0a0a;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 15px rgba(212,175,55,0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
         }
 
-        .title {
-            font-family: 'Orbitron', 'Montserrat', monospace;
-            font-size: 3.5rem;
-            font-weight: 800;
-            letter-spacing: 4px;
-            color: #D4AF37;
-            text-transform: uppercase;
-        }
-
-        .sub {
-            font-family: 'Tajawal', sans-serif;
-            font-size: 1rem;
-            color: #A0A0A0;
-            margin-top: 0.5rem;
-            border-top: 1px solid #2a2a2a;
-            display: inline-block;
-            padding-top: 0.5rem;
-        }
-
-        /* التنقل السريع */
-        .nav {
+        /* أزرار التحكم */
+        .action-bar {
             display: flex;
-            justify-content: center;
-            gap: 2rem;
-            background: #111;
-            padding: 0.8rem;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            background: #020202;
             border-bottom: 1px solid #D4AF37;
-            flex-wrap: wrap;
         }
-
-        .nav a {
-            color: #A0A0A0;
-            text-decoration: none;
+        .btn-gold {
+            background: transparent;
+            border: 1.5px solid #D4AF37;
+            color: #D4AF37;
+            padding: 0.5rem 1.2rem;
             font-family: 'Orbitron', monospace;
-            font-size: 0.9rem;
-            transition: 0.3s;
-        }
-
-        .nav a:hover {
-            color: #D4AF37;
-        }
-
-        /* المحتوى الرئيسي */
-        .content {
-            padding: 2rem;
-        }
-
-        /* البطاقات والمواد */
-        .preamble, .articles {
-            margin-bottom: 3rem;
-        }
-
-        .gold-border {
-            border-right: 4px solid #D4AF37;
-            padding-right: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        h2 {
-            font-family: 'Orbitron', 'Montserrat', sans-serif;
-            color: #D4AF37;
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
-            letter-spacing: 1px;
-        }
-
-        h3 {
-            font-family: 'Tajawal', 'Cairo', sans-serif;
-            color: #D4AF37;
-            font-size: 1.4rem;
-            margin-top: 1.8rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .article-card {
-            background: #0f0f0f;
-            padding: 1.2rem;
-            margin-bottom: 1.2rem;
-            border-left: 2px solid #2a2a2a;
-            transition: 0.2s;
-        }
-
-        .article-card:hover {
-            border-left-color: #D4AF37;
-            background: #131313;
-        }
-
-        .article-title {
-            font-weight: 800;
-            font-size: 1.2rem;
-            color: #D4AF37;
-            font-family: 'Orbitron', monospace;
-            margin-bottom: 0.5rem;
-        }
-
-        .article-text {
-            color: #cccccc;
-        }
-
-        .badge {
-            display: inline-block;
-            background: #D4AF37;
-            color: #0B0B0B;
-            font-size: 0.7rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
             font-weight: bold;
-            margin-left: 0.5rem;
-        }
-
-        footer {
-            background: #080808;
-            text-align: center;
-            padding: 1.5rem;
-            border-top: 1px solid #D4AF37;
-            color: #A0A0A0;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
             font-size: 0.8rem;
         }
+        .btn-gold:hover {
+            background: #D4AF37;
+            color: #0a0a0a;
+            box-shadow: 0 0 12px #D4AF37;
+        }
 
-        .quote {
-            font-style: italic;
-            color: #D4AF37;
+        /* محتوى التقرير (الذي سيتم تحويله لـ PDF) */
+        .report-content {
+            padding: 2rem 2rem 1.5rem;
+        }
+
+        /* كل صفحة داخل التقرير (لطباعة PDF فواصل) */
+        .report-page {
+            background: #0B0B0B;
+            margin-bottom: 2rem;
+            position: relative;
+            break-after: page;
+            page-break-after: always;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            border: 1px solid #2a2a2a;
+        }
+        .report-page:last-child {
+            break-after: avoid;
+            page-break-after: avoid;
+            margin-bottom: 0;
+        }
+
+        /* شعار REX */
+        .rex-logo {
             text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .rex-logo svg {
+            width: 80px;
+            filter: drop-shadow(0 0 6px #D4AF37);
+        }
+        .gold-text {
+            color: #D4AF37;
+            font-family: 'Orbitron', monospace;
+        }
+        h1, h2, h3 {
+            font-weight: 700;
+        }
+        h1 {
+            font-size: 2.6rem;
+            letter-spacing: 4px;
+            background: linear-gradient(135deg, #D4AF37, #F3E5AB);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .cover {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        .stars-deco {
+            font-size: 1.8rem;
+            letter-spacing: 8px;
+            color: #D4AF37;
+        }
+        .date-stamp {
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #A0A0A0;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .stat-card {
+            background: #111;
+            padding: 1.2rem;
+            border-radius: 24px;
+            border-right: 3px solid #D4AF37;
+            transition: 0.2s;
+        }
+        .stat-number {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #D4AF37;
+            font-family: 'Orbitron';
+        }
+        .section-title {
+            border-right: 5px solid #D4AF37;
+            padding-right: 15px;
+            margin: 1.5rem 0 1rem;
+            font-size: 1.6rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        th, td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #222;
+        }
+        th {
+            color: #D4AF37;
+            font-weight: 600;
+        }
+        .signature {
             margin-top: 2rem;
-            padding: 1rem;
-            border-top: 1px solid #2a2a2a;
+            text-align: left;
+            font-style: italic;
+            border-top: 1px solid #D4AF37;
+            padding-top: 1rem;
         }
-
-        @media (max-width: 768px) {
-            .title { font-size: 2.2rem; }
-            .content { padding: 1rem; }
-            h2 { font-size: 1.4rem; }
+        .footer-pdf {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 1rem;
+            color: #6c6c6c;
+            border-top: 1px solid #222;
+            padding-top: 1rem;
         }
-
-        /* لمسة تقنية */
-        .cyber-accent {
-            color: #2D7DFF;
+        .chart-container {
+            max-width: 400px;
+            margin: 1rem auto;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .action-bar, .stars-bg {
+                display: none;
+            }
+            .report-container {
+                box-shadow: none;
+                border: none;
+            }
+            .report-page {
+                break-inside: avoid;
+                page-break-after: always;
+            }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <div class="logo">
-            <!-- شعار REX: درع + X داخله (رمز القوة) -->
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 30 L50 15 L80 30 L80 70 L50 85 L20 70 Z" stroke="#D4AF37" stroke-width="3" fill="#0B0B0B"/>
-                <path d="M35 38 L65 62 M65 38 L35 62" stroke="#D4AF37" stroke-width="4" stroke-linecap="round"/>
-                <rect x="44" y="25" width="12" height="12" fill="#D4AF37" opacity="0.8"/>
-            </svg>
-        </div>
-        <div class="title">REX</div>
-        <div class="sub">نظام إداري رقمي | سلطة · تنظيم · هيبة</div>
+<div class="stars-bg" id="starsContainer"></div>
+<div class="report-container">
+    <div class="action-bar">
+        <button class="btn-gold" id="downloadPDFBtn"><i class="fas fa-file-pdf"></i> تحميل PDF فخم</button>
+        <button class="btn-gold" id="sendDiscordBtn"><i class="fab fa-discord"></i> إرسال للتقرير (Discord)</button>
     </div>
-
-    <div class="nav">
-        <a href="#">🏛️ الدستور</a>
-        <a href="#">⚙️ الهيكل الإداري</a>
-        <a href="#">📜 القرارات</a>
-        <a href="#">🔐 السرية</a>
-    </div>
-
-    <div class="content">
-        <!-- الديباجة -->
-        <div class="preamble">
-            <div class="gold-border">
-                <h2>📜 الديباجة</h2>
+    <div class="report-content" id="reportContent">
+        <!-- الصفحة الأولى: الغلاف -->
+        <div class="report-page cover">
+            <div class="rex-logo">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 30 L50 15 L80 30 L80 70 L50 85 L20 70 Z" stroke="#D4AF37" stroke-width="3" fill="#0B0B0B"/>
+                    <path d="M35 38 L65 62 M65 38 L35 62" stroke="#D4AF37" stroke-width="4" stroke-linecap="round"/>
+                    <rect x="44" y="25" width="12" height="12" fill="#D4AF37" opacity="0.8"/>
+                </svg>
             </div>
-            <p style="font-size: 1.05rem; line-height: 1.8;">
-                باسم النظام، وباسم الانضباط، وباسم القوة المنظمة،<br>
-                تُعلن إدارة REX هذا الدستور ليكون المرجع الأعلى والنهائي لجميع العمليات الإدارية والتنظيمية داخل المنظومة.<br>
-                إن REX لم تُنشأ للترفيه، بل أُسست على مبادئ: <strong class="cyber-accent">النظام، الحسم، الانضباط، والاحترافية المطلقة</strong>.<br>
-                وعليه، فإن كل من ينتمي إلى REX يُقر التزامه الكامل بهذا الدستور دون استثناء.
-            </p>
+            <div class="stars-deco">✦ ★ ✦</div>
+            <h1 style="margin: 1rem 0;">REX Monthly Server Report</h1>
+            <p style="font-size: 1.2rem; letter-spacing: 2px;">Last 30 Days Summary</p>
+            <div class="date-stamp">
+                <i class="far fa-calendar-alt"></i> تاريخ الإصدار: <span id="reportDate"></span>
+            </div>
+            <div class="stars-deco" style="margin-top: 2rem;">★ ☆ ★</div>
+            <div class="footer-pdf">© REX Official — تقرير موثق للأرشفة</div>
         </div>
 
-        <!-- المواد الدستورية -->
-        <div class="articles">
-            <div class="gold-border">
-                <h2>⚖️ دستور REX الرسمي</h2>
+        <!-- الصفحة الثانية: الإحصائيات العامة (بيانات مصطنعة لآخر 30 يوم) -->
+        <div class="report-page">
+            <h2 class="section-title"><i class="fas fa-chart-line"></i> الإحصائيات العامة</h2>
+            <div class="stats-grid" id="generalStats">
+                <!-- يتم تعبئتها بالجافاسكريبت -->
             </div>
-
-            <div class="article-card">
-                <div class="article-title"><span class="badge">مادة 1</span> هوية النظام</div>
-                <div class="article-text">REX هي منظومة إدارية رقمية تهدف إلى إدارة الأعضاء، المستندات، القرارات، والعمليات التنظيمية. وتُعد REX كيانًا إداريًا مستقلًا في بنيته الداخلية.</div>
+            <div class="chart-container">
+                <canvas id="activityChart" width="400" height="200" style="background: #0a0a0a; border-radius: 16px;"></canvas>
             </div>
-
-            <div class="article-card">
-                <div class="article-title"><span class="badge">مادة 2</span> السلطة العليا</div>
-                <div class="article-text">السلطة العليا داخل REX تُعتبر المرجع النهائي في جميع القرارات، وتشمل: قبول أو رفض الخطابات، إصدار الأنظمة واللوائح، تعديل الصلاحيات، واتخاذ القرارات النهائية. ولا يجوز الاعتراض على القرارات الصادرة رسميًا.</div>
-            </div>
-
-            <div class="article-card">
-                <div class="article-title"><span class="badge">مادة 3</span> الهيكل الإداري</div>
-                <div class="article-text">👑 المالك (Owner) — السلطة المطلقة<br>
-                🏛️ الإدارة العليا — التنظيم والإشراف<br>
-                ⚙️ المشرفون — التنفيذ والمتابعة<br>
-                👤 الأعضاء — الالتزام بالنظام.<br>
-                كل رتبة لها صلاحيات محددة لا يمكن تجاوزها.</div>
-            </div>
-
-            <div class="article-card">
-                <div class="article-title"><span class="badge">مادة 4</span> الخطابات والمستندات</div>
-                <div class="article-text">جميع الخطابات تُعد وثائق رسمية داخل REX. يشترط: صياغة رسمية، وضوح الهدف، احترام النظام، وعدم العبث أو الإساءة. ويحق للإدارة: القبول، الرفض، الطلب بالتعديل، أو الإهمال الإداري للطلبات غير المكتملة.</div>
-            </div>
-
-            <div class="article-card">
-                <div class="article-title"><span class="badge">مادة 5</span> السلوك والانضباط</div>
-                <div class="article-text">يُمنع منعًا باتًا: الإخلال بالنظام، الإساءة لأي عضو، استغلال النظام، نشر محتوى غير مناسب. وأي مخالفة تُعرض صاحبها لإجراء إداري صارم.</div>
-            </div>
-
-            <div class="article-card">
-                <div class="article-title"><span class="badge">مادة 6</span> السرية والأمان</div>
-                <div class="article-text">جميع بيانات REX: سرية بالكامل، محمية إداريًا، غير قابلة للنشر خارج النظام. وأي تسريب يُعامل كمخالفة جسيمة.</div>
-            </div>
-
-            <div class="article-card">
-                <div class="article-title"><span class="badge">مادة 7</span> القرارات النهائية</div>
-                <div class="article-text">قرارات إدارة REX: نهائية، ملزمة، غير قابلة للاستئناف إلا بقرار إداري جديد.</div>
-            </div>
-
-            <div class="article-card">
-                <div class="article-title"><span class="badge">مادة 8</span> الالتزام</div>
-                <div class="article-text">بمجرد الانضمام إلى REX، فإن العضو: يقر بجميع مواد هذا الدستور، يلتزم به التزامًا كاملًا، ويخضع لجميع الأنظمة دون استثناء.</div>
-            </div>
+            <div class="footer-pdf">⭐ نشاط متصاعد خلال الأسابيع الأخيرة</div>
         </div>
 
-        <!-- ألوان الهوية -->
-        <div style="margin-top: 2rem; background: #111; padding: 1rem; border-radius: 4px; text-align: center;">
-            <p style="font-family: 'Orbitron';">🎨 <strong>الهوية البصرية</strong> — <span style="color:#0B0B0B; background:#fff; padding:2px 6px;">أسود السلطة</span> · <span style="color:#D4AF37;">ذهب الهيبة</span> · <span style="color:#A0A0A0;">رمادي النظام</span> · <span style="color:#2D7DFF;">أزرق تقني</span></p>
-            <p style="font-size: 0.8rem;">الخطوط: Montserrat · Orbitron · Tajawal · Cairo</p>
+        <!-- صفحة الإدارة -->
+        <div class="report-page">
+            <h2 class="section-title"><i class="fas fa-gavel"></i> أداء الإدارة</h2>
+            <div class="stats-grid" id="adminStats"></div>
+            <div class="footer-pdf">⚡ جميع القرارات موثقة بنظام REX</div>
         </div>
 
-        <div class="quote">
-            “ REX ليست نظامًا عاديًا… بل هي هيكل إداري يقوم على النظام قبل كل شيء، والقرار قبل العاطفة. ”
+        <!-- صفحة التفاعل -->
+        <div class="report-page">
+            <h2 class="section-title"><i class="fas fa-users"></i> التفاعل والأعضاء</h2>
+            <table>
+                <thead><tr><th>الاسم</th><th>عدد التفاعلات</th></tr></thead>
+                <tbody id="topMembersTable"></tbody>
+            </table>
+            <div class="stats-grid" style="margin-top:1rem;">
+                <div class="stat-card">📊 مستوى التفاعل العام: <strong class="gold-text">82% (مرتفع)</strong></div>
+                <div class="stat-card">🔥 أكثر المواضيع استخداماً: <strong>التقارير الإدارية | الطلبات الرسمية</strong></div>
+            </div>
+            <div class="footer-pdf">🔹 أعلى نشاط مسجل في يوم الجمعة</div>
+        </div>
+
+        <!-- صفحة الخطابات -->
+        <div class="report-page">
+            <h2 class="section-title"><i class="fas fa-envelope"></i> تحليل الخطابات</h2>
+            <div class="stats-grid" id="lettersStats"></div>
+            <div class="signature" style="margin-top:1rem;">
+                <p><strong>نسبة القبول: 78%</strong> &nbsp; | &nbsp; <strong>نسبة الرفض: 22%</strong></p>
+                <div style="width:100%; background:#222; height:8px; border-radius:10px;"><div style="width:78%; background:#D4AF37; height:8px; border-radius:10px;"></div></div>
+            </div>
+            <div class="footer-pdf">📩 إجمالي الخطابات الواردة: 142 خطابًا خلال 30 يومًا</div>
+        </div>
+
+        <!-- صفحة الخلاصة + الخطاب الرسمي -->
+        <div class="report-page">
+            <h2 class="section-title"><i class="fas fa-scroll"></i> الخلاصة الإدارية</h2>
+            <p style="background:#0d0d0d; padding:1rem; border-right:3px solid #D4AF37; margin:1rem 0;">✔ النظام مستقر – النشاط مرتفع – الأداء ضمن المستوى المطلوب. تم الالتزام بمعايير REX كاملة.</p>
+            
+            <h3 class="gold-text" style="margin-top:2rem;">📜 الخطاب الرسمي الشهري</h3>
+            <div style="background:#111; padding:1.5rem; border-radius:16px; margin:1rem 0;">
+                <p><strong>REX Official Server Communication</strong><br><br>
+                بسم نظام REX،<br><br>
+                نرفع إلى سيادتكم هذا الخطاب الرسمي المخصص لتوثيق حالة السيرفر خلال الفترة المحددة، حيث تم رصد وتحليل كافة الأنشطة الإدارية والتفاعلية ضمن نظام REX.<br>
+                وبناءً على البيانات المجمعة، فإن الأداء العام للسيرفر خلال آخر (30 يوم) يعكس مستوى استقرار جيد مع وجود نشاط متزايد في التفاعل الإداري والعضوي.<br>
+                وعليه، يتم إرفاق هذا التقرير كوثيقة رسمية داخل نظام REX للاطلاع والمراجعة.<br><br>
+                وتفضلوا بقبول فائق الاحترام.<br>
+                — إدارة REX<br>
+                <span class="gold-text">★ Official System Report ★</span>
+                </p>
+            </div>
+            <div class="signature">
+                <i class="fas fa-certificate"></i> ختم REX VERIFIED REPORT — تم التوقيع رقمياً
+            </div>
+            <div class="footer-pdf">📁 أرشيف REX | تقرير شهر محرم 1447</div>
         </div>
     </div>
-
-    <footer>
-        &copy; 2025 REX Official — السلطة العليا | دستور ملزم لجميع الأعضاء
-    </footer>
 </div>
+
+<script>
+    // توليد النجوم المتحركة
+    function generateStars() {
+        const container = document.getElementById('starsContainer');
+        for(let i=0; i<180; i++) {
+            let star = document.createElement('div');
+            star.classList.add('star');
+            let size = Math.random() * 3 + 1;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 5 + 's';
+            star.style.animationDuration = 2 + Math.random() * 3 + 's';
+            container.appendChild(star);
+        }
+    }
+    generateStars();
+
+    // بيانات نموذجية من آخر 30 يوم
+    const reportData = {
+        newMembers: 87,
+        totalLetters: 142,
+        adminReplies: 118,
+        generalActivity: "نشاط متصاعد +23%",
+        peakDay: "الجمعة الماضية (312 تفاعل)",
+        adminDecisions: 54,
+        approvals: 42,
+        rejections: 12,
+        avgResponseTime: "4.2 ساعة",
+        topMembers: [
+            { name: "⚡ القائد العام", count: 98 },
+            { name: "🏛️ المستشار الذهبي", count: 76 },
+            { name: "⚙️ المشرف التنفيذي", count: 55 },
+            { name: "👑 عضو ماسي", count: 42 }
+        ],
+        lettersCategories: { requests: 68, complaints: 22, reports: 34, suggestions: 18 }
+    };
+
+    // عرض الإحصائيات العامة
+    const generalDiv = document.getElementById('generalStats');
+    generalDiv.innerHTML = `
+        <div class="stat-card"><i class="fas fa-user-plus"></i> أعضاء جدد 👤<br><span class="stat-number">${reportData.newMembers}</span></div>
+        <div class="stat-card"><i class="fas fa-paper-plane"></i> خطابات مرسلة 📩<br><span class="stat-number">${reportData.totalLetters}</span></div>
+        <div class="stat-card"><i class="fas fa-reply-all"></i> ردود إدارية ⚙️<br><span class="stat-number">${reportData.adminReplies}</span></div>
+        <div class="stat-card"><i class="fas fa-chart-simple"></i> النشاط العام 📊<br><span class="gold-text">${reportData.generalActivity}</span></div>
+        <div class="stat-card"><i class="fas fa-fire"></i> أكثر يوم نشاط 🔥<br><span class="gold-text">${reportData.peakDay}</span></div>
+    `;
+
+    // أداء الإدارة
+    const adminDiv = document.getElementById('adminStats');
+    adminDiv.innerHTML = `
+        <div class="stat-card">📜 قرارات الإدارة: <span class="stat-number">${reportData.adminDecisions}</span></div>
+        <div class="stat-card">✅ الموافقات: <span class="stat-number">${reportData.approvals}</span></div>
+        <div class="stat-card">❌ الطلبات المرفوضة: <span class="stat-number">${reportData.rejections}</span></div>
+        <div class="stat-card">⏱️ متوسط وقت الرد: <span class="gold-text">${reportData.avgResponseTime}</span></div>
+    `;
+
+    // جدول الأعضاء النشطين
+    const membersTable = document.getElementById('topMembersTable');
+    reportData.topMembers.forEach(m => {
+        const row = `<tr><td>${m.name}</td><td>${m.count} تفاعل</td></tr>`;
+        membersTable.innerHTML += row;
+    });
+
+    // إحصائيات الخطابات
+    const lettersStatsDiv = document.getElementById('lettersStats');
+    lettersStatsDiv.innerHTML = `
+        <div class="stat-card">📄 طلبات: ${reportData.lettersCategories.requests}</div>
+        <div class="stat-card">⚠️ شكاوى: ${reportData.lettersCategories.complaints}</div>
+        <div class="stat-card">📊 تقارير: ${reportData.lettersCategories.reports}</div>
+        <div class="stat-card">💡 اقتراحات: ${reportData.lettersCategories.suggestions}</div>
+    `;
+
+    // رسم بياني للنشاط (محاكاة 7 أيام)
+    const ctx = document.getElementById('activityChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['أسبوع1', 'أسبوع2', 'أسبوع3', 'الأسبوع الأخير'],
+            datasets: [{
+                label: 'مؤشر النشاط اليومي',
+                data: [210, 275, 340, 412],
+                borderColor: '#D4AF37',
+                backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                tension: 0.3,
+                fill: true,
+                pointBorderColor: '#D4AF37',
+                pointBackgroundColor: '#0B0B0B'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { labels: { color: '#e0e0e0' } } }
+        }
+    });
+
+    // تاريخ الإصدار
+    const today = new Date();
+    const formattedDate = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
+    document.getElementById('reportDate').innerText = formattedDate;
+
+    // دالة تحويل الـ HTML إلى PDF (باستخدام html2canvas + jspdf) مع الحفاظ على الفخامة
+    async function downloadPDF() {
+        const element = document.getElementById('reportContent');
+        const originalOverflow = element.style.overflow;
+        element.style.overflow = 'visible';
+        
+        // إظهار مؤقت
+        const btn = document.getElementById('downloadPDFBtn');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '⏳ جاري إنشاء PDF ...';
+        btn.disabled = true;
+
+        try {
+            const canvas = await html2canvas(element, {
+                scale: 2.5,
+                backgroundColor: '#0B0B0B',
+                logging: false,
+                useCORS: true
+            });
+            const imgData = canvas.toDataURL('image/png');
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({
+                unit: 'mm',
+                format: 'a4',
+                orientation: 'portrait'
+            });
+            const imgWidth = 210; // A4 width mm
+            const pageHeight = 297;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+            while (heightLeft > 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+            pdf.save('REX_Report_30Days.pdf');
+        } catch (err) {
+            console.error(err);
+            alert('حدث خطأ أثناء توليد PDF، حاول مرة أخرى.');
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            element.style.overflow = originalOverflow;
+        }
+    }
+
+    document.getElementById('downloadPDFBtn').addEventListener('click', downloadPDF);
+    
+    // محاكاة إرسال Discord (تنبيه)
+    document.getElementById('sendDiscordBtn').addEventListener('click', () => {
+        alert('🔔 تم إرسال التقرير إلى قنوات Discord الخاصة بإدارة REX (محاكاة)');
+    });
+</script>
 </body>
 </html>
