@@ -3,398 +3,500 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>REX - لوحة القيادة الإدارية</title>
-    <!-- TailwindCSS + Font Awesome -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>REX | النظام الإداري الفاخر</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Orbitron:wght@500;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- تخصيص الثيم الداكن والذهبي -->
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Orbitron:wght@500;700&family=Tajawal:wght@400;500;700;800&display=swap');
         * {
-            font-family: 'Tajawal', 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         body {
-            background-color: #050505;
+            background: #050505;
+            font-family: 'Tajawal', 'Montserrat', sans-serif;
+            color: #e0e0e0;
             overflow-x: hidden;
         }
-        /* أنيميشن بسيط للقائمة الجانبية */
+        /* خلفية النجوم المتحركة */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        .star {
+            position: absolute;
+            background: radial-gradient(2px 2px at center, #D4AF37, transparent);
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: twinkle 3s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(1);}
+            100% { opacity: 1; transform: scale(1.5);}
+        }
+        /* قائمة جانبية */
         .sidebar {
-            transition: transform 0.3s ease-in-out;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 280px;
+            height: 100%;
+            background: #0a0a0a;
+            border-left: 2px solid #D4AF37;
             transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             z-index: 1000;
+            padding: 2rem 1rem;
+            box-shadow: -5px 0 30px rgba(0,0,0,0.8);
         }
         .sidebar.open {
             transform: translateX(0);
         }
-        .gold-glow {
-            box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
-        }
-        .scrollbar-hide::-webkit-scrollbar {
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
             display: none;
         }
-        /* تخصيص الأزرار والبطاقات */
-        .card-gold-border {
-            border-right: 3px solid #D4AF37;
-            transition: 0.2s;
+        .overlay.active {
+            display: block;
         }
+        /* أزرار فخمة */
         .btn-gold {
             background: transparent;
-            border: 1px solid #D4AF37;
+            border: 1.5px solid #D4AF37;
             color: #D4AF37;
+            border-radius: 40px;
+            padding: 0.5rem 1.2rem;
+            font-weight: bold;
             transition: 0.3s;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
         .btn-gold:hover {
             background: #D4AF37;
             color: #0a0a0a;
+            box-shadow: 0 0 15px #D4AF37;
         }
+        .btn-discord {
+            background: #5865F2;
+            border: none;
+            color: white;
+        }
+        .btn-discord:hover {
+            background: #4752c4;
+            box-shadow: 0 0 12px #5865F2;
+            color: white;
+        }
+        .card-dark {
+            background: #0f0f0f;
+            border-radius: 24px;
+            border-right: 3px solid #D4AF37;
+            padding: 1.2rem;
+            transition: 0.2s;
+        }
+        .gold-text {
+            color: #D4AF37;
+        }
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: 'Orbitron', monospace;
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
     </style>
 </head>
-<body class="text-gray-200">
+<body>
+<div class="stars" id="starsContainer"></div>
+<div class="overlay" id="overlay"></div>
+<div class="sidebar" id="sidebar">
+    <div class="flex justify-between items-center mb-8">
+        <div class="text-2xl font-bold text-[#D4AF37]" style="font-family: 'Orbitron';">REX</div>
+        <button id="closeSidebar" class="text-white text-2xl"><i class="fas fa-times"></i></button>
+    </div>
+    <nav class="flex flex-col gap-5 text-lg">
+        <a href="#" data-page="dashboard" class="sidebar-link hover:text-[#D4AF37] transition"><i class="fas fa-tachometer-alt ml-2"></i> Dashboard</a>
+        <a href="#" data-page="reports" class="sidebar-link hover:text-[#D4AF37] transition"><i class="fas fa-chart-line ml-2"></i> التقارير</a>
+        <a href="#" data-page="letters" class="sidebar-link hover:text-[#D4AF37] transition"><i class="fas fa-envelope ml-2"></i> الخطابات</a>
+        <a href="#" data-page="users" class="sidebar-link hover:text-[#D4AF37] transition" id="usersNavLink" style="display: none;"><i class="fas fa-users ml-2"></i> المستخدمون</a>
+        <a href="#" data-page="roles" class="sidebar-link hover:text-[#D4AF37] transition" id="rolesNavLink" style="display: none;"><i class="fas fa-crown ml-2"></i> الرتب</a>
+        <a href="#" data-page="settings" class="sidebar-link hover:text-[#D4AF37] transition"><i class="fas fa-cog ml-2"></i> الإعدادات</a>
+    </nav>
+    <div class="mt-auto pt-5 border-t border-gray-800 text-sm">
+        <button id="logoutBtn" class="text-gray-400 hover:text-red-400"><i class="fas fa-sign-out-alt ml-2"></i> تسجيل الخروج</button>
+    </div>
+</div>
 
-    <!-- القائمة الجانبية (Slide Menu) -->
-    <div id="sidebar" class="sidebar fixed top-0 left-0 h-full w-72 bg-black border-l border-[#D4AF37] p-5 flex flex-col z-50" style="right: 0; left: auto; transform: translateX(100%);">
-        <div class="flex justify-between items-center mb-8">
-            <div class="text-2xl font-bold text-[#D4AF37]" style="font-family: 'Orbitron';">REX</div>
-            <button id="closeSidebarBtn" class="text-white text-2xl"><i class="fas fa-times"></i></button>
-        </div>
-        <nav class="flex flex-col gap-4 text-lg">
-            <a href="#" class="sidebar-link hover:text-[#D4AF37]" data-page="dashboard"><i class="fas fa-tachometer-alt ml-2"></i> Dashboard</a>
-            <a href="#" class="sidebar-link hover:text-[#D4AF37]" data-page="reports"><i class="fas fa-chart-line ml-2"></i> التقارير</a>
-            <a href="#" class="sidebar-link hover:text-[#D4AF37]" data-page="letters"><i class="fas fa-envelope ml-2"></i> الخطابات</a>
-            <a href="#" class="sidebar-link hover:text-[#D4AF37]" data-page="users"><i class="fas fa-users ml-2"></i> المستخدمون</a>
-            <a href="#" class="sidebar-link hover:text-[#D4AF37]" data-page="roles" id="rolesNavItem" style="display: none;"><i class="fas fa-crown ml-2"></i> الرتب والصلاحيات</a>
-            <a href="#" class="sidebar-link hover:text-[#D4AF37]" data-page="settings"><i class="fas fa-cog ml-2"></i> الإعدادات</a>
-        </nav>
-        <div class="mt-auto pt-5 border-t border-gray-800 text-sm text-gray-400">
-            <button id="logoutBtn" class="w-full text-right"><i class="fas fa-sign-out-alt ml-2"></i> تسجيل الخروج</button>
+<div class="container mx-auto px-4 py-4 max-w-7xl">
+    <div class="flex justify-between items-center mb-6">
+        <button id="menuToggle" class="text-3xl text-[#D4AF37]"><i class="fas fa-bars"></i></button>
+        <div class="text-xl font-bold tracking-wider gold-text" style="font-family: 'Orbitron';">REX SYSTEM</div>
+        <div id="userAvatarHeader" class="w-11 h-11 rounded-full bg-gray-800 flex items-center justify-center cursor-pointer border border-[#D4AF37]">
+            <i class="fas fa-user-circle text-2xl"></i>
         </div>
     </div>
 
-    <!-- Overlay عند فتح القائمة -->
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
-
-    <!-- المحتوى الرئيسي -->
-    <div class="container mx-auto px-4 py-4 max-w-7xl">
-        <!-- الهيدر -->
-        <div class="flex justify-between items-center mb-6">
-            <button id="menuToggle" class="text-2xl text-[#D4AF37]"><i class="fas fa-bars"></i></button>
-            <div class="text-xl font-bold tracking-wider text-[#D4AF37]" style="font-family: 'Orbitron';">REX SYSTEM</div>
-            <div id="userAvatar" class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center cursor-pointer relative">
-                <i class="fas fa-user-circle text-2xl text-[#D4AF37]"></i>
-            </div>
+    <!-- قسم تسجيل الدخول -->
+    <div id="authSection" class="card-dark text-center mb-8">
+        <div id="unloggedView">
+            <i class="fab fa-discord text-6xl text-[#5865F2] mb-3"></i>
+            <h2 class="text-2xl font-bold">REX Portal</h2>
+            <p class="text-gray-400 mb-4">نظام إداري متكامل بصلاحيات حقيقية</p>
+            <button id="discordLoginBtn" class="btn-gold btn-discord px-6 py-2"><i class="fab fa-discord ml-2"></i> تسجيل الدخول بحساب Discord</button>
+            <p class="text-xs text-gray-500 mt-2">✨ سيتم جلب بياناتك الحقيقية من Discord باستخدام المعرف (ID) لضمان الصورة والاسم الحقيقيين</p>
+            <div class="mt-3 text-sm text-[#D4AF37]"><i class="fas fa-shield-alt"></i> آمن بالكامل - لا يتم تخزين كلمات مرور</div>
         </div>
-
-        <!-- حالة تسجيل الدخول / عرض المستخدم -->
-        <div id="authContainer" class="bg-black/60 rounded-2xl p-5 border border-[#D4AF37]/30 text-center mb-5">
-            <div id="unauthenticatedView">
-                <i class="fab fa-discord text-5xl text-[#5865F2] mb-3"></i>
-                <h2 class="text-xl font-bold mb-2">مرحباً بك في REX</h2>
-                <p class="text-gray-400 text-sm mb-4">نظام إداري احترافي متكامل</p>
-                <button id="discordLoginBtn" class="bg-[#5865F2] hover:bg-[#4752c4] text-white font-bold py-2 px-6 rounded-full transition"><i class="fab fa-discord ml-2"></i> Login with Discord</button>
-                <p class="text-xs text-gray-500 mt-3">(محاكاة OAuth - سيتم تسجيل دخول وهمي لتجربة النظام)</p>
-            </div>
-            <div id="authenticatedView" class="hidden">
-                <div class="flex items-center gap-3 justify-between flex-wrap">
-                    <div class="flex items-center gap-3">
-                        <img id="userImg" class="w-12 h-12 rounded-full border-2 border-[#D4AF37]" src="https://cdn.discordapp.com/embed/avatars/0.png" alt="avatar">
-                        <div class="text-right">
-                            <div id="userName" class="font-bold text-lg">REX Member</div>
-                            <div id="userRoleBadge" class="text-xs text-[#D4AF37]">👤 عضو</div>
-                        </div>
+        <div id="loggedView" style="display: none;">
+            <div class="flex items-center gap-4 flex-wrap justify-between">
+                <div class="flex items-center gap-3">
+                    <img id="realUserAvatar" class="w-14 h-14 rounded-full border-2 border-[#D4AF37]" src="">
+                    <div class="text-right">
+                        <div id="realUserName" class="text-xl font-bold"></div>
+                        <div id="realUserRole" class="text-sm gold-text"><i class="fas fa-crown"></i> <span></span></div>
                     </div>
-                    <div id="roleSpecificActions" class="text-sm"></div>
                 </div>
+                <div id="roleBadge" class="bg-black/40 px-3 py-1 rounded-full text-xs"></div>
             </div>
-        </div>
-
-        <!-- صفحات الموقع الديناميكية -->
-        <div id="pageContent">
-            <!-- سيتم تحميل المحتوى هنا عبر JS -->
         </div>
     </div>
 
-    <script>
-        // ---------- البيانات الأساسية ----------
-        // تعريف الرتب والصلاحيات (مطابق للهيكل المطلوب)
-        const ROLES = {
-            "👑 Owner": { level: 10, permissions: ["all"], nameAr: "المالك" },
-            "🏛️ Co-Owner": { level: 9, permissions: ["manage_reports", "manage_users", "view_all"], nameAr: "نائب المالك" },
-            "⚙️ Director": { level: 8, permissions: ["approve_letters", "view_reports", "manage_members"], nameAr: "مدير عام" },
-            "🧠 Admin Supreme": { level: 7, permissions: ["view_reports", "manage_letters", "view_logs"], nameAr: "المشرف الأسمى" },
-            "🛡️ Senior Admin": { level: 6, permissions: ["view_reports", "manage_letters"], nameAr: "عميد الإداريين" },
-            "🔧 Admin": { level: 5, permissions: ["view_reports", "send_letters"], nameAr: "مدير" },
-            "📊 Supervisor": { level: 4, permissions: ["view_reports_limited", "send_letters"], nameAr: "مشرف" },
-            "🧾 Analyst": { level: 3, permissions: ["view_reports_limited"], nameAr: "محلل تقارير" },
-            "🎯 Moderator": { level: 2, permissions: ["send_letters"], nameAr: "وسيط" },
-            "👤 Member": { level: 1, permissions: ["send_letters", "view_self"], nameAr: "عضو" },
-            "🆕 New Member": { level: 0, permissions: ["view_self"], nameAr: "عضو جديد" }
-        };
+    <div id="mainContent">
+        <!-- المحتوى الديناميكي -->
+        <div class="text-center text-gray-400 py-10">يرجى تسجيل الدخول للوصول إلى لوحة التحكم</div>
+    </div>
+</div>
 
-        // المستخدم الحالي (محاكاة)
-        let currentUser = null;
+<script>
+    // ------------------- نظام الرتب والصلاحيات -------------------
+    const ROLES = {
+        "👑 Owner": { level: 100, perms: ["all"], name: "المالك" },
+        "🏛️ Co-Owner": { level: 90, perms: ["manage_users", "manage_reports", "view_reports"], name: "نائب المالك" },
+        "⚙️ Director": { level: 80, perms: ["manage_users", "view_reports"], name: "مدير عام" },
+        "🧠 Admin Supreme": { level: 70, perms: ["view_reports", "approve_letters"], name: "المشرف الأسمى" },
+        "🛡️ Senior Admin": { level: 60, perms: ["view_reports"], name: "كبير الإداريين" },
+        "🔧 Admin": { level: 50, perms: ["view_reports_limited"], name: "مدير" },
+        "📊 Supervisor": { level: 40, perms: ["send_letters"], name: "مشرف" },
+        "🧾 Analyst": { level: 30, perms: ["view_own"], name: "محلل" },
+        "🎯 Moderator": { level: 20, perms: ["send_letters"], name: "وسيط" },
+        "👤 Member": { level: 10, perms: ["send_letters"], name: "عضو" },
+        "🆕 New Member": { level: 0, perms: ["none"], name: "عضو جديد" }
+    };
 
-        // البيانات الوهمية: قائمة المستخدمين (لإدارة المالك)
-        let usersList = [
-            { discordId: "123456", username: "REX_Owner", avatar: "https://cdn.discordapp.com/embed/avatars/1.png", role: "👑 Owner", email: "owner@rex.com" },
-            { discordId: "789012", username: "Nova_Admin", avatar: "https://cdn.discordapp.com/embed/avatars/2.png", role: "🔧 Admin", email: "admin@rex.com" },
-            { discordId: "345678", username: "Steel_Analyst", avatar: "https://cdn.discordapp.com/embed/avatars/3.png", role: "🧾 Analyst", email: "analyst@rex.com" },
-            { discordId: "999888", username: "GoldMember", avatar: "https://cdn.discordapp.com/embed/avatars/4.png", role: "👤 Member", email: "member@rex.com" }
-        ];
+    let currentUser = null; // { id, username, avatar, role }
+    let usersDB = [];       // قائمة المستخدمين (للمالك)
+    let lettersDB = [];     // الخطابات
+    let reportsDB = [];     // التقارير الشهرية
 
-        // التقارير الشهرية (بيانات عينة)
-        let monthlyReports = [
-            { month: "شوال 1446", date: "2025-04-01", summary: "نشاط مرتفع + زيادة الخطابات", details: { newMembers: 32, letters: 87, decisions: 45 } },
-            { month: "رمضان 1446", date: "2025-03-01", summary: "استقرار إداري", details: { newMembers: 28, letters: 74, decisions: 38 } }
-        ];
-
-        // الخطابات (سجل)
-        let lettersList = [
-            { id: 1, sender: "Owner", type: "طلب ترقية", content: "أطلب ترقية العضو X", status: "قيد المراجعة", date: "2025-04-10" },
-            { id: 2, sender: "Admin", type: "شكوى", content: "مشكلة تقنية", status: "تم الرد", date: "2025-04-05" }
-        ];
-
-        // دالة التحقق من صلاحية
-        function hasPermission(userRole, requiredPerm) {
-            if (!userRole) return false;
-            const perms = ROLES[userRole]?.permissions || [];
-            if (perms.includes("all")) return true;
-            return perms.includes(requiredPerm);
+    // تحميل البيانات من localStorage
+    function loadData() {
+        const storedUsers = localStorage.getItem("rex_users");
+        if(storedUsers) usersDB = JSON.parse(storedUsers);
+        else {
+            // مستخدم افتراضي للمالك للتجربة (يتم استبداله عند تسجيل الدخول)
+            usersDB = [];
         }
-
-        // تخزين الجلسة
-        function saveUserSession(user) {
-            localStorage.setItem("rex_user", JSON.stringify(user));
-            currentUser = user;
+        const storedLetters = localStorage.getItem("rex_letters");
+        if(storedLetters) lettersDB = JSON.parse(storedLetters);
+        else lettersDB = [];
+        const storedReports = localStorage.getItem("rex_reports");
+        if(storedReports) reportsDB = JSON.parse(storedReports);
+        else {
+            reportsDB = [
+                { id: 1, month: "شوال 1446", date: "2025-04-01", summary: "نشاط متصاعد", newMembers: 32, lettersCount: 87, decisions: 45 },
+                { id: 2, month: "رمضان 1446", date: "2025-03-01", summary: "استقرار إداري", newMembers: 28, lettersCount: 74, decisions: 38 }
+            ];
         }
-        function loadUserSession() {
-            const data = localStorage.getItem("rex_user");
-            if (data) {
-                currentUser = JSON.parse(data);
-                return true;
+    }
+    function saveUsers() { localStorage.setItem("rex_users", JSON.stringify(usersDB)); }
+    function saveLetters() { localStorage.setItem("rex_letters", JSON.stringify(lettersDB)); }
+    function saveReports() { localStorage.setItem("rex_reports", JSON.stringify(reportsDB)); }
+
+    // جلب بيانات المستخدم الحقيقية من Discord API باستخدام معرف المستخدم (لكل شخص يمكنه إدخال معرفه)
+    async function fetchDiscordUser(userId) {
+        try {
+            const res = await fetch(`https://discord.com/api/v10/users/${userId}`);
+            if(!res.ok) throw new Error("غير موجود");
+            const data = await res.json();
+            return { id: data.id, username: data.username, avatar: data.avatar ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png` : "https://cdn.discordapp.com/embed/avatars/0.png" };
+        } catch(e) {
+            alert("معرف Discord غير صالح أو أن API مقيد. استخدم معرف حقيقي.");
+            return null;
+        }
+    }
+
+    // نافذة محاكاة لإدخال معرف Discord (طريقة واقعية لجلب بيانات حقيقية)
+    async function promptDiscordLogin() {
+        const userId = prompt("أدخل معرف Discord الخاص بك (ID):\nكيف تحصل عليه؟ افتح إعدادات Discord -> وضع المطور -> انقر بزر الماوس الأيمن على اسمك -> نسخ المعرف)\n\nلن يتم تخزينه بأمان.");
+        if(!userId) return;
+        const userData = await fetchDiscordUser(userId);
+        if(userData) {
+            // التحقق إذا كان المستخدم موجوداً مسبقاً في قاعدة البيانات، وإلا نضيفه برتبة "👤 Member"
+            let existing = usersDB.find(u => u.id === userData.id);
+            let role = "👤 Member";
+            if(existing) role = existing.role;
+            else {
+                usersDB.push({ id: userData.id, username: userData.username, avatar: userData.avatar, role: role });
+                saveUsers();
             }
-            return false;
-        }
-        function logout() {
-            localStorage.removeItem("rex_user");
-            currentUser = null;
+            currentUser = { id: userData.id, username: userData.username, avatar: userData.avatar, role: role };
+            localStorage.setItem("rex_currentUser", JSON.stringify(currentUser));
             renderAuthUI();
             renderPage("dashboard");
         }
+    }
 
-        // محاكاة تسجيل الدخول عبر Discord (اختيار عشوائي لأحد المستخدمين للاختبار أو إنشاء مستخدم جديد)
-        function simulateDiscordLogin() {
-            // نعرض نافذة اختيار سريع لاختبار صلاحيات مختلفة، لسهولة التجربة.
-            const roleOptions = Object.keys(ROLES);
-            let selectedRole = prompt("اختر رتبة لتجربة النظام (لاختبار الصلاحيات):\n" + roleOptions.join("\n") + "\n\nاكتب الاسم كما هو (مثال: 👑 Owner)", "👤 Member");
-            if (!selectedRole || !ROLES[selectedRole]) selectedRole = "👤 Member";
-            const newId = Math.floor(Math.random() * 1000000).toString();
-            const fakeUser = {
-                discordId: newId,
-                username: `Discord_${selectedRole.slice(0,3)}`,
-                avatar: `https://cdn.discordapp.com/embed/avatars/${Math.floor(Math.random()*5)}.png`,
-                role: selectedRole,
-                email: `${selectedRole.replace(/\s/g,'')}@rex.com`
-            };
-            saveUserSession(fakeUser);
-            renderAuthUI();
-            renderPage("dashboard");
+    function renderAuthUI() {
+        if(currentUser) {
+            document.getElementById("unloggedView").style.display = "none";
+            document.getElementById("loggedView").style.display = "flex";
+            document.getElementById("realUserAvatar").src = currentUser.avatar;
+            document.getElementById("realUserName").innerText = currentUser.username;
+            document.getElementById("realUserRole").querySelector("span").innerText = `${currentUser.role} - ${ROLES[currentUser.role]?.name || "عضو"}`;
+            const hasFull = ROLES[currentUser.role]?.perms.includes("all");
+            document.getElementById("roleBadge").innerHTML = hasFull ? '<i class="fas fa-crown gold-text"></i> صلاحية كاملة' : 'صلاحيات محددة';
+            // إظهار روابط الإدارة للمالك أو كو-أونر
+            const canManage = currentUser.role === "👑 Owner" || currentUser.role === "🏛️ Co-Owner" || currentUser.role === "⚙️ Director";
+            document.getElementById("usersNavLink").style.display = canManage ? "block" : "none";
+            document.getElementById("rolesNavLink").style.display = (currentUser.role === "👑 Owner") ? "block" : "none";
+        } else {
+            document.getElementById("unloggedView").style.display = "block";
+            document.getElementById("loggedView").style.display = "none";
         }
+    }
 
-        // عرض حالة الدخول
-        function renderAuthUI() {
-            if (currentUser) {
-                document.getElementById("unauthenticatedView").classList.add("hidden");
-                document.getElementById("authenticatedView").classList.remove("hidden");
-                document.getElementById("userName").innerText = currentUser.username;
-                document.getElementById("userImg").src = currentUser.avatar;
-                let roleAr = ROLES[currentUser.role]?.nameAr || "عضو";
-                document.getElementById("userRoleBadge").innerHTML = `<i class="fas fa-shield-alt"></i> ${currentUser.role} - ${roleAr}`;
-                const roleActionsDiv = document.getElementById("roleSpecificActions");
-                if (hasPermission(currentUser.role, "all")) {
-                    roleActionsDiv.innerHTML = `<span class="bg-[#D4AF37] text-black px-2 py-1 rounded-full text-xs"><i class="fas fa-crown"></i> صلاحية كاملة</span>`;
-                } else if (hasPermission(currentUser.role, "manage_users")) {
-                    roleActionsDiv.innerHTML = `<span class="border border-[#D4AF37] px-2 rounded-full text-xs">إدارة عليا</span>`;
-                } else {
-                    roleActionsDiv.innerHTML = `<span class="text-gray-400 text-xs">صلاحيات محددة حسب الرتبة</span>`;
-                }
-                // إظهار رابط إدارة الرتب للمالك فقط
-                if (currentUser.role === "👑 Owner") {
-                    document.getElementById("rolesNavItem").style.display = "block";
-                } else {
-                    document.getElementById("rolesNavItem").style.display = "none";
-                }
-            } else {
-                document.getElementById("unauthenticatedView").classList.remove("hidden");
-                document.getElementById("authenticatedView").classList.add("hidden");
-            }
+    function logout() {
+        currentUser = null;
+        localStorage.removeItem("rex_currentUser");
+        renderAuthUI();
+        renderPage("dashboard");
+    }
+
+    // عرض الصفحات
+    function renderPage(page) {
+        const container = document.getElementById("mainContent");
+        if(!currentUser) {
+            container.innerHTML = `<div class="text-center py-10"><i class="fas fa-lock text-5xl gold-text mb-3"></i><p>سجل الدخول بحساب Discord للوصول إلى النظام.</p></div>`;
+            return;
         }
+        if(page === "dashboard") renderDashboard(container);
+        else if(page === "reports") renderReports(container);
+        else if(page === "letters") renderLetters(container);
+        else if(page === "users") renderUsersPanel(container);
+        else if(page === "roles") renderRolesPanel(container);
+        else if(page === "settings") renderSettings(container);
+        else renderDashboard(container);
+    }
 
-        // عرض الصفحات حسب المحتوى -----------------------------------------------------------------
-        function renderPage(pageName) {
-            const container = document.getElementById("pageContent");
-            if (!currentUser) {
-                container.innerHTML = `<div class="text-center py-10 text-gray-400"><i class="fas fa-lock text-4xl mb-3"></i><p>يرجى تسجيل الدخول عبر Discord للوصول إلى لوحة التحكم.</p></div>`;
-                return;
-            }
-            if (pageName === "dashboard") renderDashboard(container);
-            else if (pageName === "reports") renderReports(container);
-            else if (pageName === "letters") renderLetters(container);
-            else if (pageName === "users") renderUsersManagement(container);
-            else if (pageName === "roles") renderRolesPanel(container);
-            else if (pageName === "settings") renderSettings(container);
-            else renderDashboard(container);
-        }
+    function renderDashboard(container) {
+        const canViewReports = ROLES[currentUser.role]?.perms.includes("view_reports") || ROLES[currentUser.role]?.perms.includes("all");
+        container.innerHTML = `
+            <div class="card-dark mb-6">
+                <h2 class="text-2xl font-bold gold-text">مرحباً ${currentUser.username}</h2>
+                <p>رتبتك: ${currentUser.role} - ${ROLES[currentUser.role]?.name}</p>
+                <p class="text-sm text-gray-400">آخر دخول: ${new Date().toLocaleString()}</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="card-dark"><div class="stat-number">${lettersDB.length}</div><div>📨 خطابات مرسلة</div></div>
+                <div class="card-dark"><div class="stat-number">${usersDB.length}</div><div>👥 أعضاء مسجلين</div></div>
+                <div class="card-dark"><div class="stat-number">${reportsDB.length}</div><div>📊 تقارير شهرية</div></div>
+            </div>
+            ${canViewReports ? `<div class="card-dark"><h3 class="gold-text">آخر تقرير</h3><p>${reportsDB[0]?.summary || "لا يوجد"}</p><button id="viewReportBtn" class="btn-gold mt-2 text-sm">عرض التفاصيل</button></div>` : `<div class="card-dark text-gray-500">ليس لديك صلاحية لعرض التقارير.</div>`}
+            <div class="mt-4"><button id="newLetterBtn" class="btn-gold w-full"><i class="fas fa-pen-alt"></i> إرسال خطاب جديد</button></div>
+        `;
+        document.getElementById("viewReportBtn")?.addEventListener("click",()=>renderPage("reports"));
+        document.getElementById("newLetterBtn")?.addEventListener("click",()=>renderPage("letters"));
+    }
 
-        // Dashboard
-        function renderDashboard(container) {
-            const canViewReports = hasPermission(currentUser.role, "view_reports") || hasPermission(currentUser.role, "view_reports_limited") || hasPermission(currentUser.role, "all");
-            container.innerHTML = `
-                <div class="space-y-5">
-                    <div class="bg-black/50 rounded-2xl p-5 border-r-4 border-[#D4AF37]">
-                        <h3 class="text-2xl font-bold">مرحباً، ${currentUser.username}</h3>
-                        <p class="text-gray-300">الرتبة: ${currentUser.role} - ${ROLES[currentUser.role]?.nameAr}</p>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="bg-black/40 p-4 rounded-xl"><i class="fas fa-chart-simple text-[#D4AF37] text-2xl"></i><p class="mt-2">نشاطك: ${Math.floor(Math.random()*100)+20} نقطة تفاعل</p></div>
-                        <div class="bg-black/40 p-4 rounded-xl"><i class="fas fa-bell text-[#D4AF37] text-2xl"></i><p class="mt-2">إشعارات: 3 جديدة</p></div>
-                    </div>
-                    ${canViewReports ? `<div class="bg-black/50 p-4 rounded-xl"><h4 class="font-bold text-[#D4AF37]">📊 آخر تقرير شهري</h4><p>${monthlyReports[0]?.summary || "لا توجد تقارير"}</p><button id="viewFullReportBtn" class="btn-gold px-4 py-1 rounded-full text-sm mt-2">عرض التفاصيل</button></div>` : `<div class="bg-black/30 p-4 rounded-xl text-gray-400">ليس لديك صلاحية لعرض التقارير.</div>`}
-                    <div class="text-center text-gray-500 text-xs mt-4">REX System v1.0 - إدارة ذكية</div>
-                </div>
-            `;
-            const reportBtn = document.getElementById("viewFullReportBtn");
-            if (reportBtn) reportBtn.onclick = () => renderPage("reports");
-        }
+    function renderReports(container) {
+        const canView = ROLES[currentUser.role]?.perms.includes("view_reports") || ROLES[currentUser.role]?.perms.includes("all");
+        if(!canView) { container.innerHTML = "<div class='card-dark'>غير مسموح</div>"; return; }
+        let html = `<h2 class="text-2xl gold-text mb-4">📑 التقارير الشهرية</h2>`;
+        reportsDB.forEach(r => {
+            html += `<div class="card-dark mb-3"><div class="flex justify-between"><span class="gold-text">📅 ${r.month}</span><span>${r.date}</span></div><p>${r.summary}</p><p class="text-sm">أعضاء جدد: ${r.newMembers} | خطابات: ${r.lettersCount}</p></div>`;
+        });
+        const canGenerate = currentUser.role === "👑 Owner" || currentUser.role === "🏛️ Co-Owner";
+        if(canGenerate) html += `<button id="generateReportBtn" class="btn-gold w-full mt-4"><i class="fas fa-plus"></i> توليد تقرير شهري جديد (محاكاة PDF)</button>`;
+        container.innerHTML = html;
+        if(canGenerate) document.getElementById("generateReportBtn")?.addEventListener("click", () => {
+            const newReport = { id: Date.now(), month: "ذو القعدة 1446", date: new Date().toISOString().slice(0,10), summary: "تم إنشاء التقرير بنجاح - نشاط ممتاز", newMembers: Math.floor(Math.random()*50)+10, lettersCount: lettersDB.length };
+            reportsDB.unshift(newReport);
+            saveReports();
+            renderReports(container);
+            alert("تم توليد تقرير PDF وهمي (في النظام الحقيقي سيتم إنشاء ملف)");
+        });
+    }
 
-        // التقارير
-        function renderReports(container) {
-            if (!hasPermission(currentUser.role, "view_reports") && !hasPermission(currentUser.role, "view_reports_limited") && !hasPermission(currentUser.role, "all")) {
-                container.innerHTML = `<div class="bg-red-900/30 p-6 rounded-xl text-center">⛔ غير مصرح لك بعرض التقارير.</div>`;
-                return;
-            }
-            let reportsHtml = `<h2 class="text-2xl font-bold text-[#D4AF37] mb-4">📑 التقارير الشهرية التلقائية</h2>`;
-            monthlyReports.forEach((rep, idx) => {
-                reportsHtml += `<div class="bg-black/40 p-4 rounded-xl mb-3"><p class="font-bold">📅 ${rep.month} (${rep.date})</p><p>${rep.summary}</p><p class="text-sm text-gray-400">أعضاء جدد: ${rep.details.newMembers} | خطابات: ${rep.details.letters}</p></div>`;
-            });
-            if (hasPermission(currentUser.role, "all") || hasPermission(currentUser.role, "manage_reports")) {
-                reportsHtml += `<button id="generateNewReportBtn" class="btn-gold w-full py-2 mt-3 rounded-full"><i class="fas fa-plus"></i> توليد تقرير جديد (محاكاة)</button>`;
-            }
-            container.innerHTML = reportsHtml;
-            const genBtn = document.getElementById("generateNewReportBtn");
-            if (genBtn) genBtn.onclick = () => {
-                const newReport = { month: "ذي القعدة 1446", date: new Date().toISOString().slice(0,10), summary: "تقرير محدث - نشاط متزايد", details: { newMembers: 45, letters: 110, decisions: 67 } };
-                monthlyReports.unshift(newReport);
-                renderReports(container);
-            };
-        }
-
-        // نظام الخطابات
-        function renderLetters(container) {
-            const canSend = hasPermission(currentUser.role, "send_letters") || hasPermission(currentUser.role, "all");
-            container.innerHTML = `
-                <h2 class="text-2xl font-bold text-[#D4AF37] mb-4">📨 إدارة الخطابات</h2>
-                <div class="bg-black/40 p-4 rounded-xl mb-4">
-                    <h3 class="font-bold">إرسال خطاب رسمي جديد</h3>
-                    ${canSend ? `<textarea id="letterContent" rows="2" class="w-full bg-black border border-gray-700 p-2 rounded mt-2" placeholder="نص الخطاب..."></textarea>
+    function renderLetters(container) {
+        const canSend = ROLES[currentUser.role]?.perms.includes("send_letters") || ROLES[currentUser.role]?.perms.includes("all");
+        container.innerHTML = `
+            <h2 class="text-2xl gold-text mb-4">📨 نظام الخطابات الرسمي</h2>
+            <div class="card-dark mb-6">
+                <h3 class="font-bold">إرسال خطاب جديد</h3>
+                ${canSend ? `
+                    <input type="text" id="letterTitle" placeholder="العنوان" class="w-full bg-black border border-gray-700 p-2 rounded mt-2">
+                    <textarea id="letterContent" rows="3" placeholder="محتوى الخطاب" class="w-full bg-black border border-gray-700 p-2 rounded mt-2"></textarea>
                     <select id="letterType" class="bg-black border border-gray-700 p-2 rounded mt-2"><option>طلب</option><option>شكوى</option><option>اقتراح</option></select>
-                    <button id="submitLetterBtn" class="btn-gold px-4 py-1 rounded-full mt-2">إرسال الخطاب</button>` : `<p class="text-red-400">ليس لديك صلاحية إرسال خطابات.</p>`}
-                </div>
-                <h3 class="font-bold mt-4">سجل الخطابات</h3>
-                <div id="lettersList" class="space-y-2"></div>
-            `;
-            const lettersDiv = document.getElementById("lettersList");
-            function refreshLetters() {
-                lettersDiv.innerHTML = lettersList.map(l => `<div class="bg-black/30 p-3 rounded border-r-2 border-[#D4AF37]"><b>${l.sender}</b> (${l.type}): ${l.content} <span class="text-xs text-gray-400">${l.date} - ${l.status}</span></div>`).join("");
-            }
-            refreshLetters();
-            if (canSend) {
-                const submitBtn = document.getElementById("submitLetterBtn");
-                submitBtn.onclick = () => {
-                    const content = document.getElementById("letterContent").value;
-                    const type = document.getElementById("letterType").value;
-                    if(content.trim()) {
-                        lettersList.unshift({ id: Date.now(), sender: currentUser.username, type, content, status: "قيد الانتظار", date: new Date().toISOString().slice(0,10) });
-                        refreshLetters();
-                        document.getElementById("letterContent").value = "";
-                    } else alert("يرجى كتابة محتوى الخطاب");
-                };
-            }
+                    <input type="file" id="letterPdf" accept="application/pdf" class="mt-2 text-sm">
+                    <button id="submitLetterBtn" class="btn-gold mt-3 w-full">إرسال الخطاب</button>
+                ` : `<p class="text-red-400">ليس لديك صلاحية إرسال خطابات.</p>`}
+            </div>
+            <h3 class="gold-text">سجل الخطابات</h3>
+            <div id="lettersList"></div>
+        `;
+        function refreshLettersList() {
+            const listDiv = document.getElementById("lettersList");
+            if(!listDiv) return;
+            listDiv.innerHTML = lettersDB.filter(l => (ROLES[currentUser.role]?.perms.includes("all") || ROLES[currentUser.role]?.perms.includes("view_reports") || l.senderId === currentUser.id)).map(l => `<div class="card-dark mb-2"><b>${l.title}</b> (${l.type})<br>${l.content}<br><span class="text-xs text-gray-400">من: ${l.senderName} | ${l.date}</span> ${l.fileName ? `<a href="${l.fileData}" download="${l.fileName}" class="text-[#D4AF37] text-xs"><i class="fas fa-paperclip"></i> تحميل المرفق</a>` : ''}</div>`).join("");
         }
-
-        // إدارة المستخدمين (للمالك والإدارة العليا)
-        function renderUsersManagement(container) {
-            const canManageUsers = hasPermission(currentUser.role, "manage_users") || currentUser.role === "👑 Owner";
-            if (!canManageUsers) {
-                container.innerHTML = `<div class="bg-red-900/30 p-6 rounded-xl">❌ صلاحية ممنوعة: تحتاج إلى رتبة إدارة عليا.</div>`;
-                return;
-            }
-            let html = `<h2 class="text-2xl font-bold text-[#D4AF37] mb-4">👥 إدارة المستخدمين</h2><div class="overflow-x-auto"><table class="w-full text-right"><thead><tr class="border-b border-[#D4AF37]"><th>المستخدم</th><th>الرتبة الحالية</th><th>تغيير الرتبة</th></tr></thead><tbody>`;
-            usersList.forEach((user, idx) => {
-                html += `<tr class="border-b border-gray-800"><td class="py-2">${user.username}</td><td>${user.role}</td><td><select class="changeRoleSelect bg-black border border-gray-600 rounded" data-idx="${idx}">${Object.keys(ROLES).map(r => `<option ${user.role === r ? "selected" : ""}>${r}</option>`).join("")}</select></td></tr>`;
-            });
-            html += `</tbody></table></div><button id="saveRolesBtn" class="btn-gold mt-4 px-4 py-2 rounded-full">حفظ التغييرات</button>`;
-            container.innerHTML = html;
-            document.getElementById("saveRolesBtn").onclick = () => {
-                const selects = document.querySelectorAll(".changeRoleSelect");
-                selects.forEach(sel => {
-                    const idx = parseInt(sel.dataset.idx);
-                    usersList[idx].role = sel.value;
-                });
-                renderUsersManagement(container);
-                alert("تم تحديث الرتب بنجاح");
-                if(currentUser.role !== "👑 Owner") renderAuthUI();
-                else renderAuthUI();
+        if(canSend) {
+            document.getElementById("submitLetterBtn").onclick = () => {
+                const title = document.getElementById("letterTitle").value;
+                const content = document.getElementById("letterContent").value;
+                const type = document.getElementById("letterType").value;
+                const file = document.getElementById("letterPdf").files[0];
+                if(!title || !content) { alert("املأ العنوان والمحتوى"); return; }
+                let fileData = null, fileName = null;
+                if(file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        fileData = e.target.result;
+                        fileName = file.name;
+                        saveLetterToDB(title, content, type, fileData, fileName);
+                        refreshLettersList();
+                        document.getElementById("letterTitle").value = "";
+                        document.getElementById("letterContent").value = "";
+                        document.getElementById("letterPdf").value = "";
+                        alert("تم إرسال الخطاب مع المرفق");
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    saveLetterToDB(title, content, type, null, null);
+                    refreshLettersList();
+                    alert("تم إرسال الخطاب");
+                }
             };
         }
-
-        // لوحة الرتب والصلاحيات (خاصة للمالك فقط)
-        function renderRolesPanel(container) {
-            if (currentUser.role !== "👑 Owner") {
-                container.innerHTML = `<div class="text-center p-6">غير مصرح لك بالوصول إلى هذه الصفحة.</div>`;
-                return;
-            }
-            let tableRows = "";
-            for (const [roleName, data] of Object.entries(ROLES)) {
-                tableRows += `<tr class="border-b"><td class="p-2">${roleName}</td><td>${data.nameAr}</td><td class="text-xs">${data.permissions.join(", ")}</td></tr>`;
-            }
-            container.innerHTML = `<h2 class="text-2xl font-bold text-[#D4AF37] mb-4">🏛️ هيكل الرتب والصلاحيات</h2><div class="overflow-x-auto"><table class="w-full"><thead><tr><th>الرتبة</th><th>الاسم العربي</th><th>الصلاحيات</th></tr></thead><tbody>${tableRows}</tbody></table></div><div class="mt-4 text-gray-400 text-sm">* المالك فقط يمكنه تعديل الرتب من صفحة المستخدمين.</div>`;
+        function saveLetterToDB(title, content, type, fileData, fileName) {
+            lettersDB.unshift({ id: Date.now(), title, content, type, senderId: currentUser.id, senderName: currentUser.username, date: new Date().toLocaleString(), fileData, fileName });
+            saveLetters();
+            refreshLettersList();
         }
+        refreshLettersList();
+    }
 
-        function renderSettings(container) {
-            container.innerHTML = `<div class="bg-black/40 p-6 rounded-xl"><h2 class="text-xl gold-text">⚙️ الإعدادات</h2><p>خيارات النظام والتخصيص (PWA، الإشعارات) قريباً...</p><button id="clearCacheBtn" class="btn-gold mt-3 px-3 py-1 rounded">محاكاة مسح cache</button></div>`;
-            document.getElementById("clearCacheBtn")?.addEventListener("click", ()=> alert("تم مسح بيانات الجلسة (محاكاة)"));
+    function renderUsersPanel(container) {
+        if(currentUser.role !== "👑 Owner" && currentUser.role !== "🏛️ Co-Owner" && currentUser.role !== "⚙️ Director") {
+            container.innerHTML = `<div class="card-dark">⛔ غير مصرح لك بهذه الصفحة.</div>`;
+            return;
         }
-
-        // Event Listeners للقائمة الجانبية والتنقل
-        function initUI() {
-            const menuBtn = document.getElementById("menuToggle");
-            const sidebar = document.getElementById("sidebar");
-            const overlay = document.getElementById("sidebarOverlay");
-            const closeSidebar = document.getElementById("closeSidebarBtn");
-            function openSidebar() { sidebar.classList.add("open"); overlay.classList.remove("hidden"); }
-            function closeSidebarFunc() { sidebar.classList.remove("open"); overlay.classList.add("hidden"); }
-            menuBtn.onclick = openSidebar;
-            closeSidebar.onclick = closeSidebarFunc;
-            overlay.onclick = closeSidebarFunc;
-            document.querySelectorAll(".sidebar-link").forEach(link => {
-                link.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    const page = link.dataset.page;
-                    if (page) renderPage(page);
-                    closeSidebarFunc();
-                });
+        let html = `<h2 class="text-2xl gold-text mb-4">إدارة المستخدمين</h2><div class="overflow-x-auto"><table class="w-full"><thead><tr class="border-b border-[#D4AF37]"><th>المستخدم</th><th>الرتبة</th><th>تغيير الرتبة</th></tr></thead><tbody>`;
+        usersDB.forEach((user, idx) => {
+            html += `<tr class="border-b border-gray-700"><td><img src="${user.avatar}" class="w-8 h-8 rounded-full inline ml-2"> ${user.username}</td><td>${user.role}</td><td><select class="roleSelect" data-idx="${idx}">${Object.keys(ROLES).map(r => `<option ${user.role===r ? "selected" : ""}>${r}</option>`).join("")}</select> <button class="updateRoleBtn text-[#D4AF37] text-sm" data-idx="${idx}">تحديث</button></td></tr>`;
+        });
+        html += `</tbody></table></div>`;
+        container.innerHTML = html;
+        document.querySelectorAll(".updateRoleBtn").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const idx = btn.dataset.idx;
+                const newRole = document.querySelector(`.roleSelect[data-idx='${idx}']`).value;
+                usersDB[idx].role = newRole;
+                saveUsers();
+                if(currentUser.id === usersDB[idx].id) {
+                    currentUser.role = newRole;
+                    localStorage.setItem("rex_currentUser", JSON.stringify(currentUser));
+                    renderAuthUI();
+                }
+                renderUsersPanel(container);
+                alert("تم تحديث الرتبة");
             });
-            document.getElementById("discordLoginBtn").onclick = () => simulateDiscordLogin();
-            document.getElementById("logoutBtn").onclick = () => logout();
-            if (loadUserSession()) {
-                renderAuthUI();
-                renderPage("dashboard");
-            } else {
-                renderAuthUI();
-                renderPage("dashboard");
-            }
+        });
+    }
+
+    function renderRolesPanel(container) {
+        if(currentUser.role !== "👑 Owner") { container.innerHTML = "<div class='card-dark'>خاص بالمالك فقط</div>"; return; }
+        let html = `<h2 class="text-2xl gold-text">🏛️ هيكل الرتب والصلاحيات</h2><div class="grid gap-2 mt-4">`;
+        for(const [role, data] of Object.entries(ROLES)) {
+            html += `<div class="card-dark"><span class="gold-text">${role}</span> - ${data.name}<br><span class="text-xs text-gray-400">الصلاحيات: ${data.perms.join(", ")}</span></div>`;
         }
-        initUI();
-    </script>
+        html += `</div>`;
+        container.innerHTML = html;
+    }
+
+    function renderSettings(container) {
+        container.innerHTML = `<div class="card-dark"><h3 class="gold-text">الإعدادات العامة</h3><p>يمكنك تصدير البيانات أو مسح التخزين المؤقت.</p><button id="clearDataBtn" class="btn-gold mt-3">مسح جميع بيانات التطبيق</button></div>`;
+        document.getElementById("clearDataBtn")?.addEventListener("click",()=>{
+            if(confirm("سيتم حذف جميع المستخدمين والخطابات والتقارير. استمر؟")) {
+                localStorage.clear();
+                location.reload();
+            }
+        });
+    }
+
+    // Sidebar logic
+    function initSidebar() {
+        const menuToggle = document.getElementById("menuToggle");
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+        const closeSidebar = document.getElementById("closeSidebar");
+        menuToggle.onclick = () => { sidebar.classList.add("open"); overlay.classList.add("active"); };
+        closeSidebar.onclick = () => { sidebar.classList.remove("open"); overlay.classList.remove("active"); };
+        overlay.onclick = () => { sidebar.classList.remove("open"); overlay.classList.remove("active"); };
+        document.querySelectorAll(".sidebar-link").forEach(link => {
+            link.addEventListener("click", (e) => {
+                e.preventDefault();
+                const page = link.dataset.page;
+                if(page) renderPage(page);
+                sidebar.classList.remove("open");
+                overlay.classList.remove("active");
+            });
+        });
+        document.getElementById("logoutBtn").onclick = () => { logout(); sidebar.classList.remove("open"); overlay.classList.remove("active"); };
+    }
+
+    // Stars generation
+    function generateStars() {
+        const starsDiv = document.getElementById("starsContainer");
+        for(let i=0;i<200;i++) {
+            const star = document.createElement("div");
+            star.classList.add("star");
+            star.style.left = Math.random() * 100 + "%";
+            star.style.top = Math.random() * 100 + "%";
+            star.style.animationDelay = Math.random() * 5 + "s";
+            star.style.animationDuration = 2 + Math.random() * 4 + "s";
+            starsDiv.appendChild(star);
+        }
+    }
+
+    // بدء التشغيل
+    loadData();
+    const storedUser = localStorage.getItem("rex_currentUser");
+    if(storedUser) {
+        currentUser = JSON.parse(storedUser);
+        renderAuthUI();
+        renderPage("dashboard");
+    } else {
+        renderAuthUI();
+        renderPage("dashboard");
+    }
+    document.getElementById("discordLoginBtn").onclick = () => promptDiscordLogin();
+    initSidebar();
+    generateStars();
+</script>
 </body>
 </html>
