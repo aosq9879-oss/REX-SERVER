@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>REX | الإدارة الذهبية</title>
+    <title>REX | النظام الإداري الفاخر</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Orbitron:wght@500;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { background: #050505; font-family: 'Tajawal', 'Montserrat', sans-serif; color: #e0e0e0; overflow-x: hidden; }
@@ -63,9 +62,9 @@
         <div id="unloggedView">
             <i class="fab fa-discord text-6xl text-[#5865F2] mb-3"></i>
             <h2 class="text-2xl font-bold">REX Portal</h2>
-            <p class="text-gray-400 mb-4">نظام إداري بصلاحيات حقيقية</p>
+            <p class="text-gray-400 mb-4">نظام إداري بصلاحيات حقيقية عبر Discord</p>
             <button id="discordLoginBtn" class="btn-gold btn-discord px-6 py-2"><i class="fab fa-discord ml-2"></i> تسجيل الدخول بحساب Discord</button>
-            <p class="text-xs text-gray-500 mt-2">🔐 سيتم استخدام OAuth الرسمي من Discord لجلب بياناتك الحقيقية</p>
+            <p class="text-xs text-gray-500 mt-2">🔐 سيتم استخدام OAuth الرسمي من Discord لجلب بياناتك الحقيقية وتحديد رتبتك تلقائياً</p>
         </div>
         <div id="loggedView" style="display: none;">
             <div class="flex items-center gap-4 flex-wrap justify-between">
@@ -85,10 +84,15 @@
 </div>
 
 <script>
-    // ---------- ثوابت Discord OAuth ----------
-    // ⚠️ IMPORTANT: استبدل CLIENT_ID بمعرف التطبيق الخاص بك من Discord Developer Portal
-    const CLIENT_ID = "YOUR_CLIENT_ID_HERE";  // 👈 ضع هنا الـ Client ID
-    const REDIRECT_URI = encodeURIComponent(window.location.href.split('#')[0]); // الرابط الحالي
+    // ------------------- إعدادات مهمة -------------------
+    // ⚠️ 1. ضع هنا معرف تطبيق Discord الخاص بك (Client ID)
+    const CLIENT_ID = "YOUR_CLIENT_ID_HERE";  // 👈 استبدله بالمعرف الحقيقي
+    
+    // 2. الـ ID الخاص بالمالك (مخفي ولا يظهر للمستخدمين العاديين)
+    const OWNER_DISCORD_ID = "1296176416844415037";  // هذا هو ID سيف / Reda
+    
+    // 3. إعدادات OAuth
+    const REDIRECT_URI = encodeURIComponent(window.location.href.split('#')[0]);
     const DISCORD_AUTH_URL = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=identify`;
 
     // ---------- الرتب والصلاحيات ----------
@@ -111,7 +115,7 @@
     let lettersDB = [];
     let reportsDB = [];
 
-    // تحميل وحفظ البيانات
+    // تحميل البيانات
     function loadData() {
         usersDB = JSON.parse(localStorage.getItem("rex_users") || "[]");
         lettersDB = JSON.parse(localStorage.getItem("rex_letters") || "[]");
@@ -124,7 +128,7 @@
     function saveLetters() { localStorage.setItem("rex_letters", JSON.stringify(lettersDB)); }
     function saveReports() { localStorage.setItem("rex_reports", JSON.stringify(reportsDB)); }
 
-    // جلب بيانات المستخدم باستخدام Access Token
+    // جلب بيانات المستخدم من Discord باستخدام Access Token
     async function fetchDiscordUser(token) {
         const res = await fetch("https://discord.com/api/users/@me", {
             headers: { Authorization: `Bearer ${token}` }
@@ -133,41 +137,53 @@
         return await res.json();
     }
 
-    // معالجة الـ Access Token بعد إعادة التوجيه
+    // معالجة العودة من OAuth (قراءة الـ access_token من URL hash)
     function handleOAuthRedirect() {
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
         const token = params.get("access_token");
         if(token) {
             localStorage.setItem("rex_discord_token", token);
-            window.location.hash = ""; // تنظيف الهاش
+            window.location.hash = ""; // تنظيف الرابط
             return token;
         }
         return null;
     }
 
+    // تسجيل الدخول الأساسي
     async function loginWithDiscord() {
         const token = handleOAuthRedirect();
         if(token) {
             try {
                 const userData = await fetchDiscordUser(token);
                 if(userData) {
-                    let existing = usersDB.find(u => u.id === userData.id);
+                    // تحديد الرتبة تلقائياً: إذا كان ID المستخدم يساوي ID المالك → Owner، وإلا نبحث في قاعدة البيانات عن رتبة سابقة أو نعطيه Member
                     let role = "👤 Member";
-                    if(existing) role = existing.role;
-                    else {
-                        usersDB.push({ id: userData.id, username: userData.username, avatar: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png`, role: role });
-                        saveUsers();
+                    if(userData.id === OWNER_DISCORD_ID) {
+                        role = "👑 Owner";
+                    } else {
+                        const existing = usersDB.find(u => u.id === userData.id);
+                        if(existing) role = existing.role;
                     }
-                    currentUser = { id: userData.id, username: userData.username, avatar: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png`, role: role };
+                    // تحديث أو إضافة المستخدم في قاعدة البيانات
+                    const existingIndex = usersDB.findIndex(u => u.id === userData.id);
+                    const avatarUrl = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png`;
+                    if(existingIndex !== -1) {
+                        usersDB[existingIndex] = { id: userData.id, username: userData.username, avatar: avatarUrl, role: role };
+                    } else {
+                        usersDB.push({ id: userData.id, username: userData.username, avatar: avatarUrl, role: role });
+                    }
+                    saveUsers();
+                    currentUser = { id: userData.id, username: userData.username, avatar: avatarUrl, role: role };
                     localStorage.setItem("rex_currentUser", JSON.stringify(currentUser));
                     renderAuthUI();
                     renderPage("dashboard");
                 }
-            } catch(e) { console.error(e); alert("فشل تسجيل الدخول"); }
+            } catch(e) { console.error(e); alert("فشل تسجيل الدخول، تأكد من Client ID و Redirect URI"); }
         }
     }
 
+    // عرض واجهة المستخدم حسب حالة الدخول
     function renderAuthUI() {
         if(currentUser) {
             document.getElementById("unloggedView").style.display = "none";
@@ -194,9 +210,12 @@
         renderPage("dashboard");
     }
 
-    // دوال عرض الصفحات (مبسطة من الكود السابق لكن كاملة)
+    // وظائف عرض الصفحات (مختصرة ولكن كاملة)
     function renderPage(page) {
-        if(!currentUser) { document.getElementById("mainContent").innerHTML = `<div class="text-center py-10"><i class="fas fa-lock text-5xl gold-text"></i><p>سجل الدخول أولاً</p></div>`; return; }
+        if(!currentUser) {
+            document.getElementById("mainContent").innerHTML = `<div class="text-center py-10"><i class="fas fa-lock text-5xl gold-text"></i><p>سجل الدخول أولاً</p></div>`;
+            return;
+        }
         const container = document.getElementById("mainContent");
         if(page === "dashboard") renderDashboard(container);
         else if(page === "reports") renderReports(container);
@@ -220,61 +239,108 @@
     }
 
     function renderReports(container) {
-        if(!ROLES[currentUser.role]?.perms.includes("view_reports") && !ROLES[currentUser.role]?.perms.includes("all")) { container.innerHTML = "<div class='card-dark'>غير مصرح</div>"; return; }
-        let html = `<h2 class="gold-text text-2xl">التقارير</h2>`;
-        reportsDB.forEach(r => { html += `<div class="card-dark"><div class="gold-text">${r.month}</div><p>${r.summary}</p><p>أعضاء جدد: ${r.newMembers} | خطابات: ${r.lettersCount}</p></div>`; });
-        if(currentUser.role === "👑 Owner" || currentUser.role === "🏛️ Co-Owner") html += `<button id="genReportBtn" class="btn-gold w-full mt-3"><i class="fas fa-plus"></i> توليد تقرير جديد</button>`;
+        if(!ROLES[currentUser.role]?.perms.includes("view_reports") && !ROLES[currentUser.role]?.perms.includes("all")) {
+            container.innerHTML = "<div class='card-dark'>غير مصرح</div>";
+            return;
+        }
+        let html = `<h2 class="gold-text text-2xl">التقارير الشهرية</h2>`;
+        reportsDB.forEach(r => {
+            html += `<div class="card-dark"><div class="gold-text">${r.month}</div><p>${r.summary}</p><p>أعضاء جدد: ${r.newMembers} | خطابات: ${r.lettersCount}</p></div>`;
+        });
+        if(currentUser.role === "👑 Owner" || currentUser.role === "🏛️ Co-Owner") {
+            html += `<button id="genReportBtn" class="btn-gold w-full mt-3"><i class="fas fa-plus"></i> توليد تقرير جديد (محاكاة)</button>`;
+        }
         container.innerHTML = html;
-        document.getElementById("genReportBtn")?.addEventListener("click",()=>{ reportsDB.unshift({ id: Date.now(), month: new Date().toLocaleString('ar'), date: new Date().toISOString().slice(0,10), summary: "تقرير جديد", newMembers: Math.floor(Math.random()*50), lettersCount: lettersDB.length }); saveReports(); renderReports(container); alert("تم توليد التقرير"); });
+        document.getElementById("genReportBtn")?.addEventListener("click",() => {
+            reportsDB.unshift({
+                id: Date.now(),
+                month: new Date().toLocaleString('ar', { month: 'long', year: 'numeric' }),
+                date: new Date().toISOString().slice(0,10),
+                summary: "تقرير تم إنشاؤه يدوياً",
+                newMembers: Math.floor(Math.random()*50),
+                lettersCount: lettersDB.length
+            });
+            saveReports();
+            renderReports(container);
+            alert("تم توليد تقرير جديد");
+        });
     }
 
     function renderLetters(container) {
         const canSend = ROLES[currentUser.role]?.perms.includes("send_letters") || ROLES[currentUser.role]?.perms.includes("all");
         container.innerHTML = `
-            <h2 class="gold-text text-2xl">الخطابات</h2>
-            <div class="card-dark"><h3>إرسال خطاب</h3>${canSend ? `
-                <input id="letterTitle" placeholder="العنوان" class="w-full bg-black border p-2 my-2"><textarea id="letterContent" rows="2" placeholder="المحتوى" class="w-full bg-black border p-2"></textarea>
-                <select id="letterType" class="bg-black border p-2"><option>طلب</option><option>شكوى</option></select>
+            <h2 class="gold-text text-2xl">نظام الخطابات</h2>
+            <div class="card-dark"><h3>إرسال خطاب رسمي</h3>
+            ${canSend ? `
+                <input id="letterTitle" placeholder="العنوان" class="w-full bg-black border border-gray-700 p-2 rounded my-2">
+                <textarea id="letterContent" rows="3" placeholder="محتوى الخطاب" class="w-full bg-black border border-gray-700 p-2 rounded"></textarea>
+                <select id="letterType" class="bg-black border border-gray-700 p-2 rounded my-2"><option>طلب</option><option>شكوى</option><option>اقتراح</option></select>
                 <input type="file" id="letterPdf" accept=".pdf" class="my-2">
-                <button id="sendLetterBtn" class="btn-gold w-full">إرسال</button>
-            ` : "<p class='text-red-400'>لا صلاحية</p>"}</div>
+                <button id="sendLetterBtn" class="btn-gold w-full">إرسال الخطاب</button>
+            ` : "<p class='text-red-400'>ليس لديك صلاحية إرسال خطابات</p>"}
+            </div>
             <div id="lettersList"></div>
         `;
-        function refresh() {
+        function refreshLetters() {
             const listDiv = document.getElementById("lettersList");
-            if(listDiv) listDiv.innerHTML = lettersDB.filter(l => (ROLES[currentUser.role]?.perms.includes("all") || l.senderId === currentUser.id)).map(l => `<div class="card-dark"><b>${l.title}</b> (${l.type})<br>${l.content}<br><span class="text-xs">من: ${l.senderName} | ${l.date}</span> ${l.fileData ? `<a href="${l.fileData}" download="${l.fileName}" class="gold-text text-sm"><i class="fas fa-file-pdf"></i> PDF</a>` : ''}</div>`).join("");
+            if(!listDiv) return;
+            listDiv.innerHTML = lettersDB.filter(l => (ROLES[currentUser.role]?.perms.includes("all") || l.senderId === currentUser.id)).map(l => `
+                <div class="card-dark">
+                    <b>${l.title}</b> (${l.type})<br>${l.content}<br>
+                    <span class="text-xs text-gray-400">من: ${l.senderName} | ${l.date}</span>
+                    ${l.fileData ? `<a href="${l.fileData}" download="${l.fileName}" class="gold-text text-sm block mt-1"><i class="fas fa-file-pdf"></i> تحميل المرفق</a>` : ''}
+                </div>
+            `).join("");
         }
         if(canSend) {
             document.getElementById("sendLetterBtn").onclick = () => {
                 const title = document.getElementById("letterTitle").value;
                 const content = document.getElementById("letterContent").value;
                 const type = document.getElementById("letterType").value;
-                if(!title || !content) return alert("املأ الحقول");
+                if(!title || !content) { alert("املأ العنوان والمحتوى"); return; }
                 const file = document.getElementById("letterPdf").files[0];
                 if(file) {
                     const reader = new FileReader();
                     reader.onload = (e) => {
-                        lettersDB.unshift({ id: Date.now(), title, content, type, senderId: currentUser.id, senderName: currentUser.username, date: new Date().toLocaleString(), fileData: e.target.result, fileName: file.name });
-                        saveLetters(); refresh();
+                        lettersDB.unshift({
+                            id: Date.now(), title, content, type,
+                            senderId: currentUser.id, senderName: currentUser.username,
+                            date: new Date().toLocaleString(),
+                            fileData: e.target.result, fileName: file.name
+                        });
+                        saveLetters();
+                        refreshLetters();
+                        document.getElementById("letterTitle").value = "";
+                        document.getElementById("letterContent").value = "";
+                        document.getElementById("letterPdf").value = "";
+                        alert("تم إرسال الخطاب مع المرفق");
                     };
                     reader.readAsDataURL(file);
                 } else {
-                    lettersDB.unshift({ id: Date.now(), title, content, type, senderId: currentUser.id, senderName: currentUser.username, date: new Date().toLocaleString() });
-                    saveLetters(); refresh();
+                    lettersDB.unshift({
+                        id: Date.now(), title, content, type,
+                        senderId: currentUser.id, senderName: currentUser.username,
+                        date: new Date().toLocaleString()
+                    });
+                    saveLetters();
+                    refreshLetters();
+                    document.getElementById("letterTitle").value = "";
+                    document.getElementById("letterContent").value = "";
+                    alert("تم إرسال الخطاب");
                 }
-                document.getElementById("letterTitle").value = "";
-                document.getElementById("letterContent").value = "";
-                document.getElementById("letterPdf").value = "";
             };
         }
-        refresh();
+        refreshLetters();
     }
 
     function renderUsersPanel(container) {
-        if(!["👑 Owner","🏛️ Co-Owner","⚙️ Director"].includes(currentUser.role)) { container.innerHTML = "<div class='card-dark'>غير مصرح</div>"; return; }
-        let html = `<h2 class="gold-text">إدارة المستخدمين</h2><div class="overflow-x-auto"><table class="w-full"><thead><tr class="border-b border-[#D4AF37]"><th>المستخدم</th><th>الرتبة</th><th>تغيير</th></tr></thead><tbody>`;
+        if(!["👑 Owner","🏛️ Co-Owner","⚙️ Director"].includes(currentUser.role)) {
+            container.innerHTML = "<div class='card-dark'>غير مصرح لك بالوصول إلى إدارة المستخدمين</div>";
+            return;
+        }
+        let html = `<h2 class="gold-text">إدارة المستخدمين والتعديل على الرتب</h2><div class="overflow-x-auto"><table class="w-full text-right"><thead><tr class="border-b border-[#D4AF37]"><th>المستخدم</th><th>الرتبة الحالية</th><th>تغيير الرتبة</th></tr></thead><tbody>`;
         usersDB.forEach((u, idx) => {
-            html += `<tr><td><img src="${u.avatar}" class="w-8 h-8 rounded-full inline ml-2"> ${u.username}</td><td>${u.role}</td><td><select class="roleSelect" data-idx="${idx}">${Object.keys(ROLES).map(r => `<option ${u.role===r ? "selected" : ""}>${r}</option>`).join("")}</select> <button class="updateRoleBtn" data-idx="${idx}">تحديث</button></td></tr>`;
+            html += `<tr class="border-b border-gray-700"><td><img src="${u.avatar}" class="w-8 h-8 rounded-full inline ml-2"> ${u.username}</td><td>${u.role}</td><td><select class="roleSelect" data-idx="${idx}">${Object.keys(ROLES).map(r => `<option ${u.role===r ? "selected" : ""}>${r}</option>`).join("")}</select> <button class="updateRoleBtn" data-idx="${idx}" class="gold-text">تحديث</button></td></tr>`;
         });
         html += `</tbody></table></div>`;
         container.innerHTML = html;
@@ -284,46 +350,82 @@
                 const newRole = document.querySelector(`.roleSelect[data-idx='${idx}']`).value;
                 usersDB[idx].role = newRole;
                 saveUsers();
-                if(currentUser.id === usersDB[idx].id) { currentUser.role = newRole; localStorage.setItem("rex_currentUser", JSON.stringify(currentUser)); renderAuthUI(); }
+                if(currentUser.id === usersDB[idx].id) {
+                    currentUser.role = newRole;
+                    localStorage.setItem("rex_currentUser", JSON.stringify(currentUser));
+                    renderAuthUI();
+                }
                 renderUsersPanel(container);
-                alert("تم تحديث الرتبة");
+                alert("تم تحديث الرتبة بنجاح");
             };
         });
     }
 
     function renderRolesPanel(container) {
-        if(currentUser.role !== "👑 Owner") { container.innerHTML = "<div class='card-dark'>خاص بالمالك</div>"; return; }
-        let html = `<h2 class="gold-text">هيكل الرتب</h2>`;
-        for(const [r, data] of Object.entries(ROLES)) html += `<div class="card-dark"><span class="gold-text">${r}</span> - ${data.name}<br><span class="text-xs">${data.perms.join(", ")}</span></div>`;
+        if(currentUser.role !== "👑 Owner") {
+            container.innerHTML = "<div class='card-dark'>هذه الصفحة خاصة بالمالك فقط</div>";
+            return;
+        }
+        let html = `<h2 class="gold-text">هيكل الرتب والصلاحيات (مرجعية للنظام)</h2>`;
+        for(const [r, data] of Object.entries(ROLES)) {
+            html += `<div class="card-dark"><span class="gold-text">${r}</span> - ${data.name}<br><span class="text-xs text-gray-400">الصلاحيات: ${data.perms.join(", ")}</span></div>`;
+        }
         container.innerHTML = html;
     }
 
     function renderSettings(container) {
-        container.innerHTML = `<div class="card-dark"><button id="clearAllBtn" class="btn-gold">مسح كل البيانات</button></div>`;
-        document.getElementById("clearAllBtn")?.addEventListener("click",()=>{ if(confirm("حذف كل شيء؟")){ localStorage.clear(); location.reload(); } });
+        container.innerHTML = `<div class="card-dark"><h3>الإعدادات</h3><button id="clearAllBtn" class="btn-gold mt-2">مسح جميع بيانات التطبيق</button><p class="text-xs text-gray-500 mt-2">⚠️ سيؤدي هذا إلى حذف جميع المستخدمين والرتب والخطابات</p></div>`;
+        document.getElementById("clearAllBtn")?.addEventListener("click", () => {
+            if(confirm("هل أنت متأكد؟ سيتم حذف كل شيء!")) {
+                localStorage.clear();
+                location.reload();
+            }
+        });
     }
 
-    // تهيئة القائمة الجانبية
+    // ----- تهيئة القائمة الجانبية والنجوم -----
     function initSidebar() {
         document.getElementById("menuToggle").onclick = () => { document.getElementById("sidebar").classList.add("open"); document.getElementById("overlay").classList.add("active"); };
         document.getElementById("closeSidebar").onclick = () => { document.getElementById("sidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("active"); };
         document.getElementById("overlay").onclick = () => { document.getElementById("sidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("active"); };
-        document.querySelectorAll(".sidebar-link").forEach(link => { link.addEventListener("click", (e) => { e.preventDefault(); renderPage(link.dataset.page); document.getElementById("sidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("active"); }); });
+        document.querySelectorAll(".sidebar-link").forEach(link => {
+            link.addEventListener("click", (e) => {
+                e.preventDefault();
+                const page = link.dataset.page;
+                if(page) renderPage(page);
+                document.getElementById("sidebar").classList.remove("open");
+                document.getElementById("overlay").classList.remove("active");
+            });
+        });
         document.getElementById("logoutBtn").onclick = () => logout();
     }
 
     function generateStars() {
         const starsDiv = document.getElementById("starsContainer");
-        for(let i=0;i<200;i++) { let s = document.createElement("div"); s.classList.add("star"); s.style.left=Math.random()*100+"%"; s.style.top=Math.random()*100+"%"; s.style.animationDelay=Math.random()*5+"s"; starsDiv.appendChild(s); }
+        for(let i = 0; i < 200; i++) {
+            const star = document.createElement("div");
+            star.classList.add("star");
+            star.style.left = Math.random() * 100 + "%";
+            star.style.top = Math.random() * 100 + "%";
+            star.style.animationDelay = Math.random() * 5 + "s";
+            star.style.animationDuration = 2 + Math.random() * 3 + "s";
+            starsDiv.appendChild(star);
+        }
     }
 
-    // بداية التشغيل
+    // --- بدء التشغيل ---
     loadData();
     const storedUser = localStorage.getItem("rex_currentUser");
-    if(storedUser) { currentUser = JSON.parse(storedUser); renderAuthUI(); renderPage("dashboard"); }
-    else { renderAuthUI(); renderPage("dashboard"); }
+    if(storedUser) {
+        currentUser = JSON.parse(storedUser);
+        renderAuthUI();
+        renderPage("dashboard");
+    } else {
+        renderAuthUI();
+        renderPage("dashboard");
+    }
     document.getElementById("discordLoginBtn").onclick = () => { window.location.href = DISCORD_AUTH_URL; };
-    loginWithDiscord(); // للتعامل مع العودة من OAuth
+    loginWithDiscord(); // معالجة العودة إذا كانت موجودة
     initSidebar();
     generateStars();
 </script>
