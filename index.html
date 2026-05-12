@@ -3,120 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>REX | النظام الإداري الفاخر</title>
-    <!-- Fonts & Icons -->
+    <title>REX | الإدارة الذهبية</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&family=Orbitron:wght@500;700&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: #050505;
-            font-family: 'Tajawal', 'Montserrat', sans-serif;
-            color: #e0e0e0;
-            overflow-x: hidden;
-        }
-        /* خلفية النجوم المتحركة */
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-        .star {
-            position: absolute;
-            background: radial-gradient(2px 2px at center, #D4AF37, transparent);
-            width: 3px;
-            height: 3px;
-            border-radius: 50%;
-            opacity: 0.6;
-            animation: twinkle 3s infinite alternate;
-        }
-        @keyframes twinkle {
-            0% { opacity: 0.2; transform: scale(1);}
-            100% { opacity: 1; transform: scale(1.5);}
-        }
-        /* قائمة جانبية */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 280px;
-            height: 100%;
-            background: #0a0a0a;
-            border-left: 2px solid #D4AF37;
-            transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            z-index: 1000;
-            padding: 2rem 1rem;
-            box-shadow: -5px 0 30px rgba(0,0,0,0.8);
-        }
-        .sidebar.open {
-            transform: translateX(0);
-        }
-        .overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            z-index: 999;
-            display: none;
-        }
-        .overlay.active {
-            display: block;
-        }
-        /* أزرار فخمة */
-        .btn-gold {
-            background: transparent;
-            border: 1.5px solid #D4AF37;
-            color: #D4AF37;
-            border-radius: 40px;
-            padding: 0.5rem 1.2rem;
-            font-weight: bold;
-            transition: 0.3s;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-gold:hover {
-            background: #D4AF37;
-            color: #0a0a0a;
-            box-shadow: 0 0 15px #D4AF37;
-        }
-        .btn-discord {
-            background: #5865F2;
-            border: none;
-            color: white;
-        }
-        .btn-discord:hover {
-            background: #4752c4;
-            box-shadow: 0 0 12px #5865F2;
-            color: white;
-        }
-        .card-dark {
-            background: #0f0f0f;
-            border-radius: 24px;
-            border-right: 3px solid #D4AF37;
-            padding: 1.2rem;
-            transition: 0.2s;
-        }
-        .gold-text {
-            color: #D4AF37;
-        }
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 800;
-            font-family: 'Orbitron', monospace;
-        }
-        /* Scrollbar */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #050505; font-family: 'Tajawal', 'Montserrat', sans-serif; color: #e0e0e0; overflow-x: hidden; }
+        .stars { position: fixed; inset: 0; pointer-events: none; z-index: -1; }
+        .star { position: absolute; background: radial-gradient(2px 2px at center, #D4AF37, transparent); width: 3px; height: 3px; border-radius: 50%; animation: twinkle 3s infinite alternate; }
+        @keyframes twinkle { 0% { opacity: 0.2; transform: scale(1); } 100% { opacity: 1; transform: scale(1.5); } }
+        .sidebar { position: fixed; top: 0; right: 0; width: 280px; height: 100%; background: #0a0a0a; border-left: 2px solid #D4AF37; transform: translateX(100%); transition: transform 0.3s; z-index: 1000; padding: 2rem 1rem; }
+        .sidebar.open { transform: translateX(0); }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 999; display: none; }
+        .overlay.active { display: block; }
+        .btn-gold { background: transparent; border: 1.5px solid #D4AF37; color: #D4AF37; border-radius: 40px; padding: 0.5rem 1.2rem; font-weight: bold; transition: 0.3s; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .btn-gold:hover { background: #D4AF37; color: #0a0a0a; box-shadow: 0 0 15px #D4AF37; }
+        .btn-discord { background: #5865F2; border: none; color: white; }
+        .btn-discord:hover { background: #4752c4; color: white; }
+        .card-dark { background: #0f0f0f; border-radius: 24px; border-right: 3px solid #D4AF37; padding: 1.2rem; transition: 0.2s; margin-bottom: 1rem; }
+        .gold-text { color: #D4AF37; }
+        .stat-number { font-size: 2rem; font-weight: 800; font-family: 'Orbitron', monospace; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #111; }
         ::-webkit-scrollbar-thumb { background: #D4AF37; border-radius: 10px; }
@@ -152,21 +59,19 @@
         </div>
     </div>
 
-    <!-- قسم تسجيل الدخول -->
-    <div id="authSection" class="card-dark text-center mb-8">
+    <div id="authSection" class="card-dark text-center">
         <div id="unloggedView">
             <i class="fab fa-discord text-6xl text-[#5865F2] mb-3"></i>
             <h2 class="text-2xl font-bold">REX Portal</h2>
-            <p class="text-gray-400 mb-4">نظام إداري متكامل بصلاحيات حقيقية</p>
+            <p class="text-gray-400 mb-4">نظام إداري بصلاحيات حقيقية</p>
             <button id="discordLoginBtn" class="btn-gold btn-discord px-6 py-2"><i class="fab fa-discord ml-2"></i> تسجيل الدخول بحساب Discord</button>
-            <p class="text-xs text-gray-500 mt-2">✨ سيتم جلب بياناتك الحقيقية من Discord باستخدام المعرف (ID) لضمان الصورة والاسم الحقيقيين</p>
-            <div class="mt-3 text-sm text-[#D4AF37]"><i class="fas fa-shield-alt"></i> آمن بالكامل - لا يتم تخزين كلمات مرور</div>
+            <p class="text-xs text-gray-500 mt-2">🔐 سيتم استخدام OAuth الرسمي من Discord لجلب بياناتك الحقيقية</p>
         </div>
         <div id="loggedView" style="display: none;">
             <div class="flex items-center gap-4 flex-wrap justify-between">
                 <div class="flex items-center gap-3">
                     <img id="realUserAvatar" class="w-14 h-14 rounded-full border-2 border-[#D4AF37]" src="">
-                    <div class="text-right">
+                    <div>
                         <div id="realUserName" class="text-xl font-bold"></div>
                         <div id="realUserRole" class="text-sm gold-text"><i class="fas fa-crown"></i> <span></span></div>
                     </div>
@@ -176,88 +81,90 @@
         </div>
     </div>
 
-    <div id="mainContent">
-        <!-- المحتوى الديناميكي -->
-        <div class="text-center text-gray-400 py-10">يرجى تسجيل الدخول للوصول إلى لوحة التحكم</div>
-    </div>
+    <div id="mainContent"><div class="text-center text-gray-400 py-10">سجل الدخول لبدء الإدارة</div></div>
 </div>
 
 <script>
-    // ------------------- نظام الرتب والصلاحيات -------------------
+    // ---------- ثوابت Discord OAuth ----------
+    // ⚠️ IMPORTANT: استبدل CLIENT_ID بمعرف التطبيق الخاص بك من Discord Developer Portal
+    const CLIENT_ID = "YOUR_CLIENT_ID_HERE";  // 👈 ضع هنا الـ Client ID
+    const REDIRECT_URI = encodeURIComponent(window.location.href.split('#')[0]); // الرابط الحالي
+    const DISCORD_AUTH_URL = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=identify`;
+
+    // ---------- الرتب والصلاحيات ----------
     const ROLES = {
         "👑 Owner": { level: 100, perms: ["all"], name: "المالك" },
-        "🏛️ Co-Owner": { level: 90, perms: ["manage_users", "manage_reports", "view_reports"], name: "نائب المالك" },
+        "🏛️ Co-Owner": { level: 90, perms: ["manage_users", "view_reports"], name: "نائب المالك" },
         "⚙️ Director": { level: 80, perms: ["manage_users", "view_reports"], name: "مدير عام" },
-        "🧠 Admin Supreme": { level: 70, perms: ["view_reports", "approve_letters"], name: "المشرف الأسمى" },
+        "🧠 Admin Supreme": { level: 70, perms: ["view_reports"], name: "مشرف أسمى" },
         "🛡️ Senior Admin": { level: 60, perms: ["view_reports"], name: "كبير الإداريين" },
         "🔧 Admin": { level: 50, perms: ["view_reports_limited"], name: "مدير" },
         "📊 Supervisor": { level: 40, perms: ["send_letters"], name: "مشرف" },
         "🧾 Analyst": { level: 30, perms: ["view_own"], name: "محلل" },
         "🎯 Moderator": { level: 20, perms: ["send_letters"], name: "وسيط" },
         "👤 Member": { level: 10, perms: ["send_letters"], name: "عضو" },
-        "🆕 New Member": { level: 0, perms: ["none"], name: "عضو جديد" }
+        "🆕 New Member": { level: 0, perms: [], name: "عضو جديد" }
     };
 
-    let currentUser = null; // { id, username, avatar, role }
-    let usersDB = [];       // قائمة المستخدمين (للمالك)
-    let lettersDB = [];     // الخطابات
-    let reportsDB = [];     // التقارير الشهرية
+    let currentUser = null;
+    let usersDB = [];
+    let lettersDB = [];
+    let reportsDB = [];
 
-    // تحميل البيانات من localStorage
+    // تحميل وحفظ البيانات
     function loadData() {
-        const storedUsers = localStorage.getItem("rex_users");
-        if(storedUsers) usersDB = JSON.parse(storedUsers);
-        else {
-            // مستخدم افتراضي للمالك للتجربة (يتم استبداله عند تسجيل الدخول)
-            usersDB = [];
-        }
-        const storedLetters = localStorage.getItem("rex_letters");
-        if(storedLetters) lettersDB = JSON.parse(storedLetters);
-        else lettersDB = [];
-        const storedReports = localStorage.getItem("rex_reports");
-        if(storedReports) reportsDB = JSON.parse(storedReports);
-        else {
-            reportsDB = [
-                { id: 1, month: "شوال 1446", date: "2025-04-01", summary: "نشاط متصاعد", newMembers: 32, lettersCount: 87, decisions: 45 },
-                { id: 2, month: "رمضان 1446", date: "2025-03-01", summary: "استقرار إداري", newMembers: 28, lettersCount: 74, decisions: 38 }
-            ];
-        }
+        usersDB = JSON.parse(localStorage.getItem("rex_users") || "[]");
+        lettersDB = JSON.parse(localStorage.getItem("rex_letters") || "[]");
+        reportsDB = JSON.parse(localStorage.getItem("rex_reports") || `[
+            { "id": 1, "month": "شوال 1446", "date": "2025-04-01", "summary": "نشاط متصاعد", "newMembers": 32, "lettersCount": 87 },
+            { "id": 2, "month": "رمضان 1446", "date": "2025-03-01", "summary": "استقرار إداري", "newMembers": 28, "lettersCount": 74 }
+        ]`);
     }
     function saveUsers() { localStorage.setItem("rex_users", JSON.stringify(usersDB)); }
     function saveLetters() { localStorage.setItem("rex_letters", JSON.stringify(lettersDB)); }
     function saveReports() { localStorage.setItem("rex_reports", JSON.stringify(reportsDB)); }
 
-    // جلب بيانات المستخدم الحقيقية من Discord API باستخدام معرف المستخدم (لكل شخص يمكنه إدخال معرفه)
-    async function fetchDiscordUser(userId) {
-        try {
-            const res = await fetch(`https://discord.com/api/v10/users/${userId}`);
-            if(!res.ok) throw new Error("غير موجود");
-            const data = await res.json();
-            return { id: data.id, username: data.username, avatar: data.avatar ? `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png` : "https://cdn.discordapp.com/embed/avatars/0.png" };
-        } catch(e) {
-            alert("معرف Discord غير صالح أو أن API مقيد. استخدم معرف حقيقي.");
-            return null;
-        }
+    // جلب بيانات المستخدم باستخدام Access Token
+    async function fetchDiscordUser(token) {
+        const res = await fetch("https://discord.com/api/users/@me", {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        if(!res.ok) throw new Error("فشل جلب البيانات");
+        return await res.json();
     }
 
-    // نافذة محاكاة لإدخال معرف Discord (طريقة واقعية لجلب بيانات حقيقية)
-    async function promptDiscordLogin() {
-        const userId = prompt("أدخل معرف Discord الخاص بك (ID):\nكيف تحصل عليه؟ افتح إعدادات Discord -> وضع المطور -> انقر بزر الماوس الأيمن على اسمك -> نسخ المعرف)\n\nلن يتم تخزينه بأمان.");
-        if(!userId) return;
-        const userData = await fetchDiscordUser(userId);
-        if(userData) {
-            // التحقق إذا كان المستخدم موجوداً مسبقاً في قاعدة البيانات، وإلا نضيفه برتبة "👤 Member"
-            let existing = usersDB.find(u => u.id === userData.id);
-            let role = "👤 Member";
-            if(existing) role = existing.role;
-            else {
-                usersDB.push({ id: userData.id, username: userData.username, avatar: userData.avatar, role: role });
-                saveUsers();
-            }
-            currentUser = { id: userData.id, username: userData.username, avatar: userData.avatar, role: role };
-            localStorage.setItem("rex_currentUser", JSON.stringify(currentUser));
-            renderAuthUI();
-            renderPage("dashboard");
+    // معالجة الـ Access Token بعد إعادة التوجيه
+    function handleOAuthRedirect() {
+        const hash = window.location.hash.substring(1);
+        const params = new URLSearchParams(hash);
+        const token = params.get("access_token");
+        if(token) {
+            localStorage.setItem("rex_discord_token", token);
+            window.location.hash = ""; // تنظيف الهاش
+            return token;
+        }
+        return null;
+    }
+
+    async function loginWithDiscord() {
+        const token = handleOAuthRedirect();
+        if(token) {
+            try {
+                const userData = await fetchDiscordUser(token);
+                if(userData) {
+                    let existing = usersDB.find(u => u.id === userData.id);
+                    let role = "👤 Member";
+                    if(existing) role = existing.role;
+                    else {
+                        usersDB.push({ id: userData.id, username: userData.username, avatar: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png`, role: role });
+                        saveUsers();
+                    }
+                    currentUser = { id: userData.id, username: userData.username, avatar: `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}.png`, role: role };
+                    localStorage.setItem("rex_currentUser", JSON.stringify(currentUser));
+                    renderAuthUI();
+                    renderPage("dashboard");
+                }
+            } catch(e) { console.error(e); alert("فشل تسجيل الدخول"); }
         }
     }
 
@@ -268,9 +175,8 @@
             document.getElementById("realUserAvatar").src = currentUser.avatar;
             document.getElementById("realUserName").innerText = currentUser.username;
             document.getElementById("realUserRole").querySelector("span").innerText = `${currentUser.role} - ${ROLES[currentUser.role]?.name || "عضو"}`;
-            const hasFull = ROLES[currentUser.role]?.perms.includes("all");
-            document.getElementById("roleBadge").innerHTML = hasFull ? '<i class="fas fa-crown gold-text"></i> صلاحية كاملة' : 'صلاحيات محددة';
-            // إظهار روابط الإدارة للمالك أو كو-أونر
+            const canAll = ROLES[currentUser.role]?.perms.includes("all");
+            document.getElementById("roleBadge").innerHTML = canAll ? '<i class="fas fa-crown gold-text"></i> صلاحية كاملة' : 'صلاحيات محددة';
             const canManage = currentUser.role === "👑 Owner" || currentUser.role === "🏛️ Co-Owner" || currentUser.role === "⚙️ Director";
             document.getElementById("usersNavLink").style.display = canManage ? "block" : "none";
             document.getElementById("rolesNavLink").style.display = (currentUser.role === "👑 Owner") ? "block" : "none";
@@ -283,17 +189,15 @@
     function logout() {
         currentUser = null;
         localStorage.removeItem("rex_currentUser");
+        localStorage.removeItem("rex_discord_token");
         renderAuthUI();
         renderPage("dashboard");
     }
 
-    // عرض الصفحات
+    // دوال عرض الصفحات (مبسطة من الكود السابق لكن كاملة)
     function renderPage(page) {
+        if(!currentUser) { document.getElementById("mainContent").innerHTML = `<div class="text-center py-10"><i class="fas fa-lock text-5xl gold-text"></i><p>سجل الدخول أولاً</p></div>`; return; }
         const container = document.getElementById("mainContent");
-        if(!currentUser) {
-            container.innerHTML = `<div class="text-center py-10"><i class="fas fa-lock text-5xl gold-text mb-3"></i><p>سجل الدخول بحساب Discord للوصول إلى النظام.</p></div>`;
-            return;
-        }
         if(page === "dashboard") renderDashboard(container);
         else if(page === "reports") renderReports(container);
         else if(page === "letters") renderLetters(container);
@@ -304,197 +208,122 @@
     }
 
     function renderDashboard(container) {
-        const canViewReports = ROLES[currentUser.role]?.perms.includes("view_reports") || ROLES[currentUser.role]?.perms.includes("all");
+        const canView = ROLES[currentUser.role]?.perms.includes("view_reports") || ROLES[currentUser.role]?.perms.includes("all");
         container.innerHTML = `
-            <div class="card-dark mb-6">
-                <h2 class="text-2xl font-bold gold-text">مرحباً ${currentUser.username}</h2>
-                <p>رتبتك: ${currentUser.role} - ${ROLES[currentUser.role]?.name}</p>
-                <p class="text-sm text-gray-400">آخر دخول: ${new Date().toLocaleString()}</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div class="card-dark"><div class="stat-number">${lettersDB.length}</div><div>📨 خطابات مرسلة</div></div>
-                <div class="card-dark"><div class="stat-number">${usersDB.length}</div><div>👥 أعضاء مسجلين</div></div>
-                <div class="card-dark"><div class="stat-number">${reportsDB.length}</div><div>📊 تقارير شهرية</div></div>
-            </div>
-            ${canViewReports ? `<div class="card-dark"><h3 class="gold-text">آخر تقرير</h3><p>${reportsDB[0]?.summary || "لا يوجد"}</p><button id="viewReportBtn" class="btn-gold mt-2 text-sm">عرض التفاصيل</button></div>` : `<div class="card-dark text-gray-500">ليس لديك صلاحية لعرض التقارير.</div>`}
-            <div class="mt-4"><button id="newLetterBtn" class="btn-gold w-full"><i class="fas fa-pen-alt"></i> إرسال خطاب جديد</button></div>
+            <div class="card-dark"><h2 class="text-2xl gold-text">مرحباً ${currentUser.username}</h2><p>رتبتك: ${currentUser.role}</p></div>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4"><div class="card-dark"><div class="stat-number">${lettersDB.length}</div><div>خطابات</div></div><div class="card-dark"><div class="stat-number">${usersDB.length}</div><div>أعضاء</div></div><div class="card-dark"><div class="stat-number">${reportsDB.length}</div><div>تقارير</div></div></div>
+            ${canView ? `<div class="card-dark"><h3>آخر تقرير</h3><p>${reportsDB[0]?.summary || "لا يوجد"}</p><button id="viewReportsBtn" class="btn-gold mt-2">عرض التقارير</button></div>` : ""}
+            <button id="newLetterBtn" class="btn-gold w-full"><i class="fas fa-pen"></i> إرسال خطاب</button>
         `;
-        document.getElementById("viewReportBtn")?.addEventListener("click",()=>renderPage("reports"));
+        document.getElementById("viewReportsBtn")?.addEventListener("click",()=>renderPage("reports"));
         document.getElementById("newLetterBtn")?.addEventListener("click",()=>renderPage("letters"));
     }
 
     function renderReports(container) {
-        const canView = ROLES[currentUser.role]?.perms.includes("view_reports") || ROLES[currentUser.role]?.perms.includes("all");
-        if(!canView) { container.innerHTML = "<div class='card-dark'>غير مسموح</div>"; return; }
-        let html = `<h2 class="text-2xl gold-text mb-4">📑 التقارير الشهرية</h2>`;
-        reportsDB.forEach(r => {
-            html += `<div class="card-dark mb-3"><div class="flex justify-between"><span class="gold-text">📅 ${r.month}</span><span>${r.date}</span></div><p>${r.summary}</p><p class="text-sm">أعضاء جدد: ${r.newMembers} | خطابات: ${r.lettersCount}</p></div>`;
-        });
-        const canGenerate = currentUser.role === "👑 Owner" || currentUser.role === "🏛️ Co-Owner";
-        if(canGenerate) html += `<button id="generateReportBtn" class="btn-gold w-full mt-4"><i class="fas fa-plus"></i> توليد تقرير شهري جديد (محاكاة PDF)</button>`;
+        if(!ROLES[currentUser.role]?.perms.includes("view_reports") && !ROLES[currentUser.role]?.perms.includes("all")) { container.innerHTML = "<div class='card-dark'>غير مصرح</div>"; return; }
+        let html = `<h2 class="gold-text text-2xl">التقارير</h2>`;
+        reportsDB.forEach(r => { html += `<div class="card-dark"><div class="gold-text">${r.month}</div><p>${r.summary}</p><p>أعضاء جدد: ${r.newMembers} | خطابات: ${r.lettersCount}</p></div>`; });
+        if(currentUser.role === "👑 Owner" || currentUser.role === "🏛️ Co-Owner") html += `<button id="genReportBtn" class="btn-gold w-full mt-3"><i class="fas fa-plus"></i> توليد تقرير جديد</button>`;
         container.innerHTML = html;
-        if(canGenerate) document.getElementById("generateReportBtn")?.addEventListener("click", () => {
-            const newReport = { id: Date.now(), month: "ذو القعدة 1446", date: new Date().toISOString().slice(0,10), summary: "تم إنشاء التقرير بنجاح - نشاط ممتاز", newMembers: Math.floor(Math.random()*50)+10, lettersCount: lettersDB.length };
-            reportsDB.unshift(newReport);
-            saveReports();
-            renderReports(container);
-            alert("تم توليد تقرير PDF وهمي (في النظام الحقيقي سيتم إنشاء ملف)");
-        });
+        document.getElementById("genReportBtn")?.addEventListener("click",()=>{ reportsDB.unshift({ id: Date.now(), month: new Date().toLocaleString('ar'), date: new Date().toISOString().slice(0,10), summary: "تقرير جديد", newMembers: Math.floor(Math.random()*50), lettersCount: lettersDB.length }); saveReports(); renderReports(container); alert("تم توليد التقرير"); });
     }
 
     function renderLetters(container) {
         const canSend = ROLES[currentUser.role]?.perms.includes("send_letters") || ROLES[currentUser.role]?.perms.includes("all");
         container.innerHTML = `
-            <h2 class="text-2xl gold-text mb-4">📨 نظام الخطابات الرسمي</h2>
-            <div class="card-dark mb-6">
-                <h3 class="font-bold">إرسال خطاب جديد</h3>
-                ${canSend ? `
-                    <input type="text" id="letterTitle" placeholder="العنوان" class="w-full bg-black border border-gray-700 p-2 rounded mt-2">
-                    <textarea id="letterContent" rows="3" placeholder="محتوى الخطاب" class="w-full bg-black border border-gray-700 p-2 rounded mt-2"></textarea>
-                    <select id="letterType" class="bg-black border border-gray-700 p-2 rounded mt-2"><option>طلب</option><option>شكوى</option><option>اقتراح</option></select>
-                    <input type="file" id="letterPdf" accept="application/pdf" class="mt-2 text-sm">
-                    <button id="submitLetterBtn" class="btn-gold mt-3 w-full">إرسال الخطاب</button>
-                ` : `<p class="text-red-400">ليس لديك صلاحية إرسال خطابات.</p>`}
-            </div>
-            <h3 class="gold-text">سجل الخطابات</h3>
+            <h2 class="gold-text text-2xl">الخطابات</h2>
+            <div class="card-dark"><h3>إرسال خطاب</h3>${canSend ? `
+                <input id="letterTitle" placeholder="العنوان" class="w-full bg-black border p-2 my-2"><textarea id="letterContent" rows="2" placeholder="المحتوى" class="w-full bg-black border p-2"></textarea>
+                <select id="letterType" class="bg-black border p-2"><option>طلب</option><option>شكوى</option></select>
+                <input type="file" id="letterPdf" accept=".pdf" class="my-2">
+                <button id="sendLetterBtn" class="btn-gold w-full">إرسال</button>
+            ` : "<p class='text-red-400'>لا صلاحية</p>"}</div>
             <div id="lettersList"></div>
         `;
-        function refreshLettersList() {
+        function refresh() {
             const listDiv = document.getElementById("lettersList");
-            if(!listDiv) return;
-            listDiv.innerHTML = lettersDB.filter(l => (ROLES[currentUser.role]?.perms.includes("all") || ROLES[currentUser.role]?.perms.includes("view_reports") || l.senderId === currentUser.id)).map(l => `<div class="card-dark mb-2"><b>${l.title}</b> (${l.type})<br>${l.content}<br><span class="text-xs text-gray-400">من: ${l.senderName} | ${l.date}</span> ${l.fileName ? `<a href="${l.fileData}" download="${l.fileName}" class="text-[#D4AF37] text-xs"><i class="fas fa-paperclip"></i> تحميل المرفق</a>` : ''}</div>`).join("");
+            if(listDiv) listDiv.innerHTML = lettersDB.filter(l => (ROLES[currentUser.role]?.perms.includes("all") || l.senderId === currentUser.id)).map(l => `<div class="card-dark"><b>${l.title}</b> (${l.type})<br>${l.content}<br><span class="text-xs">من: ${l.senderName} | ${l.date}</span> ${l.fileData ? `<a href="${l.fileData}" download="${l.fileName}" class="gold-text text-sm"><i class="fas fa-file-pdf"></i> PDF</a>` : ''}</div>`).join("");
         }
         if(canSend) {
-            document.getElementById("submitLetterBtn").onclick = () => {
+            document.getElementById("sendLetterBtn").onclick = () => {
                 const title = document.getElementById("letterTitle").value;
                 const content = document.getElementById("letterContent").value;
                 const type = document.getElementById("letterType").value;
+                if(!title || !content) return alert("املأ الحقول");
                 const file = document.getElementById("letterPdf").files[0];
-                if(!title || !content) { alert("املأ العنوان والمحتوى"); return; }
-                let fileData = null, fileName = null;
                 if(file) {
                     const reader = new FileReader();
-                    reader.onload = function(e) {
-                        fileData = e.target.result;
-                        fileName = file.name;
-                        saveLetterToDB(title, content, type, fileData, fileName);
-                        refreshLettersList();
-                        document.getElementById("letterTitle").value = "";
-                        document.getElementById("letterContent").value = "";
-                        document.getElementById("letterPdf").value = "";
-                        alert("تم إرسال الخطاب مع المرفق");
+                    reader.onload = (e) => {
+                        lettersDB.unshift({ id: Date.now(), title, content, type, senderId: currentUser.id, senderName: currentUser.username, date: new Date().toLocaleString(), fileData: e.target.result, fileName: file.name });
+                        saveLetters(); refresh();
                     };
                     reader.readAsDataURL(file);
                 } else {
-                    saveLetterToDB(title, content, type, null, null);
-                    refreshLettersList();
-                    alert("تم إرسال الخطاب");
+                    lettersDB.unshift({ id: Date.now(), title, content, type, senderId: currentUser.id, senderName: currentUser.username, date: new Date().toLocaleString() });
+                    saveLetters(); refresh();
                 }
+                document.getElementById("letterTitle").value = "";
+                document.getElementById("letterContent").value = "";
+                document.getElementById("letterPdf").value = "";
             };
         }
-        function saveLetterToDB(title, content, type, fileData, fileName) {
-            lettersDB.unshift({ id: Date.now(), title, content, type, senderId: currentUser.id, senderName: currentUser.username, date: new Date().toLocaleString(), fileData, fileName });
-            saveLetters();
-            refreshLettersList();
-        }
-        refreshLettersList();
+        refresh();
     }
 
     function renderUsersPanel(container) {
-        if(currentUser.role !== "👑 Owner" && currentUser.role !== "🏛️ Co-Owner" && currentUser.role !== "⚙️ Director") {
-            container.innerHTML = `<div class="card-dark">⛔ غير مصرح لك بهذه الصفحة.</div>`;
-            return;
-        }
-        let html = `<h2 class="text-2xl gold-text mb-4">إدارة المستخدمين</h2><div class="overflow-x-auto"><table class="w-full"><thead><tr class="border-b border-[#D4AF37]"><th>المستخدم</th><th>الرتبة</th><th>تغيير الرتبة</th></tr></thead><tbody>`;
-        usersDB.forEach((user, idx) => {
-            html += `<tr class="border-b border-gray-700"><td><img src="${user.avatar}" class="w-8 h-8 rounded-full inline ml-2"> ${user.username}</td><td>${user.role}</td><td><select class="roleSelect" data-idx="${idx}">${Object.keys(ROLES).map(r => `<option ${user.role===r ? "selected" : ""}>${r}</option>`).join("")}</select> <button class="updateRoleBtn text-[#D4AF37] text-sm" data-idx="${idx}">تحديث</button></td></tr>`;
+        if(!["👑 Owner","🏛️ Co-Owner","⚙️ Director"].includes(currentUser.role)) { container.innerHTML = "<div class='card-dark'>غير مصرح</div>"; return; }
+        let html = `<h2 class="gold-text">إدارة المستخدمين</h2><div class="overflow-x-auto"><table class="w-full"><thead><tr class="border-b border-[#D4AF37]"><th>المستخدم</th><th>الرتبة</th><th>تغيير</th></tr></thead><tbody>`;
+        usersDB.forEach((u, idx) => {
+            html += `<tr><td><img src="${u.avatar}" class="w-8 h-8 rounded-full inline ml-2"> ${u.username}</td><td>${u.role}</td><td><select class="roleSelect" data-idx="${idx}">${Object.keys(ROLES).map(r => `<option ${u.role===r ? "selected" : ""}>${r}</option>`).join("")}</select> <button class="updateRoleBtn" data-idx="${idx}">تحديث</button></td></tr>`;
         });
         html += `</tbody></table></div>`;
         container.innerHTML = html;
         document.querySelectorAll(".updateRoleBtn").forEach(btn => {
-            btn.addEventListener("click", (e) => {
+            btn.onclick = () => {
                 const idx = btn.dataset.idx;
                 const newRole = document.querySelector(`.roleSelect[data-idx='${idx}']`).value;
                 usersDB[idx].role = newRole;
                 saveUsers();
-                if(currentUser.id === usersDB[idx].id) {
-                    currentUser.role = newRole;
-                    localStorage.setItem("rex_currentUser", JSON.stringify(currentUser));
-                    renderAuthUI();
-                }
+                if(currentUser.id === usersDB[idx].id) { currentUser.role = newRole; localStorage.setItem("rex_currentUser", JSON.stringify(currentUser)); renderAuthUI(); }
                 renderUsersPanel(container);
                 alert("تم تحديث الرتبة");
-            });
+            };
         });
     }
 
     function renderRolesPanel(container) {
-        if(currentUser.role !== "👑 Owner") { container.innerHTML = "<div class='card-dark'>خاص بالمالك فقط</div>"; return; }
-        let html = `<h2 class="text-2xl gold-text">🏛️ هيكل الرتب والصلاحيات</h2><div class="grid gap-2 mt-4">`;
-        for(const [role, data] of Object.entries(ROLES)) {
-            html += `<div class="card-dark"><span class="gold-text">${role}</span> - ${data.name}<br><span class="text-xs text-gray-400">الصلاحيات: ${data.perms.join(", ")}</span></div>`;
-        }
-        html += `</div>`;
+        if(currentUser.role !== "👑 Owner") { container.innerHTML = "<div class='card-dark'>خاص بالمالك</div>"; return; }
+        let html = `<h2 class="gold-text">هيكل الرتب</h2>`;
+        for(const [r, data] of Object.entries(ROLES)) html += `<div class="card-dark"><span class="gold-text">${r}</span> - ${data.name}<br><span class="text-xs">${data.perms.join(", ")}</span></div>`;
         container.innerHTML = html;
     }
 
     function renderSettings(container) {
-        container.innerHTML = `<div class="card-dark"><h3 class="gold-text">الإعدادات العامة</h3><p>يمكنك تصدير البيانات أو مسح التخزين المؤقت.</p><button id="clearDataBtn" class="btn-gold mt-3">مسح جميع بيانات التطبيق</button></div>`;
-        document.getElementById("clearDataBtn")?.addEventListener("click",()=>{
-            if(confirm("سيتم حذف جميع المستخدمين والخطابات والتقارير. استمر؟")) {
-                localStorage.clear();
-                location.reload();
-            }
-        });
+        container.innerHTML = `<div class="card-dark"><button id="clearAllBtn" class="btn-gold">مسح كل البيانات</button></div>`;
+        document.getElementById("clearAllBtn")?.addEventListener("click",()=>{ if(confirm("حذف كل شيء؟")){ localStorage.clear(); location.reload(); } });
     }
 
-    // Sidebar logic
+    // تهيئة القائمة الجانبية
     function initSidebar() {
-        const menuToggle = document.getElementById("menuToggle");
-        const sidebar = document.getElementById("sidebar");
-        const overlay = document.getElementById("overlay");
-        const closeSidebar = document.getElementById("closeSidebar");
-        menuToggle.onclick = () => { sidebar.classList.add("open"); overlay.classList.add("active"); };
-        closeSidebar.onclick = () => { sidebar.classList.remove("open"); overlay.classList.remove("active"); };
-        overlay.onclick = () => { sidebar.classList.remove("open"); overlay.classList.remove("active"); };
-        document.querySelectorAll(".sidebar-link").forEach(link => {
-            link.addEventListener("click", (e) => {
-                e.preventDefault();
-                const page = link.dataset.page;
-                if(page) renderPage(page);
-                sidebar.classList.remove("open");
-                overlay.classList.remove("active");
-            });
-        });
-        document.getElementById("logoutBtn").onclick = () => { logout(); sidebar.classList.remove("open"); overlay.classList.remove("active"); };
+        document.getElementById("menuToggle").onclick = () => { document.getElementById("sidebar").classList.add("open"); document.getElementById("overlay").classList.add("active"); };
+        document.getElementById("closeSidebar").onclick = () => { document.getElementById("sidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("active"); };
+        document.getElementById("overlay").onclick = () => { document.getElementById("sidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("active"); };
+        document.querySelectorAll(".sidebar-link").forEach(link => { link.addEventListener("click", (e) => { e.preventDefault(); renderPage(link.dataset.page); document.getElementById("sidebar").classList.remove("open"); document.getElementById("overlay").classList.remove("active"); }); });
+        document.getElementById("logoutBtn").onclick = () => logout();
     }
 
-    // Stars generation
     function generateStars() {
         const starsDiv = document.getElementById("starsContainer");
-        for(let i=0;i<200;i++) {
-            const star = document.createElement("div");
-            star.classList.add("star");
-            star.style.left = Math.random() * 100 + "%";
-            star.style.top = Math.random() * 100 + "%";
-            star.style.animationDelay = Math.random() * 5 + "s";
-            star.style.animationDuration = 2 + Math.random() * 4 + "s";
-            starsDiv.appendChild(star);
-        }
+        for(let i=0;i<200;i++) { let s = document.createElement("div"); s.classList.add("star"); s.style.left=Math.random()*100+"%"; s.style.top=Math.random()*100+"%"; s.style.animationDelay=Math.random()*5+"s"; starsDiv.appendChild(s); }
     }
 
-    // بدء التشغيل
+    // بداية التشغيل
     loadData();
     const storedUser = localStorage.getItem("rex_currentUser");
-    if(storedUser) {
-        currentUser = JSON.parse(storedUser);
-        renderAuthUI();
-        renderPage("dashboard");
-    } else {
-        renderAuthUI();
-        renderPage("dashboard");
-    }
-    document.getElementById("discordLoginBtn").onclick = () => promptDiscordLogin();
+    if(storedUser) { currentUser = JSON.parse(storedUser); renderAuthUI(); renderPage("dashboard"); }
+    else { renderAuthUI(); renderPage("dashboard"); }
+    document.getElementById("discordLoginBtn").onclick = () => { window.location.href = DISCORD_AUTH_URL; };
+    loginWithDiscord(); // للتعامل مع العودة من OAuth
     initSidebar();
     generateStars();
 </script>
