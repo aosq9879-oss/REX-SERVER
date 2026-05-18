@@ -3,12 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Rex | متجر فاخر - هوية رقمية</title>
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Font Awesome 6 -->
+  <title>RΞX | متجر فاخر - تسجيل Google فقط</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@300;400;500;600;700;800&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -17,7 +14,6 @@
       font-family: 'Inter', 'Cairo', sans-serif;
       color: #FFFFFF;
       overflow-x: hidden;
-      position: relative;
     }
     .stars-bg {
       position: fixed;
@@ -63,12 +59,7 @@
       pointer-events: none;
       z-index: -1;
     }
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 24px 32px;
-      position: relative;
-    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px 32px; position: relative; }
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -86,15 +77,8 @@
       background-clip: text;
       color: transparent;
     }
-    .logo p {
-      font-size: 0.7rem;
-      color: #A1A1AA;
-    }
-    .nav-actions {
-      display: flex;
-      gap: 18px;
-      align-items: center;
-    }
+    .logo p { font-size: 0.7rem; color: #A1A1AA; }
+    .nav-actions { display: flex; gap: 18px; align-items: center; }
     .nav-btn {
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(108,59,255,0.3);
@@ -110,10 +94,7 @@
       backdrop-filter: blur(6px);
     }
     .nav-btn i { color: #9D7BFF; }
-    .nav-btn:hover {
-      background: rgba(108,59,255,0.2);
-      border-color: #6C3BFF;
-    }
+    .nav-btn:hover { background: rgba(108,59,255,0.2); border-color: #6C3BFF; }
     .cart-icon { position: relative; }
     .cart-count {
       position: absolute;
@@ -149,12 +130,7 @@
       cursor: pointer;
       transition: 0.2s;
     }
-    .cat-btn.active {
-      background: #6C3BFF;
-      border-color: #9D7BFF;
-      color: white;
-      box-shadow: 0 0 12px rgba(108,59,255,0.4);
-    }
+    .cat-btn.active { background: #6C3BFF; border-color: #9D7BFF; color: white; box-shadow: 0 0 12px rgba(108,59,255,0.4); }
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -184,11 +160,7 @@
       background: #111;
       margin-bottom: 14px;
     }
-    .product-title {
-      font-size: 1.3rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
+    .product-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
     .product-price {
       font-size: 1.5rem;
       font-weight: 800;
@@ -197,11 +169,7 @@
       background-clip: text;
       color: transparent;
     }
-    .badge-stars {
-      color: gold;
-      letter-spacing: 2px;
-      margin: 8px 0;
-    }
+    .badge-stars { color: gold; letter-spacing: 2px; margin: 8px 0; }
     .modal {
       position: fixed;
       top: 50%;
@@ -219,11 +187,7 @@
       visibility: hidden;
       transition: 0.2s;
     }
-    .modal.active {
-      opacity: 1;
-      visibility: visible;
-      transform: translate(-50%, -50%) scale(1);
-    }
+    .modal.active { opacity: 1; visibility: visible; transform: translate(-50%, -50%) scale(1); }
     .overlay {
       position: fixed;
       inset: 0;
@@ -259,12 +223,7 @@
       padding: 12px;
       margin-bottom: 12px;
     }
-    .cart-item-img {
-      width: 60px;
-      height: 60px;
-      border-radius: 12px;
-      object-fit: cover;
-    }
+    .cart-item-img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; }
     .cart-item-details { flex: 1; }
     .cart-quantity {
       display: flex;
@@ -298,12 +257,6 @@
       margin-bottom: 20px;
       border: 1px solid #3A2C5A;
     }
-    .small-note {
-      font-size: 0.7rem;
-      color: #9D7BFF;
-      text-align: center;
-      margin-top: 12px;
-    }
     @media (max-width: 700px) {
       .cart-drawer { width: 100%; left: -100%; }
       .products-grid { grid-template-columns: 1fr; }
@@ -315,9 +268,9 @@
 <div class="stars-bg"></div><div class="stars"></div><div class="bg-glow"></div><div class="noise"></div>
 <div class="container">
   <nav class="navbar">
-    <div class="logo"><h1>RΞX</h1><p>فاخر | رقمي | فوري</p></div>
+    <div class="logo"><h1>RΞX</h1><p>رقمي | فاخر | فوري</p></div>
     <div class="nav-actions">
-      <button class="nav-btn" id="userBtn"><i class="fas fa-user-astronaut"></i> <span id="userNameDisplay">دخول</span></button>
+      <button class="nav-btn" id="userBtn"><i class="fab fa-google"></i> <span id="userNameDisplay">دخول Google</span></button>
       <button class="nav-btn cart-icon" id="cartIconBtn"><i class="fas fa-shopping-cart"></i> <span id="cartCount" class="cart-count">0</span></button>
       <button class="nav-btn" id="ordersBtn"><i class="fas fa-receipt"></i> فواتيري</button>
     </div>
@@ -328,19 +281,12 @@
 
 <div id="productModal" class="modal"><div id="productModalContent"></div><button class="nav-btn" style="margin-top:20px;" id="closeModalBtn">إغلاق</button></div>
 
+<!-- نافذة تسجيل الدخول عبر Google فقط -->
 <div id="loginModal" class="modal">
-  <h3 style="margin-bottom:16px;"><i class="fab fa-google"></i> تسجيل الدخول بحساب Google</h3>
-  <div id="g_id_onload" data-client_id="YOUR_GOOGLE_CLIENT_ID" data-callback="handleGoogleCredential" data-auto_prompt="false"></div>
-  <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_black" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
-  <hr style="margin:25px 0; border-color:#333;">
-  <h4><i class="fas fa-mobile-alt"></i> أو الدخول عبر رقم الجوال (SMS)</h4>
-  <input type="tel" id="smsPhone" placeholder="مثال: 966512345678" style="width:100%; padding:12px; margin:10px 0; background:#1c1c24; border:1px solid #6C3BFF; border-radius:60px; color:white;">
-  <button class="nav-btn" id="sendSmsBtn" style="width:100%;">إرسال رمز التحقق</button>
-  <div id="smsOtpGroup" style="display:none; margin-top:12px;">
-    <input type="text" id="smsOtp" placeholder="أدخل الرمز 123456" style="width:100%; padding:12px; background:#1c1c24; border-radius:60px; color:white;">
-    <button class="nav-btn" id="verifySmsBtn" style="width:100%; margin-top:8px;">تأكيد وتسجيل الدخول</button>
-  </div>
-  <div class="small-note">⭐ للمحاكاة: أي رقم، الرمز 123456. لتسجيل دخول Google حقيقي، ضع Client ID في الكود.</div>
+  <h3 style="margin-bottom:20px; text-align:center;"><i class="fab fa-google"></i> تسجيل الدخول بحساب Google</h3>
+  <div id="g_id_onload" data-client_id="1042167030365-d1uvj8l7n8s4ioeija215ek97oh7scm5.apps.googleusercontent.com" data-callback="handleGoogleCredential" data-auto_prompt="false"></div>
+  <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_black" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left" style="justify-content:center; display:flex;"></div>
+  <p style="margin-top:20px; text-align:center; font-size:0.8rem; color:#A1A1AA;">✋ سجل دخولك بحساب Gmail للوصول إلى السلة والطلبات</p>
 </div>
 
 <div id="cartDrawer" class="cart-drawer">
@@ -358,7 +304,7 @@
 </div>
 
 <script>
-  // ================= المنتجات (أكثر من 35) =================
+  // ================= المنتجات (36 منتجاً) =================
   const categoriesList = ["الكل", "Discord", "Streaming", "Software", "Gaming", "أخرى"];
   const productsData = [];
   const titles = ["Discord 2015","Discord 2016","Discord 2017","Discord 2018","Discord 2019","Discord Nitro","Netflix 4K","Netflix UHD","Spotify Premium","Spotify Family","YouTube Premium","Hulu No Ads","Adobe All Apps","Adobe Photoshop","Adobe Premiere","Windows 11 Pro","Office 365","Xbox Game Pass","PS Plus Deluxe","Steam Wallet $50","Razer Gold","NordVPN","ExpressVPN","Canva Pro","ChatGPT Plus","Midjourney Plan","Tidal HiFi","Crunchyroll","Disney+","Apple Music","Amazon Prime","TradingView Pro","Zoom Pro","Notion AI","League Skin","Valorant Points"];
@@ -479,13 +425,18 @@
     updateCartUI();
   }
 
+  // Google Login Callback
   window.handleGoogleCredential = (response) => {
     const payload = JSON.parse(atob(response.credential.split(".")[1]));
-    currentUser = { name: payload.name, email: payload.email, picture: payload.picture, method: "google" };
+    currentUser = {
+      name: payload.name,
+      email: payload.email,
+      picture: payload.picture,
+    };
     saveAppData();
     updateUserUI();
     closeLoginModal();
-    alert(`مرحباً ${currentUser.name}`);
+    alert(`مرحباً ${currentUser.name}، تم تسجيل الدخول بنجاح.`);
   };
 
   function updateUserUI() {
@@ -494,32 +445,12 @@
       const avatarHtml = currentUser.picture ? `<img src="${currentUser.picture}" class="user-avatar">` : `<i class="fas fa-user-circle"></i>`;
       span.innerHTML = `${avatarHtml} ${currentUser.name.split(" ")[0]}`;
     } else {
-      span.innerHTML = `<i class="fas fa-sign-in-alt"></i> دخول`;
-    }
-  }
-
-  function sendSmsCode() {
-    const phone = document.getElementById("smsPhone").value.trim();
-    if(!phone) { alert("أدخل رقم الجوال"); return; }
-    alert(`📱 تم إرسال رمز التحقق 123456 إلى ${phone}`);
-    document.getElementById("smsOtpGroup").style.display = "block";
-    window.pendingPhone = phone;
-  }
-  function verifySms() {
-    const code = document.getElementById("smsOtp").value.trim();
-    if(code === "123456") {
-      currentUser = { name: `مستخدم ${window.pendingPhone.slice(-4)}`, email: `${window.pendingPhone}@sms.rex`, picture: null, method: "sms" };
-      saveAppData();
-      updateUserUI();
-      closeLoginModal();
-      alert("تم تسجيل الدخول بنجاح عبر SMS");
-    } else {
-      alert("رمز التحقق غير صحيح. استخدم 123456");
+      span.innerHTML = `<i class="fab fa-google"></i> دخول Google`;
     }
   }
 
   function placeOrder() {
-    if(!currentUser) { alert("يرجى تسجيل الدخول أولاً"); openLoginModal(); return; }
+    if(!currentUser) { alert("يرجى تسجيل الدخول بحساب Google أولاً"); openLoginModal(); return; }
     if(cart.length===0) { alert("السلة فارغة"); return; }
     const total = cart.reduce((s,i) => s + (i.price * i.quantity), 0);
     const newOrder = {
@@ -533,7 +464,7 @@
     cart = [];
     saveAppData();
     updateCartUI();
-    alert(`✅ تم إنشاء الطلب بنجاح\n📦 كود الطلب: ${newOrder.orderId}\n📅 التاريخ: ${newOrder.date}\n💰 الإجمالي: $${total.toFixed(2)}\n📧 سيصلك تأكيد على بريدك ${currentUser.email}`);
+    alert(`✅ تم إنشاء الطلب بنجاح\n📦 كود الطلب: ${newOrder.orderId}\n📅 التاريخ: ${newOrder.date}\n💰 الإجمالي: $${total.toFixed(2)}\n📧 تم إرسال التأكيد إلى بريدك: ${currentUser.email}`);
     showOrdersModal();
     closeCartDrawer();
   }
@@ -575,7 +506,7 @@
         <h1>RΞX</h1>
         <h2>كود الطلب: ${order.orderId}</h2>
         <p>التاريخ: ${order.date}</p>
-        <table><th>المنتج</th><th>الكمية</th><th>السعر</th></tr>
+        </table><th>المنتج</th><th>الكمية</th><th>السعر</th></tr>
         ${order.items.map(i => `<tr><td>${i.title}</td><td>${i.quantity}</td><td>$${i.price}</td></tr>`).join("")}
         <tr><td colspan="2"><strong>المجموع</strong></td><td><strong>$${order.total.toFixed(2)}</strong></td></tr>
         </table>
@@ -587,6 +518,7 @@
     win.document.close();
   }
 
+  // إدارة النوافذ
   const overlay = document.createElement("div"); overlay.className="overlay"; document.body.appendChild(overlay);
   function openLoginModal() { document.getElementById("loginModal").classList.add("active"); overlay.classList.add("active"); }
   function closeLoginModal() { document.getElementById("loginModal").classList.remove("active"); overlay.classList.remove("active"); }
@@ -601,8 +533,6 @@
   document.getElementById("closeCartBtn")?.addEventListener("click", closeCartDrawer);
   document.getElementById("checkoutFinalBtn")?.addEventListener("click", placeOrder);
   document.getElementById("ordersBtn")?.addEventListener("click", showOrdersModal);
-  document.getElementById("sendSmsBtn")?.addEventListener("click", sendSmsCode);
-  document.getElementById("verifySmsBtn")?.addEventListener("click", verifySms);
   document.getElementById("closeModalBtn")?.addEventListener("click", () => { document.getElementById("productModal").classList.remove("active"); overlay.classList.remove("active"); });
   document.getElementById("closeOrdersBtn")?.addEventListener("click", () => { document.getElementById("ordersModal").classList.remove("active"); overlay.classList.remove("active"); });
   overlay.addEventListener("click", () => { document.querySelectorAll(".modal").forEach(m=>m.classList.remove("active")); closeCartDrawer(); });
