@@ -3,21 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>LUX EMPIRE | متجر فاخر - Google + SMS + سلة متكاملة</title>
-  <!-- Google Fonts + Arabic -->
+  <title>Rex | متجر فاخر - هوية رقمية</title>
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <!-- Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-  <!-- EmailJS SDK (اختياري - للإيميلات الحقيقية) -->
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background-color: #0B0B0F;
       font-family: 'Inter', 'Cairo', sans-serif;
@@ -25,7 +19,6 @@
       overflow-x: hidden;
       position: relative;
     }
-    /* النجوم المتحركة */
     .stars-bg {
       position: fixed;
       top: 0;
@@ -76,7 +69,6 @@
       padding: 24px 32px;
       position: relative;
     }
-    /* شريط التنقل */
     .navbar {
       display: flex;
       justify-content: space-between;
@@ -122,9 +114,7 @@
       background: rgba(108,59,255,0.2);
       border-color: #6C3BFF;
     }
-    .cart-icon {
-      position: relative;
-    }
+    .cart-icon { position: relative; }
     .cart-count {
       position: absolute;
       top: -8px;
@@ -142,7 +132,6 @@
       border: 1px solid #9D7BFF;
       object-fit: cover;
     }
-    /* الأقسام */
     .categories {
       display: flex;
       flex-wrap: wrap;
@@ -166,7 +155,6 @@
       color: white;
       box-shadow: 0 0 12px rgba(108,59,255,0.4);
     }
-    /* شبكة المنتجات */
     .products-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -214,7 +202,6 @@
       letter-spacing: 2px;
       margin: 8px 0;
     }
-    /* النوافذ المنبثقة */
     .modal {
       position: fixed;
       top: 50%;
@@ -247,11 +234,7 @@
       visibility: hidden;
       transition: 0.2s;
     }
-    .overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
-    /* سلة التسوق (drawer) */
+    .overlay.active { opacity: 1; visibility: visible; }
     .cart-drawer {
       position: fixed;
       top: 0;
@@ -267,9 +250,7 @@
       flex-direction: column;
       padding: 24px;
     }
-    .cart-drawer.open {
-      left: 0;
-    }
+    .cart-drawer.open { left: 0; }
     .cart-item {
       display: flex;
       gap: 12px;
@@ -317,24 +298,24 @@
       margin-bottom: 20px;
       border: 1px solid #3A2C5A;
     }
-    @media (max-width: 700px) {
-      .cart-drawer { width: 100%; left: -100%; }
-      .products-grid { grid-template-columns: 1fr; }
-      .container { padding: 16px; }
-    }
     .small-note {
       font-size: 0.7rem;
       color: #9D7BFF;
       text-align: center;
       margin-top: 12px;
     }
+    @media (max-width: 700px) {
+      .cart-drawer { width: 100%; left: -100%; }
+      .products-grid { grid-template-columns: 1fr; }
+      .container { padding: 16px; }
+    }
   </style>
 </head>
 <body>
 <div class="stars-bg"></div><div class="stars"></div><div class="bg-glow"></div><div class="noise"></div>
-<div class="container" id="appRoot">
+<div class="container">
   <nav class="navbar">
-    <div class="logo"><h1>LUX<span style="color:#9D7BFF;">Ξ</span>MPIRE</h1><p>متجر فاخر - تسليم فوري</p></div>
+    <div class="logo"><h1>RΞX</h1><p>فاخر | رقمي | فوري</p></div>
     <div class="nav-actions">
       <button class="nav-btn" id="userBtn"><i class="fas fa-user-astronaut"></i> <span id="userNameDisplay">دخول</span></button>
       <button class="nav-btn cart-icon" id="cartIconBtn"><i class="fas fa-shopping-cart"></i> <span id="cartCount" class="cart-count">0</span></button>
@@ -345,10 +326,8 @@
   <div id="productsGrid" class="products-grid"></div>
 </div>
 
-<!-- نافذة تفاصيل المنتج -->
 <div id="productModal" class="modal"><div id="productModalContent"></div><button class="nav-btn" style="margin-top:20px;" id="closeModalBtn">إغلاق</button></div>
 
-<!-- نافذة تسجيل الدخول (Google + SMS) -->
 <div id="loginModal" class="modal">
   <h3 style="margin-bottom:16px;"><i class="fab fa-google"></i> تسجيل الدخول بحساب Google</h3>
   <div id="g_id_onload" data-client_id="YOUR_GOOGLE_CLIENT_ID" data-callback="handleGoogleCredential" data-auto_prompt="false"></div>
@@ -364,7 +343,6 @@
   <div class="small-note">⭐ للمحاكاة: أي رقم، الرمز 123456. لتسجيل دخول Google حقيقي، ضع Client ID في الكود.</div>
 </div>
 
-<!-- سلة التسوق الجانبية -->
 <div id="cartDrawer" class="cart-drawer">
   <h3><i class="fas fa-bag-shopping"></i> سلة التسوق</h3>
   <div id="cartItemsList" style="flex:1; overflow:auto; margin:20px 0;"></div>
@@ -373,7 +351,6 @@
   <button id="closeCartBtn" style="margin-top:12px; background:none; border:1px solid #333; padding:8px; border-radius:60px;">إغلاق</button>
 </div>
 
-<!-- نافذة الفواتير -->
 <div id="ordersModal" class="modal" style="max-width:800px; max-height:80vh; overflow-y:auto;">
   <h2>📋 فواتيري</h2>
   <div id="ordersListContainer"></div>
@@ -381,7 +358,7 @@
 </div>
 
 <script>
-  // ------------------- 36 منتجاً مع أقسام ونجوم -------------------
+  // ================= المنتجات (أكثر من 35) =================
   const categoriesList = ["الكل", "Discord", "Streaming", "Software", "Gaming", "أخرى"];
   const productsData = [];
   const titles = ["Discord 2015","Discord 2016","Discord 2017","Discord 2018","Discord 2019","Discord Nitro","Netflix 4K","Netflix UHD","Spotify Premium","Spotify Family","YouTube Premium","Hulu No Ads","Adobe All Apps","Adobe Photoshop","Adobe Premiere","Windows 11 Pro","Office 365","Xbox Game Pass","PS Plus Deluxe","Steam Wallet $50","Razer Gold","NordVPN","ExpressVPN","Canva Pro","ChatGPT Plus","Midjourney Plan","Tidal HiFi","Crunchyroll","Disney+","Apple Music","Amazon Prime","TradingView Pro","Zoom Pro","Notion AI","League Skin","Valorant Points"];
@@ -397,35 +374,32 @@
       description: `حساب ${titles[i%titles.length]} بجودة فاخرة، ضمان مدى الحياة، تسليم فوري عبر البريد الإلكتروني.`
     });
   }
-  // تعديل بعض الأسعار لتناسب
   productsData[0].price = 49.99; productsData[2].price = 59.99; productsData[5].price = 79.99;
 
-  // ------------------- الحالة العامة -------------------
-  let currentUser = null;     // { name, email, picture, method }
-  let cart = [];              // { id, title, price, image, quantity }
-  let orders = [];            // { orderId, date, items, total, userEmail }
+  // ================= الحالة العامة =================
+  let currentUser = null;
+  let cart = [];
+  let orders = [];
   let activeCategory = "الكل";
 
-  // دوال الحفظ والتحميل من localStorage
   function saveAppData() {
-    localStorage.setItem("lux_cart", JSON.stringify(cart));
-    localStorage.setItem("lux_orders", JSON.stringify(orders));
-    if(currentUser) localStorage.setItem("lux_user", JSON.stringify(currentUser));
-    else localStorage.removeItem("lux_user");
+    localStorage.setItem("rex_cart", JSON.stringify(cart));
+    localStorage.setItem("rex_orders", JSON.stringify(orders));
+    if(currentUser) localStorage.setItem("rex_user", JSON.stringify(currentUser));
+    else localStorage.removeItem("rex_user");
   }
   function loadAppData() {
-    const savedCart = localStorage.getItem("lux_cart");
+    const savedCart = localStorage.getItem("rex_cart");
     if(savedCart) cart = JSON.parse(savedCart);
-    const savedOrders = localStorage.getItem("lux_orders");
+    const savedOrders = localStorage.getItem("rex_orders");
     if(savedOrders) orders = JSON.parse(savedOrders);
-    const savedUser = localStorage.getItem("lux_user");
+    const savedUser = localStorage.getItem("rex_user");
     if(savedUser) currentUser = JSON.parse(savedUser);
     updateCartUI();
     renderProducts();
     updateUserUI();
   }
 
-  // تحديث واجهة السلة
   function updateCartUI() {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     document.getElementById("cartCount").innerText = totalItems;
@@ -439,20 +413,7 @@
     let html = "", total = 0;
     cart.forEach((item, idx) => {
       total += item.price * item.quantity;
-      html += `
-        <div class="cart-item">
-          <img class="cart-item-img" src="${item.image}">
-          <div class="cart-item-details">
-            <strong>${item.title}</strong>
-            <div>$${item.price}</div>
-            <div class="cart-quantity">
-              <button data-idx="${idx}" data-op="dec">-</button>
-              <span>${item.quantity}</span>
-              <button data-idx="${idx}" data-op="inc">+</button>
-              <button data-idx="${idx}" data-op="del" style="background:#b91c1c;">حذف</button>
-            </div>
-          </div>
-        </div>`;
+      html += `<div class="cart-item"><img class="cart-item-img" src="${item.image}"><div class="cart-item-details"><strong>${item.title}</strong><div>$${item.price}</div><div class="cart-quantity"><button data-idx="${idx}" data-op="dec">-</button><span>${item.quantity}</span><button data-idx="${idx}" data-op="inc">+</button><button data-idx="${idx}" data-op="del" style="background:#b91c1c;">حذف</button></div></div></div>`;
     });
     cartContainer.innerHTML = html;
     document.getElementById("cartTotal").innerHTML = `المجموع: $${total.toFixed(2)}`;
@@ -469,7 +430,6 @@
     });
   }
 
-  // عرض المنتجات حسب التصنيف
   function renderProducts() {
     let filtered = activeCategory === "الكل" ? productsData : productsData.filter(p => p.category === activeCategory);
     const grid = document.getElementById("productsGrid");
@@ -491,7 +451,6 @@
     });
   }
 
-  // نافذة تفاصيل المنتج (البوست)
   function showProductDetails(prod) {
     const modal = document.getElementById("productModal");
     const content = document.getElementById("productModalContent");
@@ -520,15 +479,9 @@
     updateCartUI();
   }
 
-  // Google Login Callback
   window.handleGoogleCredential = (response) => {
     const payload = JSON.parse(atob(response.credential.split(".")[1]));
-    currentUser = {
-      name: payload.name,
-      email: payload.email,
-      picture: payload.picture,
-      method: "google"
-    };
+    currentUser = { name: payload.name, email: payload.email, picture: payload.picture, method: "google" };
     saveAppData();
     updateUserUI();
     closeLoginModal();
@@ -545,7 +498,6 @@
     }
   }
 
-  // SMS محاكاة
   function sendSmsCode() {
     const phone = document.getElementById("smsPhone").value.trim();
     if(!phone) { alert("أدخل رقم الجوال"); return; }
@@ -556,12 +508,7 @@
   function verifySms() {
     const code = document.getElementById("smsOtp").value.trim();
     if(code === "123456") {
-      currentUser = {
-        name: `مستخدم ${window.pendingPhone.slice(-4)}`,
-        email: `${window.pendingPhone}@sms.local`,
-        picture: null,
-        method: "sms"
-      };
+      currentUser = { name: `مستخدم ${window.pendingPhone.slice(-4)}`, email: `${window.pendingPhone}@sms.rex`, picture: null, method: "sms" };
       saveAppData();
       updateUserUI();
       closeLoginModal();
@@ -571,13 +518,12 @@
     }
   }
 
-  // إنشاء طلب وإرسال إيميل (محاكاة أو حقيقي)
   function placeOrder() {
     if(!currentUser) { alert("يرجى تسجيل الدخول أولاً"); openLoginModal(); return; }
     if(cart.length===0) { alert("السلة فارغة"); return; }
     const total = cart.reduce((s,i) => s + (i.price * i.quantity), 0);
     const newOrder = {
-      orderId: "LUX-" + Date.now() + "-" + Math.floor(Math.random()*1000),
+      orderId: "REX-" + Date.now() + "-" + Math.floor(Math.random()*1000),
       date: new Date().toLocaleString('ar-EG'),
       items: cart.map(i => ({ title: i.title, price: i.price, quantity: i.quantity })),
       total: total,
@@ -587,23 +533,16 @@
     cart = [];
     saveAppData();
     updateCartUI();
-    // محاولة إرسال إيميل حقيقي عبر EmailJS إذا تم تفعيله
-    if(window.emailjs && localStorage.getItem("emailjs_ready") === "true") {
-      // هذا يحتاج تفعيل من المستخدم، لكننا نعطي مثال
-      emailjs.send("service_xyz", "template_xyz", { to_email: currentUser.email, order_id: newOrder.orderId, total: total, date: newOrder.date }).catch(e=>console.log);
-    }
     alert(`✅ تم إنشاء الطلب بنجاح\n📦 كود الطلب: ${newOrder.orderId}\n📅 التاريخ: ${newOrder.date}\n💰 الإجمالي: $${total.toFixed(2)}\n📧 سيصلك تأكيد على بريدك ${currentUser.email}`);
     showOrdersModal();
     closeCartDrawer();
   }
 
-  // عرض الفواتير مع طباعة
   function showOrdersModal() {
     const container = document.getElementById("ordersListContainer");
     if(!container) return;
-    if(orders.length === 0) {
-      container.innerHTML = "<p>لا توجد طلبات سابقة</p>";
-    } else {
+    if(orders.length === 0) container.innerHTML = "<p>لا توجد طلبات سابقة</p>";
+    else {
       container.innerHTML = orders.map(order => `
         <div class="order-card">
           <strong>🧾 كود الطلب:</strong> ${order.orderId}<br>
@@ -633,10 +572,10 @@
       <style>body{font-family:'Cairo',sans-serif; padding:30px;} table{border-collapse:collapse; width:100%} th,td{border:1px solid #ccc; padding:8px; text-align:right;}</style>
       </head>
       <body>
-        <h1>LUX EMPIRE</h1>
+        <h1>RΞX</h1>
         <h2>كود الطلب: ${order.orderId}</h2>
         <p>التاريخ: ${order.date}</p>
-        <table><tr><th>المنتج</th><th>الكمية</th><th>السعر</th></tr>
+        <table><th>المنتج</th><th>الكمية</th><th>السعر</th></tr>
         ${order.items.map(i => `<tr><td>${i.title}</td><td>${i.quantity}</td><td>$${i.price}</td></tr>`).join("")}
         <tr><td colspan="2"><strong>المجموع</strong></td><td><strong>$${order.total.toFixed(2)}</strong></td></tr>
         </table>
@@ -648,14 +587,12 @@
     win.document.close();
   }
 
-  // دوال التحكم في النوافذ
   const overlay = document.createElement("div"); overlay.className="overlay"; document.body.appendChild(overlay);
   function openLoginModal() { document.getElementById("loginModal").classList.add("active"); overlay.classList.add("active"); }
   function closeLoginModal() { document.getElementById("loginModal").classList.remove("active"); overlay.classList.remove("active"); }
   function closeCartDrawer() { document.getElementById("cartDrawer").classList.remove("open"); overlay.classList.remove("active"); }
   function openCartDrawer() { document.getElementById("cartDrawer").classList.add("open"); overlay.classList.add("active"); }
 
-  // ربط الأزرار
   document.getElementById("userBtn")?.addEventListener("click", () => {
     if(currentUser) { if(confirm("تسجيل الخروج؟")) { currentUser = null; saveAppData(); updateUserUI(); } }
     else openLoginModal();
@@ -670,7 +607,6 @@
   document.getElementById("closeOrdersBtn")?.addEventListener("click", () => { document.getElementById("ordersModal").classList.remove("active"); overlay.classList.remove("active"); });
   overlay.addEventListener("click", () => { document.querySelectorAll(".modal").forEach(m=>m.classList.remove("active")); closeCartDrawer(); });
 
-  // التصنيفات
   function renderCategories() {
     const catDiv = document.getElementById("categoryFilter");
     catDiv.innerHTML = categoriesList.map(cat => `<button class="cat-btn ${cat===activeCategory?'active':''}" data-cat="${cat}">${cat}</button>`).join("");
@@ -685,13 +621,6 @@
   renderCategories();
   loadAppData();
   updateUserUI();
-
-  // تهيئة EmailJS إذا رغب المستخدم (لن يعمل بدون مفاتيح حقيقية)
-  if(window.emailjs) {
-    // المستخدم سيضع مفتاحه العام هنا إذا أراد الإيميلات الحقيقية
-    // emailjs.init({ publicKey: "YOUR_PUBLIC_KEY" });
-  }
-  console.log("✅ متجر LUX EMPIRE جاهز - 36 منتجاً - سلة كميات - فواتير - Google & SMS");
 </script>
 </body>
 </html>
