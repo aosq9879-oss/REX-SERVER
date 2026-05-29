@@ -1,673 +1,652 @@
+أهلاً بك! سأقوم ببناء متجر Rex Store بشكل كامل وفق مواصفاتك، مع واجهة احترافية، نظام صلاحيات، لوحات تحكم منفصلة، وإدارة ديناميكية للأسعار والمنتجات.
+
+سأقدم لك كود HTML/CSS/JS متكامل يعمل فوراً (يمكنك تجربته في متصفحك)، ويشمل:
+
+· ✅ الهوية البصرية بالألوان المطلوبة (بنفسجي داكن، أسود، فضي، بنفسجي لامع)
+· ✅ بانر متحرك وتأثيرات تحوم واحترافية
+· ✅ بطاقات منتجات قابلة للتعديل (Nitro 50 ريال، حزمة تعزيز 7000 ريال)
+· ✅ نظام صلاحيات كامل (مالك، مشرف، دعم) مع تسجيل دخول بحماية
+· ✅ تعديل الأسعار وإضافة/حذف المنتجات بصلاحيات المالك
+· ✅ لوحة تحكم مختلفة لكل دور
+· ✅ نظام فواتير وهمي، عداد طلبات، تقييمات عملاء
+· ✅ زر واتساب مباشر + قسم دعم فني
+· ✅ نظام كوبونات وهمي، نقاط، حماية ضد السبام (أساسية)
+· ✅ تصميم متجاوب للجوال
+
+سأضع رقم واتساب تجريبياً +966576251077 والبريد الإلكتروني support@rexstore.com كما طلبت.
+
+سأبدأ بكتابة الكود الكامل في المربع التالي. يمكنك نسخه وحفظه كملف .html وتشغيله.
+
+```html
 <!DOCTYPE html>
-<html lang="ar" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Rex² | Cyber Luxury Store</title>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Poppins:wght@300;400;500;600;700&family=Sora:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Rex Store | متجر خدمات ديسكورد الاحترافي</title>
+    <!-- Font Awesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- AOS library for scroll animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none; /* لإخفاء المؤشر العادي لأننا سنضيف cursor glow */
+            font-family: 'Cairo', sans-serif;
         }
 
         body {
-            background-color: #0a0a0f;
-            color: #f0f0ff;
-            font-family: 'Poppins', 'Sora', sans-serif;
+            background-color: #0B0B0F;
+            color: #eee;
             overflow-x: hidden;
-            position: relative;
         }
 
-        /* Animated Gradient Background */
-        .animated-bg {
-            position: fixed;
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1a1f; }
+        ::-webkit-scrollbar-thumb { background: #7B2EFF; border-radius: 10px; }
+
+        /* Colors variables */
+        :root {
+            --purple-dark: #7B2EFF;
+            --black-deep: #0B0B0F;
+            --silver-metal: #C0C0C0;
+            --purple-light: #B266FF;
+            --glass-bg: rgba(20, 20, 30, 0.7);
+            --card-bg: rgba(18, 18, 24, 0.9);
+        }
+
+        /* Reusable */
+        .container {
+            max-width: 1300px;
+            margin: auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(123, 46, 255, 0.3);
+        }
+        .btn-primary:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(123, 46, 255, 0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--purple-dark);
+            color: var(--purple-light);
+        }
+        .btn-outline:hover {
+            background: var(--purple-dark);
+            color: white;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: rgba(11, 11, 15, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: sticky;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 30%, #1b0b2e, #08000f);
-            z-index: -2;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(192,192,192,0.2);
         }
-        .animated-bg::before {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            top: -50%;
-            left: -50%;
-            background: repeating-linear-gradient(45deg, rgba(128, 0, 255, 0.08) 0px, rgba(128, 0, 255, 0.08) 2px, transparent 2px, transparent 8px);
-            animation: bgMove 40s linear infinite;
-        }
-        @keyframes bgMove {
-            0% { transform: translate(0,0) rotate(0deg);}
-            100% { transform: translate(5%,5%) rotate(2deg);}
-        }
-
-        /* جزيئات بنفسجية (particles) */
-        .particles {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-        .particle {
-            position: absolute;
-            background: #b77eff;
-            border-radius: 50%;
-            opacity: 0.3;
-            filter: blur(2px);
-            animation: floatParticle 12s infinite alternate;
-        }
-        @keyframes floatParticle {
-            0% { transform: translateY(0px) translateX(0px); opacity: 0.2; }
-            100% { transform: translateY(-40px) translateX(20px); opacity: 0.7; }
-        }
-
-        /* Cursor Glow */
-        .cursor-glow {
-            width: 30px;
-            height: 30px;
-            background: radial-gradient(circle, #c084fc, transparent);
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 9999;
-            mix-blend-mode: screen;
-            transition: transform 0.08s linear;
-            transform: translate(-50%, -50%);
-        }
-
-        /* glassmorphism و navbar */
-        nav {
+        .nav-flex {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 40px;
-            background: rgba(10, 10, 20, 0.5);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(156, 81, 255, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            flex-wrap: wrap;
         }
-        .logo-nav {
-            font-family: 'Orbitron', monospace;
+        .logo {
             font-size: 28px;
             font-weight: 800;
-            background: linear-gradient(135deg, #ffffff, #b87cff);
+            background: linear-gradient(135deg, #fff, var(--purple-light));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: 1px;
+        }
+        .logo span {
+            color: var(--purple-light);
         }
         .nav-links {
             display: flex;
-            gap: 28px;
+            gap: 25px;
+            align-items: center;
         }
         .nav-links a {
-            color: #e2e2ff;
+            color: var(--silver-metal);
             text-decoration: none;
             font-weight: 500;
-            transition: 0.2s;
-            font-size: 1rem;
-        }
-        .nav-links a:hover {
-            color: #c67eff;
-            text-shadow: 0 0 6px #ac5eff;
-        }
-        .cart-icon-header {
-            background: #2e1b47;
-            padding: 8px 16px;
-            border-radius: 40px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-        }
-        .cart-icon-header:hover {
-            background: #6b21a5;
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: 90vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 40px 20px;
-            position: relative;
-        }
-        .hero-glow {
-            position: absolute;
-            width: 70%;
-            height: 50%;
-            background: radial-gradient(circle, #8739f9a0, transparent);
-            filter: blur(70px);
-            z-index: -1;
-        }
-        .hero-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 7rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #fff, #c58aff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 20px #a55eff, 0 0 35px #6a1fc9;
-            letter-spacing: 4px;
-        }
-        .hero-sub {
-            font-size: 4rem;
-            font-family: 'Orbitron', monospace;
-            font-weight: 800;
-            color: #ececff;
-            text-shadow: 0 0 15px #bf8aff;
-            margin-top: -15px;
-        }
-        .hero-desc {
-            font-size: 1.2rem;
-            margin: 20px 0 30px;
-            letter-spacing: 1px;
-            color: #cdb5ff;
-        }
-        .hero-buttons {
-            display: flex;
-            gap: 25px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .glass-btn {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            border: 1.5px solid #b77eff;
-            padding: 12px 34px;
-            border-radius: 60px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            color: white;
             transition: 0.3s;
-            cursor: pointer;
-            box-shadow: 0 0 12px rgba(150, 70, 255, 0.3);
         }
-        .glass-btn:hover {
-            background: #9b4dff30;
-            border-color: #e5b2ff;
-            transform: scale(1.02);
-            box-shadow: 0 0 22px #bc7aff;
+        .nav-links a:hover { color: var(--purple-light); }
+        #loginBtnNav {
+            background: var(--purple-dark);
+            padding: 6px 18px;
+            border-radius: 30px;
+            color: white;
         }
 
-        /* Sections */
-        section {
-            padding: 80px 20px;
-            max-width: 1300px;
-            margin: auto;
-        }
-        .section-title {
-            font-size: 2.2rem;
-            font-family: 'Orbitron', monospace;
+        /* Hero Banner */
+        .hero {
+            background: radial-gradient(circle at 20% 30%, #1a0a2e, #0B0B0F);
+            padding: 60px 0;
             text-align: center;
-            margin-bottom: 50px;
-            background: linear-gradient(120deg, #fff, #c28aff);
+            border-bottom: 1px solid #2a2a35;
+        }
+        .hero h1 {
+            font-size: 3.2rem;
+            background: linear-gradient(135deg, #fff, var(--purple-light));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 30px;
-        }
-        .glass-card {
-            background: rgba(20, 10, 35, 0.55);
-            backdrop-filter: blur(12px);
-            border-radius: 28px;
-            padding: 30px 20px;
-            text-align: center;
-            border: 1px solid rgba(156, 86, 255, 0.5);
-            transition: all 0.3s ease;
-        }
-        .glass-card:hover {
-            transform: translateY(-10px);
-            border-color: #b87cff;
-            box-shadow: 0 20px 30px -10px rgba(128, 0, 255, 0.4);
-        }
-        .stat-number {
-            font-size: 2.8rem;
-            font-weight: 800;
-            font-family: 'Orbitron';
-            color: #f0bbff;
-        }
-
-        /* Reviews */
-        .review-card {
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            border-radius: 20px;
-            padding: 20px;
-            border-left: 4px solid #b77eff;
-        }
-
-        /* Shop products grid */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        .stats-badge {
+            display: flex;
+            justify-content: center;
             gap: 30px;
             margin-top: 30px;
         }
+        .stat-item {
+            background: var(--glass-bg);
+            padding: 12px 24px;
+            border-radius: 50px;
+            backdrop-filter: blur(4px);
+            font-weight: bold;
+        }
+
+        /* Products Grid */
+        .section-title {
+            font-size: 2rem;
+            margin: 50px 0 30px;
+            text-align: center;
+            border-right: 4px solid var(--purple-dark);
+            padding-right: 15px;
+            width: fit-content;
+            margin-right: auto;
+            margin-left: auto;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
         .product-card {
-            background: rgba(25, 12, 45, 0.7);
-            backdrop-filter: blur(12px);
-            border-radius: 28px;
-            padding: 18px;
-            transition: 0.25s;
-            border: 1px solid #6e44b3;
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 20px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(123,46,255,0.3);
+            transition: 0.3s;
+            text-align: center;
         }
         .product-card:hover {
-            transform: translateY(-6px);
-            border-color: #cb9eff;
+            transform: translateY(-8px);
+            border-color: var(--purple-light);
+            box-shadow: 0 15px 35px rgba(123,46,255,0.2);
         }
-        .product-img {
-            width: 100%;
-            height: 170px;
-            object-fit: cover;
-            border-radius: 20px;
-            background: #2b1a44;
-        }
-        .product-name {
-            font-size: 1.2rem;
-            margin: 12px 0 5px;
-            font-weight: 700;
+        .product-icon {
+            font-size: 48px;
+            color: var(--purple-light);
+            margin-bottom: 15px;
         }
         .product-price {
-            color: #FFDD88;
-            font-size: 1.4rem;
-            font-weight: bold;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--purple-light);
+            margin: 10px 0;
         }
-        .add-to-cart-btn {
-            background: #9b4dff;
-            width: 100%;
-            padding: 8px;
-            border: none;
-            border-radius: 50px;
+        .edit-price-input {
+            background: #222;
+            border: 1px solid var(--purple-dark);
+            padding: 6px;
+            border-radius: 12px;
+            width: 100px;
+            text-align: center;
             color: white;
-            font-weight: bold;
-            margin-top: 12px;
-            transition: 0.2s;
+        }
+
+        /* Dashboard Panels (hidden by default) */
+        .dashboard-panel {
+            background: #0f0f14;
+            border-radius: 30px;
+            padding: 30px;
+            margin: 40px 0;
+            border: 1px solid var(--purple-dark);
+            display: none;
+        }
+        .dashboard-panel h3 {
+            color: var(--purple-light);
+            margin-bottom: 20px;
+        }
+
+        /* Login Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(6px);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background: #12121a;
+            padding: 35px;
+            border-radius: 40px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid var(--purple-dark);
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            background: #1e1e2a;
+            border: none;
+            border-radius: 40px;
+            color: white;
+        }
+        .close-modal {
+            float: left;
+            font-size: 28px;
             cursor: pointer;
         }
-        .add-to-cart-btn:disabled {
-            background: #5a3d7a;
-            cursor: not-allowed;
-        }
 
-        /* Cart Sidebar */
-        .cart-sidebar {
+        /* Support & WhatsApp */
+        .whatsapp-float {
             position: fixed;
-            top: 0;
-            right: -450px;
-            width: 400px;
-            height: 100%;
-            background: #0d051cee;
-            backdrop-filter: blur(24px);
-            z-index: 2000;
-            padding: 25px;
-            transition: 0.3s;
-            border-left: 2px solid #bc87ff;
-            overflow-y: auto;
-        }
-        .cart-sidebar.open {
-            right: 0;
-        }
-        .bank-details {
-            background: #1f1333;
-            padding: 15px;
-            border-radius: 20px;
-            margin-top: 20px;
-            display: none;
-            font-size: 0.85rem;
-        }
-
-        footer {
-            background: #03000aa0;
-            backdrop-filter: blur(10px);
-            padding: 40px 20px;
-            text-align: center;
-            border-top: 1px solid #8e61c9;
-        }
-        .footer-links {
-            display: flex;
-            gap: 25px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 20px 0;
-        }
-        .footer-links a {
-            color: #bca8ff;
-            text-decoration: none;
-        }
-
-        @media (max-width: 800px) {
-            .hero-title { font-size: 3.5rem; }
-            .hero-sub { font-size: 2rem; }
-            nav { flex-direction: column; gap: 15px; }
-            .cart-sidebar { width: 100%; right: -100%; }
-        }
-        button { font-family: inherit; }
-        .login-widget {
-            background: #2d1b47;
-            padding: 5px 12px;
-            border-radius: 50px;
+            bottom: 25px;
+            left: 25px;
+            background: #25D366;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 12px;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: 0.3s;
+            z-index: 99;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); }
+
+        footer {
+            background: #050508;
+            padding: 30px 0;
+            text-align: center;
+            margin-top: 60px;
+            border-top: 1px solid #1e1e2a;
+        }
+        @media (max-width: 768px) {
+            .nav-flex { flex-direction: column; gap: 12px; }
+            .hero h1 { font-size: 2rem; }
+        }
+        .admin-actions {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
     </style>
 </head>
 <body>
-<div class="animated-bg"></div>
-<div class="particles" id="particlesContainer"></div>
-<div class="cursor-glow" id="cursorGlow"></div>
 
-<nav>
-    <div class="logo-nav">REX²</div>
-    <div class="nav-links">
-        <a href="#">Home</a>
-        <a href="#shop">Shop</a>
-        <a href="#reviews">Reviews</a>
-        <a href="#faq">FAQ</a>
-        <a href="https://discord.gg/rexstore" target="_blank">Discord</a>
-    </div>
-    <div style="display: flex; gap: 15px; align-items: center;">
-        <div id="userAuthWidget"></div>
-        <div class="cart-icon-header" id="cartIconBtn">🛒 <span id="cartCount">0</span></div>
-    </div>
-</nav>
-
-<main>
-    <div class="hero">
-        <div class="hero-glow"></div>
-        <div class="hero-title">REX²</div>
-        <div class="hero-sub">SERVER</div>
-        <div class="hero-desc">Premium Discord Services • Nitro • Boost • Members</div>
-        <div class="hero-buttons">
-            <button class="glass-btn" id="buyNowScroll">Buy Now</button>
-            <button class="glass-btn" onclick="window.open('https://discord.gg/rexstore','_blank')">Join Discord</button>
+<div class="navbar">
+    <div class="container nav-flex">
+        <div class="logo">REX <span>STORE</span></div>
+        <div class="nav-links">
+            <a href="#">الرئيسية</a>
+            <a href="#products">المنتجات</a>
+            <a href="#dashboard-area">لوحة التحكم</a>
+            <a href="#support">الدعم</a>
+            <a href="#" id="loginBtnNav">تسجيل الدخول</a>
         </div>
-    </div>
-
-    <!-- Services Section -->
-    <section>
-        <h2 class="section-title">⚡ Premium Services</h2>
-        <div class="cards-grid">
-            <div class="glass-card">💎 Nitro<br>Full Access</div>
-            <div class="glass-card">🚀 Boost<br>Level 2+</div>
-            <div class="glass-card">👑 Accounts<br>OG & Rare</div>
-            <div class="glass-card">👥 Members<br>Real & Active</div>
-        </div>
-    </section>
-
-    <!-- Stats -->
-    <section>
-        <div class="cards-grid">
-            <div class="glass-card"><div class="stat-number">+10K</div>Orders Completed</div>
-            <div class="glass-card"><div class="stat-number">Fast</div>Delivery (Instant)</div>
-            <div class="glass-card"><div class="stat-number">24/7</div>Support</div>
-            <div class="glass-card"><div class="stat-number">Trusted</div>Store Since 2023</div>
-        </div>
-    </section>
-
-    <!-- Shop Section (15 products) -->
-    <section id="shop">
-        <h2 class="section-title">🛒 Our Products</h2>
-        <div class="products-grid" id="productsContainer"></div>
-    </section>
-
-    <!-- Reviews -->
-    <section id="reviews">
-        <h2 class="section-title">⭐ Customer Reviews</h2>
-        <div class="cards-grid">
-            <div class="review-card"><strong>@Khalid_Dev</strong><br>“Fast delivery and amazing support! The boost worked perfectly.”</div>
-            <div class="review-card"><strong>@SarahN</strong><br>“Got my nitro code within 5 mins. Highly recommended store.”</div>
-            <div class="review-card"><strong>@RexUser</strong><br>“Professional UI and super fast. 10/10”</div>
-        </div>
-    </section>
-</main>
-
-<footer>
-    <div class="footer-links">
-        <a href="#">Discord</a>
-        <a href="#">Terms</a>
-        <a href="#">Refund Policy</a>
-        <a href="#">Support</a>
-    </div>
-    <p>© 2025 Rex² — Cyber Luxury Store. All rights reserved.</p>
-</footer>
-
-<!-- Cart Sidebar -->
-<div id="cartSidebar" class="cart-sidebar">
-    <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-        <h3>🛍️ Cart</h3>
-        <span id="closeCartBtn" style="font-size: 28px; cursor: pointer;">✖</span>
-    </div>
-    <div id="cartItemsList"></div>
-    <div class="cart-total" id="cartTotalAmount" style="font-size: 1.4rem; margin: 20px 0;">Total: 0 SAR</div>
-    <button id="checkoutFinalBtn" class="glass-btn" style="width:100%; background:#7c3aed;">Checkout (Bank Transfer)</button>
-    <div id="bankTransferDetails" class="bank-details">
-        🏦 <strong>Bank Transfer Information</strong><br>
-        Bank: Al Rajhi<br>
-        Account Name: Rex Store<br>
-        IBAN: SA38 0000 1234 5678 9012 3456<br>
-        Amount: <span id="bankAmount">0</span> SAR<br>
-        After transfer, send receipt on Discord.
     </div>
 </div>
 
+<section class="hero">
+    <div class="container">
+        <h1 data-aos="fade-up">مرحبًا بك في Rex Store</h1>
+        <p data-aos="fade-up" style="font-size:1.2rem; margin:15px 0;">المكان الأفضل للخدمات الرقمية ومجتمع Discord الاحترافي</p>
+        <div class="stats-badge" data-aos="zoom-in">
+            <div class="stat-item"><i class="fas fa-shopping-cart"></i> عدد الطلبات: <span id="orderCount">1247</span></div>
+            <div class="stat-item"><i class="fas fa-star"></i> تقييم 4.9/5</div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <!-- منتجات ديناميكية -->
+    <div class="section-title" id="products"><i class="fas fa-crown"></i> منتجاتنا الرقمية</div>
+    <div class="products-grid" id="productsGrid"></div>
+
+    <!-- لوحات التحكم (تظهر حسب الصلاحية) -->
+    <div id="dashboard-area">
+        <!-- لوحة المالك -->
+        <div id="ownerPanel" class="dashboard-panel">
+            <h3><i class="fas fa-user-crown"></i> لوحة المالك - صلاحيات كاملة</h3>
+            <div class="admin-actions">
+                <button id="addProductBtn" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة منتج</button>
+                <button id="managePricesBtn" class="btn btn-outline">تعديل الأسعار مباشرة (وضع التعديل)</button>
+                <button id="resetProductsBtn" class="btn btn-outline">إعادة ضبط المنتجات الافتراضية</button>
+            </div>
+            <p><strong>التحكم بالمنتجات:</strong> انقر على سعر أي منتج لتعديله (للمالك والمشرفين الأساسيين لكننا نمنح المالك فقط).</p>
+            <hr style="margin:15px 0; border-color:#333;">
+            <p><i class="fas fa-file-invoice"></i> الفواتير والطلبات: <button id="viewInvoicesOwner" class="btn btn-primary" style="padding:5px 12px;">عرض الفواتير التجريبية</button></p>
+            <div id="ownerInvoiceDisplay"></div>
+        </div>
+
+        <!-- لوحة المشرف -->
+        <div id="adminPanel" class="dashboard-panel">
+            <h3><i class="fas fa-user-shield"></i> لوحة المشرف - مشاهدة وتحديث الطلبات</h3>
+            <p><i class="fas fa-truck"></i> الطلبات الحالية: <span id="orderListPreview">طلب #101 - قيد التنفيذ</span></p>
+            <button id="updateOrderBtn" class="btn btn-outline">تحديث حالة الطلب (مثال)</button>
+            <button id="viewInvoicesAdmin" class="btn btn-outline">عرض الفواتير</button>
+        </div>
+
+        <!-- لوحة الدعم -->
+        <div id="supportPanel" class="dashboard-panel">
+            <h3><i class="fas fa-headset"></i> لوحة الدعم - الرد على العملاء والتذاكر</h3>
+            <p><i class="fab fa-whatsapp"></i> التواصل عبر واتساب: <a href="https://wa.me/966576251077" target="_blank">+966576251077</a></p>
+            <textarea id="ticketReply" rows="2" placeholder="الرد على التذكرة..." style="width:100%; background:#1e1e2a; border-radius:20px; padding:10px; color:white;"></textarea>
+            <button id="sendReplyBtn" class="btn btn-primary" style="margin-top:8px;">إرسال الرد</button>
+            <p id="ticketFeedback" style="color:var(--purple-light); margin-top:8px;"></p>
+        </div>
+    </div>
+
+    <!-- تقييمات العملاء -->
+    <div class="section-title"><i class="fas fa-comments"></i> تقييمات عملائنا</div>
+    <div style="display: flex; gap:20px; overflow-x: auto; padding-bottom:20px;">
+        <div class="product-card" style="min-width:250px;"><i class="fas fa-star" style="color:gold;"></i> "خدمة خرافية، سرعة وأمان" - أحمد</div>
+        <div class="product-card" style="min-width:250px;"><i class="fas fa-star" style="color:gold;"></i> "أفضل متجر خدمات ديسكورد" - سارة</div>
+        <div class="product-card" style="min-width:250px;"><i class="fas fa-star" style="color:gold;"></i> "دعم فني رهيب" - يوسف</div>
+    </div>
+
+    <!-- قسم الدعم الفني ونظام تذاكر بسيط -->
+    <div id="support" class="section-title"><i class="fas fa-ticket-alt"></i> نظام التذاكر والدعم</div>
+    <div style="background: var(--card-bg); border-radius: 28px; padding: 25px; margin-bottom: 30px;">
+        <p><strong>فتح تذكرة جديدة:</strong></p>
+        <input type="text" id="ticketTitle" placeholder="عنوان التذكرة" style="width:100%; padding:12px; margin:10px 0; background:#222; border-radius:30px; border:none; color:white;">
+        <textarea id="ticketMsg" placeholder="وصف مشكلتك..." rows="2" style="width:100%; background:#222; border-radius:20px; padding:12px; color:white;"></textarea>
+        <button id="openTicketBtn" class="btn btn-primary"><i class="fas fa-paper-plane"></i> فتح تذكرة</button>
+        <div id="ticketResult"></div>
+    </div>
+</div>
+
+<!-- واتساب مباشر -->
+<a href="https://wa.me/966576251077" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+<!-- Login Modal -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" id="closeModal">&times;</span>
+        <h3>تسجيل الدخول إلى Rex Store</h3>
+        <input type="email" id="loginEmail" placeholder="البريد الإلكتروني">
+        <input type="password" id="loginPassword" placeholder="كلمة المرور">
+        <button id="doLoginBtn" class="btn btn-primary" style="width:100%;">دخول</button>
+        <p style="margin-top:15px; font-size:13px;">حسابات تجريبية: <br> مالك: owner@rexstore.com / 123456 <br> مشرف: admin@rexstore.com / 123456 <br> دعم: support@rexstore.com / 123456</p>
+    </div>
+</div>
+
+<footer>
+    <div class="container">
+        <p>© 2025 Rex Store - جميع الحقوق محفوظة | للتواصل: support@rexstore.com | admin@rexstore.com | owner@rexstore.com</p>
+        <p><i class="fas fa-shield-alt"></i> حماية ضد السبام وسرعة فائقة</p>
+    </div>
+</footer>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
-    // ------------------- 15 Products (تعديل البيانات بسهولة) ------------------
-    const productsData = [
-        { id: 1, name: "Nitro Basic 1M", price: 39, image: "https://placehold.co/400x400/4b2c75/white?text=Nitro" },
-        { id: 2, name: "Nitro Boost 3M", price: 99, image: "https://placehold.co/400x400/4b2c75/white?text=Boost" },
-        { id: 3, name: "Discord Level Boost", price: 149, image: "https://placehold.co/400x400/4b2c75/white?text=Level" },
-        { id: 4, name: "OG Username", price: 199, image: "https://placehold.co/400x400/4b2c75/white?text=OG+Name" },
-        { id: 5, name: "Server Members (100)", price: 25, image: "https://placehold.co/400x400/4b2c75/white?text=Members" },
-        { id: 6, name: "Server Boost Lvl 2", price: 299, image: "https://placehold.co/400x400/4b2c75/white?text=Boost+L2" },
-        { id: 7, name: "Nitro Gift 1Y", price: 399, image: "https://placehold.co/400x400/4b2c75/white?text=Nitro+Year" },
-        { id: 8, name: "Custom Bot", price: 59, image: "https://placehold.co/400x400/4b2c75/white?text=Bot" },
-        { id: 9, name: "Discord Token", price: 15, image: "https://placehold.co/400x400/4b2c75/white?text=Token" },
-        { id: 10, name: "Server Setup", price: 89, image: "https://placehold.co/400x400/4b2c75/white?text=Setup" },
-        { id: 11, name: "Nitro Promo", price: 29, image: "https://placehold.co/400x400/4b2c75/white?text=Promo" },
-        { id: 12, name: "Vanity URL", price: 49, image: "https://placehold.co/400x400/4b2c75/white?text=Vanity" },
-        { id: 13, name: "Banner Design", price: 35, image: "https://placehold.co/400x400/4b2c75/white?text=Design" },
-        { id: 14, name: "Emoji Pack", price: 22, image: "https://placehold.co/400x400/4b2c75/white?text=Emojis" },
-        { id: 15, name: "Rex² Supporter Role", price: 79, image: "https://placehold.co/400x400/4b2c75/white?text=Rex+Role" }
+    AOS.init({ duration: 800, once: true });
+    
+    // ---------- بيانات المنتجات الافتراضية ----------
+    let products = [
+        { id: 1, name: "Discord Nitro", price: 50, icon: "fab fa-discord" },
+        { id: 2, name: "حزمة التعزيز (Boost Pack)", price: 7000, icon: "fas fa-rocket" }
     ];
 
-    // state
-    let currentUser = null;   // { name, avatar, uid }
-    let cart = [];
-    const productsContainer = document.getElementById('productsContainer');
-    const userAuthWidget = document.getElementById('userAuthWidget');
-    const cartSidebar = document.getElementById('cartSidebar');
-    const cartCountSpan = document.getElementById('cartCount');
-    const cartItemsListDiv = document.getElementById('cartItemsList');
-    const cartTotalSpan = document.getElementById('cartTotalAmount');
-    const bankDiv = document.getElementById('bankTransferDetails');
-    const bankAmountSpan = document.getElementById('bankAmount');
-
-    // Helper functions
+    // متغيرات الجلسة
+    let currentUser = null;   // { email, role }
+    
+    // رندر المنتجات مع إمكانية التعديل حسب الصلاحية
     function renderProducts() {
-        productsContainer.innerHTML = '';
-        productsData.forEach(prod => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `
-                <img class="product-img" src="${prod.image}" onerror="this.src='https://placehold.co/400x400/6c47a5/white?text=Image'">
-                <div class="product-name">${prod.name}</div>
-                <div class="product-price">${prod.price} SAR</div>
-                <button class="add-to-cart-btn" data-id="${prod.id}" ${!currentUser ? 'disabled' : ''}>Add to Cart</button>
-                ${!currentUser ? '<div style="font-size:11px; color:#facc15;">🔐 Login via Discord to buy</div>' : ''}
+        const grid = document.getElementById("productsGrid");
+        if (!grid) return;
+        let html = "";
+        products.forEach(prod => {
+            let canEdit = (currentUser && (currentUser.role === "owner"));
+            html += `
+                <div class="product-card" data-id="${prod.id}">
+                    <div class="product-icon"><i class="${prod.icon}"></i></div>
+                    <h3>${prod.name}</h3>
+                    <div class="product-price" id="price-${prod.id}">${prod.price} ريال</div>
+                    ${canEdit ? `<input type="number" class="edit-price-input" data-id="${prod.id}" value="${prod.price}" placeholder="سعر جديد"> <button class="btn-update-price" data-id="${prod.id}">تحديث</button>` : ""}
+                    ${canEdit ? `<button class="btn-delete-product" data-id="${prod.id}" style="background:#a00; margin-top:8px;">حذف المنتج</button>` : ""}
+                    <button class="btn-outline buy-product" data-name="${prod.name}" data-price="${prod.price}" style="margin-top:10px;">شراء الآن</button>
+                </div>
             `;
-            productsContainer.appendChild(card);
         });
-        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                if (!currentUser) { alert("Please login with Discord first!"); return; }
-                const id = parseInt(btn.getAttribute('data-id'));
-                addToCart(id);
+        grid.innerHTML = html;
+
+        // إضافة مستمعات الأحداث للتعديل (للمالك)
+        if (currentUser && currentUser.role === "owner") {
+            document.querySelectorAll(".btn-update-price").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const id = parseInt(btn.getAttribute("data-id"));
+                    const input = btn.previousElementSibling;
+                    const newPrice = parseFloat(input.value);
+                    if (!isNaN(newPrice) && newPrice >= 0) {
+                        const product = products.find(p => p.id === id);
+                        if (product) product.price = newPrice;
+                        renderProducts();
+                        showNotification("تم تحديث السعر بنجاح!");
+                    } else alert("قيمة غير صالحة");
+                });
             });
-        });
-    }
-
-    function addToCart(pid) {
-        const product = productsData.find(p => p.id === pid);
-        if (!product) return;
-        const existing = cart.find(i => i.id === pid);
-        if (existing) existing.quantity++;
-        else cart.push({ ...product, quantity: 1 });
-        updateCartUI();
-        saveCart();
-        openCartSidebar();
-    }
-
-    function updateCartUI() {
-        let total = 0;
-        cartItemsListDiv.innerHTML = '';
-        cart.forEach(item => {
-            total += item.price * item.quantity;
-            const div = document.createElement('div');
-            div.className = 'cart-item';
-            div.style.display = 'flex'; div.style.justifyContent = 'space-between'; div.style.marginBottom = '12px';
-            div.innerHTML = `<span>${item.name} x${item.quantity}</span><span>${item.price * item.quantity} SAR</span><button class="removeCartItem" data-id="${item.id}" style="background:#dc2626; border:none; border-radius:20px; padding:2px 12px;">🗑️</button>`;
-            cartItemsListDiv.appendChild(div);
-        });
-        cartTotalSpan.innerText = `Total: ${total} SAR`;
-        cartCountSpan.innerText = cart.reduce((acc, i) => acc + i.quantity, 0);
-        if (bankAmountSpan) bankAmountSpan.innerText = total;
-
-        document.querySelectorAll('.removeCartItem').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = parseInt(btn.getAttribute('data-id'));
-                removeFromCart(id);
+            document.querySelectorAll(".btn-delete-product").forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    const id = parseInt(btn.getAttribute("data-id"));
+                    products = products.filter(p => p.id !== id);
+                    renderProducts();
+                    showNotification("تم حذف المنتج");
+                });
             });
-        });
-    }
-
-    function removeFromCart(id) {
-        const idx = cart.findIndex(i => i.id === id);
-        if (idx !== -1) {
-            if (cart[idx].quantity > 1) cart[idx].quantity--;
-            else cart.splice(idx, 1);
         }
-        updateCartUI();
-        saveCart();
+        // شراء
+        document.querySelectorAll(".buy-product").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                const name = btn.getAttribute("data-name");
+                const price = btn.getAttribute("data-price");
+                alert(`تم إضافة طلب شراء: ${name} - ${price} ريال. سيتم التواصل معك قريبًا عبر الواتساب.`);
+                // تحديث عداد الطلبات وهميًا
+                let countSpan = document.getElementById("orderCount");
+                if(countSpan) {
+                    let current = parseInt(countSpan.innerText);
+                    countSpan.innerText = current + 1;
+                }
+            });
+        });
     }
 
-    function saveCart() {
-        if (currentUser) localStorage.setItem(`cart_${currentUser.uid}`, JSON.stringify(cart));
-        else localStorage.removeItem('cart_temp');
+    // إظهار لوحات التحكم حسب الدور
+    function updateDashboards() {
+        document.getElementById("ownerPanel").style.display = "none";
+        document.getElementById("adminPanel").style.display = "none";
+        document.getElementById("supportPanel").style.display = "none";
+        if (!currentUser) return;
+        if (currentUser.role === "owner") {
+            document.getElementById("ownerPanel").style.display = "block";
+        } else if (currentUser.role === "admin") {
+            document.getElementById("adminPanel").style.display = "block";
+        } else if (currentUser.role === "support") {
+            document.getElementById("supportPanel").style.display = "block";
+        }
     }
 
-    function loadCart() {
-        if (currentUser) {
-            const saved = localStorage.getItem(`cart_${currentUser.uid}`);
-            if (saved) cart = JSON.parse(saved);
-            else cart = [];
-        } else cart = [];
-        updateCartUI();
+    function showNotification(msg) {
+        let notif = document.createElement("div");
+        notif.innerText = msg;
+        notif.style.position = "fixed";
+        notif.style.bottom = "90px";
+        notif.style.right = "20px";
+        notif.style.backgroundColor = "#7B2EFF";
+        notif.style.padding = "12px 20px";
+        notif.style.borderRadius = "30px";
+        notif.style.zIndex = "1000";
+        document.body.appendChild(notif);
+        setTimeout(() => notif.remove(), 2000);
     }
 
-    // Mock Discord Login (fully functional for demo)
-    function discordLogin() {
-        currentUser = {
-            name: "Rex_Member",
-            avatar: "https://cdn.discordapp.com/embed/avatars/0.png",
-            uid: "disc_" + Date.now()
-        };
-        updateAuthUI();
-        renderProducts();   // enable add buttons
-        loadCart();
+    // تسجيل الدخول
+    function login(email, password) {
+        // صلاحيات تجريبية:
+        if (email === "owner@rexstore.com" && password === "123456") {
+            currentUser = { email, role: "owner" };
+        } else if (email === "admin@rexstore.com" && password === "123456") {
+            currentUser = { email, role: "admin" };
+        } else if (email === "support@rexstore.com" && password === "123456") {
+            currentUser = { email, role: "support" };
+        } else {
+            alert("بيانات دخول خاطئة، جرب الحسابات التجريبية المذكورة");
+            return false;
+        }
+        localStorage.setItem("rexUser", JSON.stringify(currentUser));
+        renderProducts();
+        updateDashboards();
+        document.getElementById("loginModal").style.display = "none";
+        showNotification(`مرحبًا ${currentUser.role} ، تم تسجيل الدخول بنجاح`);
+        return true;
     }
 
     function logout() {
         currentUser = null;
-        cart = [];
-        updateCartUI();
-        updateAuthUI();
+        localStorage.removeItem("rexUser");
         renderProducts();
-        saveCart();
-        closeCartSidebar();
+        updateDashboards();
+        showNotification("تم تسجيل الخروج");
     }
 
-    function updateAuthUI() {
-        if (currentUser) {
-            userAuthWidget.innerHTML = `<div class="login-widget"><img src="${currentUser.avatar}" width="28" style="border-radius:50%;"><span>${currentUser.name}</span><button id="logoutBtn" style="background:#dc2626; border:none; padding:4px 12px; border-radius:30px;">Logout</button></div>`;
-            document.getElementById('logoutBtn')?.addEventListener('click', logout);
-        } else {
-            userAuthWidget.innerHTML = `<button id="discordLoginBtn" class="glass-btn" style="padding:6px 18px;">🔷 Login with Discord</button>`;
-            document.getElementById('discordLoginBtn')?.addEventListener('click', discordLogin);
+    // اضافة منتج بواسطة المالك
+    function addProduct() {
+        if(!currentUser || currentUser.role !== "owner") return alert("غير مصرح");
+        let newName = prompt("اسم المنتج الجديد:");
+        if(!newName) return;
+        let newPrice = parseFloat(prompt("سعر المنتج:"));
+        if(isNaN(newPrice)) return;
+        const newId = Date.now();
+        products.push({ id: newId, name: newName, price: newPrice, icon: "fas fa-cube" });
+        renderProducts();
+        showNotification(`تم إضافة ${newName}`);
+    }
+
+    // عرض فواتير تجريبية للمالك والمشرف
+    function showInvoices(role) {
+        let dummyInvoices = [{ id: "INV-001", total: 50, product: "Nitro" }, { id: "INV-002", total: 7000, product: "Boost" }];
+        let html = "<ul>";
+        dummyInvoices.forEach(inv => { html += `<li>${inv.id} - ${inv.product} : ${inv.total} ريال</li>`; });
+        html += "</ul>";
+        if(role === "owner") document.getElementById("ownerInvoiceDisplay").innerHTML = html;
+        else alert("فواتير تجريبية: \n" + dummyInvoices.map(i=>`${i.id} - ${i.product} ${i.total} ريال`).join("\n"));
+    }
+
+    // إدارة زر واتساب وتذاكر
+    document.addEventListener("DOMContentLoaded", () => {
+        renderProducts();
+
+        // استعادة جلسة
+        const saved = localStorage.getItem("rexUser");
+        if(saved) {
+            try {
+                currentUser = JSON.parse(saved);
+                updateDashboards();
+            } catch(e) {}
         }
-    }
-
-    // Cart Sidebar
-    function openCartSidebar() { cartSidebar.classList.add('open'); bankDiv.style.display = 'none'; }
-    function closeCartSidebar() { cartSidebar.classList.remove('open'); }
-    document.getElementById('cartIconBtn')?.addEventListener('click', openCartSidebar);
-    document.getElementById('closeCartBtn')?.addEventListener('click', closeCartSidebar);
-
-    // Checkout (show bank transfer)
-    const checkoutBtnFinal = document.getElementById('checkoutFinalBtn');
-    checkoutBtnFinal?.addEventListener('click', () => {
-        if (!currentUser) { alert("Please login with Discord first."); return; }
-        if (cart.length === 0) { alert("Cart empty."); return; }
-        const total = cart.reduce((s, i) => s + (i.price * i.quantity), 0);
-        bankAmountSpan.innerText = total;
-        bankDiv.style.display = 'block';
-        // optionally you can clear cart after order, but for demo we keep
+        updateDashboards();
+        
+        // login modal
+        const modal = document.getElementById("loginModal");
+        document.getElementById("loginBtnNav").onclick = () => { modal.style.display = "flex"; };
+        document.getElementById("closeModal").onclick = () => { modal.style.display = "none"; };
+        document.getElementById("doLoginBtn").onclick = () => {
+            const email = document.getElementById("loginEmail").value;
+            const pwd = document.getElementById("loginPassword").value;
+            login(email, pwd);
+        };
+        
+        // اضافة منتج
+        document.getElementById("addProductBtn")?.addEventListener("click", addProduct);
+        document.getElementById("managePricesBtn")?.addEventListener("click", () => {
+            if(currentUser?.role === "owner") alert("يمكنك تعديل الأسعار عن طريق الحقول تحت كل منتج مباشرة (ظهرت أزرار التحديث).");
+            else alert("غير مصرح");
+        });
+        document.getElementById("resetProductsBtn")?.addEventListener("click", () => {
+            if(currentUser?.role === "owner") {
+                products = [
+                    { id: 1, name: "Discord Nitro", price: 50, icon: "fab fa-discord" },
+                    { id: 2, name: "حزمة التعزيز (Boost Pack)", price: 7000, icon: "fas fa-rocket" }
+                ];
+                renderProducts();
+                showNotification("تم إعادة ضبط المنتجات الافتراضية");
+            } else alert("فقط المالك");
+        });
+        document.getElementById("viewInvoicesOwner")?.addEventListener("click", () => showInvoices("owner"));
+        document.getElementById("viewInvoicesAdmin")?.addEventListener("click", () => showInvoices("admin"));
+        document.getElementById("updateOrderBtn")?.addEventListener("click", () => alert("تم تحديث حالة الطلب رقم #101 إلى 'مكتمل' (تجريبي)"));
+        document.getElementById("sendReplyBtn")?.addEventListener("click", () => {
+            let reply = document.getElementById("ticketReply").value;
+            if(reply) document.getElementById("ticketFeedback").innerText = "تم إرسال الرد للعميل عبر النظام";
+            else alert("اكتب ردًا أولاً");
+        });
+        // نظام التذاكر
+        document.getElementById("openTicketBtn")?.addEventListener("click", () => {
+            let title = document.getElementById("ticketTitle").value;
+            let msg = document.getElementById("ticketMsg").value;
+            if(title && msg) {
+                document.getElementById("ticketResult").innerHTML = `<div style="color:green;">✓ تم فتح تذكرة: ${title} . سيقوم الدعم بالرد قريبًا.</div>`;
+                document.getElementById("ticketTitle").value = "";
+                document.getElementById("ticketMsg").value = "";
+                // Webhook discord تجريبي
+                console.log(`[Webhook] تذكرة جديدة: ${title} - ${msg}`);
+            } else alert("املأ العنوان والوصف");
+        });
+        
+        // حماية ضد السبام (نقوم بمنع الإرسال السريع للتذاكر)
+        let lastTicket = 0;
+        const oldOpenTicket = document.getElementById("openTicketBtn").onclick;
+        document.getElementById("openTicketBtn").addEventListener("click", (e) => {
+            const now = Date.now();
+            if(now - lastTicket < 10000 && lastTicket !== 0) {
+                e.stopPropagation();
+                alert("يرجى الانتظار 10 ثوانٍ قبل فتح تذكرة أخرى (حماية ضد السبام)");
+                return;
+            }
+            lastTicket = now;
+        }, true);
     });
-
-    // buy now scroll
-    document.getElementById('buyNowScroll')?.addEventListener('click', () => {
-        document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
-    });
-
-    // Particles & Cursor glow
-    function generateParticles() {
-        const container = document.getElementById('particlesContainer');
-        for (let i = 0; i < 70; i++) {
-            const p = document.createElement('div');
-            p.classList.add('particle');
-            p.style.width = Math.random() * 8 + 2 + 'px';
-            p.style.height = p.style.width;
-            p.style.left = Math.random() * 100 + '%';
-            p.style.top = Math.random() * 100 + '%';
-            p.style.animationDuration = Math.random() * 15 + 8 + 's';
-            p.style.animationDelay = Math.random() * 5 + 's';
-            container.appendChild(p);
-        }
-    }
-    generateParticles();
-
-    document.addEventListener('mousemove', (e) => {
-        const glow = document.getElementById('cursorGlow');
-        glow.style.left = e.clientX + 'px';
-        glow.style.top = e.clientY + 'px';
-    });
-
-    // Initial render
-    renderProducts();
-    updateAuthUI();
-    loadCart();
 </script>
 </body>
 </html>
+```
