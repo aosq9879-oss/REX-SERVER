@@ -1,652 +1,813 @@
-أهلاً بك! سأقوم ببناء متجر Rex Store بشكل كامل وفق مواصفاتك، مع واجهة احترافية، نظام صلاحيات، لوحات تحكم منفصلة، وإدارة ديناميكية للأسعار والمنتجات.
-
-سأقدم لك كود HTML/CSS/JS متكامل يعمل فوراً (يمكنك تجربته في متصفحك)، ويشمل:
-
-· ✅ الهوية البصرية بالألوان المطلوبة (بنفسجي داكن، أسود، فضي، بنفسجي لامع)
-· ✅ بانر متحرك وتأثيرات تحوم واحترافية
-· ✅ بطاقات منتجات قابلة للتعديل (Nitro 50 ريال، حزمة تعزيز 7000 ريال)
-· ✅ نظام صلاحيات كامل (مالك، مشرف، دعم) مع تسجيل دخول بحماية
-· ✅ تعديل الأسعار وإضافة/حذف المنتجات بصلاحيات المالك
-· ✅ لوحة تحكم مختلفة لكل دور
-· ✅ نظام فواتير وهمي، عداد طلبات، تقييمات عملاء
-· ✅ زر واتساب مباشر + قسم دعم فني
-· ✅ نظام كوبونات وهمي، نقاط، حماية ضد السبام (أساسية)
-· ✅ تصميم متجاوب للجوال
-
-سأضع رقم واتساب تجريبياً +966576251077 والبريد الإلكتروني support@rexstore.com كما طلبت.
-
-سأبدأ بكتابة الكود الكامل في المربع التالي. يمكنك نسخه وحفظه كملف .html وتشغيله.
-
-```html
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="ltr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Rex Store | متجر خدمات ديسكورد الاحترافي</title>
-    <!-- Font Awesome & Google Fonts -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- AOS library for scroll animations -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R-ARCHIVE — DARK PUZZLE SYSTEM</title>
     <style>
+        /* ----------------------------------------------
+                   ROOT & RESET
+                ------------------------------------------------ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
+            user-select: none;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --bg: #050505;
+            --panel: #0a0a0a;
+            --border-dim: #1a1a1a;
+            --green: #00ff88;
+            --green-dim: #008844;
+            --red: #ff2244;
+            --red-dim: #881122;
+            --yellow: #ffcc00;
+            --blue: #4488ff;
+            --gray: #8899aa;
+            --text-main: #ccdddd;
+            --font: 'Share Tech Mono', 'Courier New', monospace;
+            --glitch-duration: 0.4s;
         }
 
         body {
-            background-color: #0B0B0F;
-            color: #eee;
-            overflow-x: hidden;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #1a1a1f; }
-        ::-webkit-scrollbar-thumb { background: #7B2EFF; border-radius: 10px; }
-
-        /* Colors variables */
-        :root {
-            --purple-dark: #7B2EFF;
-            --black-deep: #0B0B0F;
-            --silver-metal: #C0C0C0;
-            --purple-light: #B266FF;
-            --glass-bg: rgba(20, 20, 30, 0.7);
-            --card-bg: rgba(18, 18, 24, 0.9);
-        }
-
-        /* Reusable */
-        .container {
-            max-width: 1300px;
-            margin: auto;
-            padding: 0 20px;
-        }
-
-        .btn {
-            padding: 10px 24px;
-            border-radius: 40px;
-            font-weight: 600;
-            transition: 0.3s;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
+            background: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 8px;
+            padding: 20px;
+            margin: 0;
+            transition: background 0.8s;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--purple-dark), var(--purple-light));
-            color: white;
-            box-shadow: 0 4px 15px rgba(123, 46, 255, 0.3);
-        }
-        .btn-primary:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 25px rgba(123, 46, 255, 0.5);
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--purple-dark);
-            color: var(--purple-light);
-        }
-        .btn-outline:hover {
-            background: var(--purple-dark);
-            color: white;
+        /* حاوية رئيسية تشبه شاشة نظام قديم */
+        .archive-container {
+            width: 100%;
+            max-width: 820px;
+            background: var(--panel);
+            border: 2px solid var(--border-dim);
+            padding: 25px 30px 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.03), inset 0 0 60px rgba(0, 0, 0, 0.8);
+            position: relative;
+            transition: border-color 0.9s ease, box-shadow 0.9s;
         }
 
-        /* Navbar */
-        .navbar {
-            background: rgba(11, 11, 15, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(192,192,192,0.2);
-        }
-        .nav-flex {
+        /* شريط الحالة العلوي */
+        .status-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: var(--gray);
+            border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 12px;
+            margin-bottom: 22px;
+            text-transform: uppercase;
             flex-wrap: wrap;
+            gap: 8px;
         }
-        .logo {
-            font-size: 28px;
-            font-weight: 800;
-            background: linear-gradient(135deg, #fff, var(--purple-light));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
+        .status-bar .archive-label {
+            color: var(--green);
+            font-weight: bold;
+            text-shadow: 0 0 8px var(--green-dim);
         }
-        .logo span {
-            color: var(--purple-light);
+        .status-bar .status-led {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--green);
+            box-shadow: 0 0 12px var(--green);
+            margin-right: 6px;
+            transition: 0.4s;
         }
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            align-items: center;
+        .status-bar .status-led.danger {
+            background: var(--red);
+            box-shadow: 0 0 20px var(--red);
         }
-        .nav-links a {
-            color: var(--silver-metal);
-            text-decoration: none;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-        .nav-links a:hover { color: var(--purple-light); }
-        #loginBtnNav {
-            background: var(--purple-dark);
-            padding: 6px 18px;
-            border-radius: 30px;
-            color: white;
+        .status-bar .status-led.warning {
+            background: var(--yellow);
+            box-shadow: 0 0 16px var(--yellow);
         }
 
-        /* Hero Banner */
-        .hero {
-            background: radial-gradient(circle at 20% 30%, #1a0a2e, #0B0B0F);
-            padding: 60px 0;
-            text-align: center;
-            border-bottom: 1px solid #2a2a35;
+        /* عداد الملفات */
+        .file-counter {
+            font-size: 15px;
+            color: var(--gray);
+            border: 1px solid #222;
+            padding: 4px 14px;
+            border-radius: 30px;
+            background: #0d0d0d;
+            display: inline-block;
         }
-        .hero h1 {
-            font-size: 3.2rem;
-            background: linear-gradient(135deg, #fff, var(--purple-light));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        .stats-badge {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 30px;
-        }
-        .stat-item {
-            background: var(--glass-bg);
-            padding: 12px 24px;
-            border-radius: 50px;
-            backdrop-filter: blur(4px);
+        .file-counter span {
+            color: var(--text-main);
             font-weight: bold;
         }
 
-        /* Products Grid */
-        .section-title {
-            font-size: 2rem;
-            margin: 50px 0 30px;
-            text-align: center;
-            border-right: 4px solid var(--purple-dark);
-            padding-right: 15px;
-            width: fit-content;
-            margin-right: auto;
-            margin-left: auto;
-        }
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 60px;
-        }
-        .product-card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 20px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(123,46,255,0.3);
-            transition: 0.3s;
-            text-align: center;
-        }
-        .product-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--purple-light);
-            box-shadow: 0 15px 35px rgba(123,46,255,0.2);
-        }
-        .product-icon {
-            font-size: 48px;
-            color: var(--purple-light);
-            margin-bottom: 15px;
-        }
-        .product-price {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--purple-light);
-            margin: 10px 0;
-        }
-        .edit-price-input {
-            background: #222;
-            border: 1px solid var(--purple-dark);
-            padding: 6px;
-            border-radius: 12px;
-            width: 100px;
-            text-align: center;
-            color: white;
+        /* منطقة اللغز الرئيسية */
+        .puzzle-area {
+            min-height: 240px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 10px 0 16px;
+            position: relative;
         }
 
-        /* Dashboard Panels (hidden by default) */
-        .dashboard-panel {
-            background: #0f0f14;
-            border-radius: 30px;
-            padding: 30px;
-            margin: 40px 0;
-            border: 1px solid var(--purple-dark);
-            display: none;
+        .puzzle-question {
+            font-size: 22px;
+            line-height: 1.6;
+            color: #d0e4e4;
+            margin-bottom: 30px;
+            min-height: 80px;
+            padding: 8px 4px;
+            border-left: 3px solid var(--green);
+            padding-left: 18px;
+            transition: border-color 0.6s;
+            word-break: break-word;
         }
-        .dashboard-panel h3 {
-            color: var(--purple-light);
+        .puzzle-question.glitch-text {
+            animation: glitchText 0.15s infinite alternate;
+        }
+
+        /* حقل الإدخال والإرسال */
+        .input-group {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 8px;
+        }
+        .input-group input {
+            flex: 1;
+            min-width: 180px;
+            background: #0f0f0f;
+            border: 1px solid #2a2a2a;
+            padding: 14px 18px;
+            font-family: var(--font);
+            font-size: 18px;
+            color: #b0f0e0;
+            border-radius: 6px;
+            outline: none;
+            transition: 0.3s;
+            letter-spacing: 2px;
+        }
+        .input-group input:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.08);
+        }
+        .input-group input.error-shake {
+            animation: shake 0.3s ease;
+            border-color: var(--red) !important;
+            box-shadow: 0 0 30px rgba(255, 34, 68, 0.3);
+        }
+        .input-group button {
+            background: transparent;
+            border: 1px solid var(--green);
+            color: var(--green);
+            padding: 14px 32px;
+            font-family: var(--font);
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.25s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: rgba(0, 255, 136, 0.03);
+        }
+        .input-group button:hover {
+            background: var(--green);
+            color: #000;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
+        }
+        .input-group button:active {
+            transform: scale(0.95);
+        }
+
+        /* سجل النظام (الملاحظات) */
+        .system-log {
+            margin-top: 28px;
+            padding-top: 16px;
+            border-top: 1px dashed #1f1f1f;
+            font-size: 14px;
+            color: #6a7a7a;
+            min-height: 50px;
+            line-height: 1.8;
+            max-height: 90px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #222 transparent;
+        }
+        .system-log::-webkit-scrollbar {
+            width: 4px;
+        }
+        .system-log::-webkit-scrollbar-thumb {
+            background: #2a2a2a;
+        }
+
+        .log-entry {
+            opacity: 0;
+            animation: fadeInLog 0.5s forwards;
+        }
+        .log-entry.danger {
+            color: var(--red);
+        }
+        .log-entry.warning {
+            color: var(--yellow);
+        }
+        .log-entry.success {
+            color: var(--green);
+        }
+
+        /* شاشة النهاية / التحديث */
+        .final-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 40px 10px 20px;
+            animation: glitchFinal 2s infinite;
+        }
+        .final-screen.active {
+            display: flex;
+        }
+
+        .final-screen h1 {
+            font-size: 28px;
+            color: var(--red);
+            text-shadow: 0 0 30px var(--red-dim);
+            letter-spacing: 4px;
             margin-bottom: 20px;
         }
-
-        /* Login Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(6px);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        .modal-content {
-            background: #12121a;
-            padding: 35px;
-            border-radius: 40px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            border: 1px solid var(--purple-dark);
-        }
-        .modal-content input {
+        .final-screen .leak-box {
+            background: #0a0505;
+            border: 2px solid var(--red);
+            padding: 24px 30px;
+            border-radius: 10px;
+            margin: 25px 0;
             width: 100%;
-            padding: 12px;
-            margin: 12px 0;
-            background: #1e1e2a;
-            border: none;
-            border-radius: 40px;
-            color: white;
+            box-shadow: 0 0 60px rgba(255, 34, 68, 0.15);
         }
-        .close-modal {
-            float: left;
-            font-size: 28px;
-            cursor: pointer;
+        .final-screen .leak-box p {
+            color: #ff8899;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+        .final-screen .leak-box .leak-title {
+            color: var(--yellow);
+            font-size: 14px;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+        }
+        .final-screen .thank-text {
+            color: var(--green);
+            font-size: 20px;
+            margin-top: 12px;
+            opacity: 0.7;
         }
 
-        /* Support & WhatsApp */
-        .whatsapp-float {
-            position: fixed;
-            bottom: 25px;
-            left: 25px;
-            background: #25D366;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            color: white;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: 0.3s;
-            z-index: 99;
+        /* ----------------------------------------------
+                   تأثيرات متحركة (GLITCH, SHAKE, FLICKER)
+                ------------------------------------------------ */
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            20% {
+                transform: translateX(-12px);
+            }
+            40% {
+                transform: translateX(12px);
+            }
+            60% {
+                transform: translateX(-6px);
+            }
+            80% {
+                transform: translateX(6px);
+            }
         }
-        .whatsapp-float:hover { transform: scale(1.1); }
 
-        footer {
-            background: #050508;
-            padding: 30px 0;
-            text-align: center;
-            margin-top: 60px;
-            border-top: 1px solid #1e1e2a;
+        @keyframes glitchText {
+            0% {
+                transform: skew(0deg, 0deg);
+                opacity: 1;
+            }
+            25% {
+                transform: skew(2deg, -1deg);
+                opacity: 0.9;
+            }
+            50% {
+                transform: skew(-2deg, 1deg);
+                opacity: 1;
+            }
+            75% {
+                transform: skew(1deg, -2deg);
+                opacity: 0.95;
+            }
+            100% {
+                transform: skew(0deg, 0deg);
+                opacity: 1;
+            }
         }
-        @media (max-width: 768px) {
-            .nav-flex { flex-direction: column; gap: 12px; }
-            .hero h1 { font-size: 2rem; }
+
+        @keyframes glitchFinal {
+            0% {
+                filter: blur(0px) brightness(1);
+            }
+            5% {
+                filter: blur(1px) brightness(1.3);
+            }
+            10% {
+                filter: blur(0px) brightness(1);
+            }
+            15% {
+                filter: blur(2px) brightness(0.7);
+            }
+            20% {
+                filter: blur(0px) brightness(1);
+            }
+            100% {
+                filter: blur(0px) brightness(1);
+            }
         }
-        .admin-actions {
-            margin: 15px 0;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+
+        @keyframes fadeInLog {
+            0% {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .flicker-warning {
+            animation: flickerBg 0.08s infinite alternate;
+        }
+        @keyframes flickerBg {
+            0% {
+                background: rgba(255, 34, 68, 0.05);
+            }
+            100% {
+                background: rgba(255, 34, 68, 0.15);
+            }
+        }
+
+        /* تدرج المراحل في الإطار */
+        .stage-easy {
+            border-color: var(--green) !important;
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.05);
+        }
+        .stage-warning {
+            border-color: var(--yellow) !important;
+            box-shadow: 0 0 50px rgba(255, 204, 0, 0.06);
+        }
+        .stage-danger {
+            border-color: var(--red) !important;
+            box-shadow: 0 0 70px rgba(255, 34, 68, 0.08);
+            animation: borderPulse 1.2s infinite alternate;
+        }
+        @keyframes borderPulse {
+            0% {
+                border-color: var(--red);
+            }
+            100% {
+                border-color: #ff6688;
+            }
+        }
+
+        /* responsive */
+        @media (max-width: 600px) {
+            .archive-container {
+                padding: 16px;
+            }
+            .puzzle-question {
+                font-size: 18px;
+                padding-left: 12px;
+            }
+            .input-group input {
+                font-size: 16px;
+                padding: 12px 14px;
+            }
+            .input-group button {
+                padding: 12px 20px;
+                font-size: 14px;
+                width: 100%;
+            }
+            .status-bar {
+                font-size: 11px;
+            }
+            .final-screen h1 {
+                font-size: 22px;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="navbar">
-    <div class="container nav-flex">
-        <div class="logo">REX <span>STORE</span></div>
-        <div class="nav-links">
-            <a href="#">الرئيسية</a>
-            <a href="#products">المنتجات</a>
-            <a href="#dashboard-area">لوحة التحكم</a>
-            <a href="#support">الدعم</a>
-            <a href="#" id="loginBtnNav">تسجيل الدخول</a>
-        </div>
-    </div>
-</div>
-
-<section class="hero">
-    <div class="container">
-        <h1 data-aos="fade-up">مرحبًا بك في Rex Store</h1>
-        <p data-aos="fade-up" style="font-size:1.2rem; margin:15px 0;">المكان الأفضل للخدمات الرقمية ومجتمع Discord الاحترافي</p>
-        <div class="stats-badge" data-aos="zoom-in">
-            <div class="stat-item"><i class="fas fa-shopping-cart"></i> عدد الطلبات: <span id="orderCount">1247</span></div>
-            <div class="stat-item"><i class="fas fa-star"></i> تقييم 4.9/5</div>
-        </div>
-    </div>
-</section>
-
-<div class="container">
-    <!-- منتجات ديناميكية -->
-    <div class="section-title" id="products"><i class="fas fa-crown"></i> منتجاتنا الرقمية</div>
-    <div class="products-grid" id="productsGrid"></div>
-
-    <!-- لوحات التحكم (تظهر حسب الصلاحية) -->
-    <div id="dashboard-area">
-        <!-- لوحة المالك -->
-        <div id="ownerPanel" class="dashboard-panel">
-            <h3><i class="fas fa-user-crown"></i> لوحة المالك - صلاحيات كاملة</h3>
-            <div class="admin-actions">
-                <button id="addProductBtn" class="btn btn-primary"><i class="fas fa-plus"></i> إضافة منتج</button>
-                <button id="managePricesBtn" class="btn btn-outline">تعديل الأسعار مباشرة (وضع التعديل)</button>
-                <button id="resetProductsBtn" class="btn btn-outline">إعادة ضبط المنتجات الافتراضية</button>
+    <div class="archive-container" id="archiveBox">
+        <!-- شريط الحالة -->
+        <div class="status-bar">
+            <div>
+                <span class="archive-label">⏺ R-ARCHIVE</span>
+                <span style="margin:0 10px;color:#333;">|</span>
+                <span id="sysStatusText">SYSTEM: ACTIVE</span>
             </div>
-            <p><strong>التحكم بالمنتجات:</strong> انقر على سعر أي منتج لتعديله (للمالك والمشرفين الأساسيين لكننا نمنح المالك فقط).</p>
-            <hr style="margin:15px 0; border-color:#333;">
-            <p><i class="fas fa-file-invoice"></i> الفواتير والطلبات: <button id="viewInvoicesOwner" class="btn btn-primary" style="padding:5px 12px;">عرض الفواتير التجريبية</button></p>
-            <div id="ownerInvoiceDisplay"></div>
+            <div style="display:flex;align-items:center;gap:14px;">
+                <span class="file-counter">FILE <span id="fileNum">1</span> / 30</span>
+                <span class="status-led" id="statusLed"></span>
+            </div>
         </div>
 
-        <!-- لوحة المشرف -->
-        <div id="adminPanel" class="dashboard-panel">
-            <h3><i class="fas fa-user-shield"></i> لوحة المشرف - مشاهدة وتحديث الطلبات</h3>
-            <p><i class="fas fa-truck"></i> الطلبات الحالية: <span id="orderListPreview">طلب #101 - قيد التنفيذ</span></p>
-            <button id="updateOrderBtn" class="btn btn-outline">تحديث حالة الطلب (مثال)</button>
-            <button id="viewInvoicesAdmin" class="btn btn-outline">عرض الفواتير</button>
+        <!-- منطقة اللغز (تختفي عند النهاية) -->
+        <div id="puzzleArea" class="puzzle-area">
+            <div class="puzzle-question" id="puzzleQuestion">
+                <span id="typeTarget"></span>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="answerInput" placeholder="أدخل الإجابة..." autofocus spellcheck="false">
+                <button id="submitBtn">⏎ تحقق</button>
+            </div>
+
+            <div class="system-log" id="systemLog">
+                <div class="log-entry success">> النظام جاهز. انتظر التعليمات...</div>
+            </div>
         </div>
 
-        <!-- لوحة الدعم -->
-        <div id="supportPanel" class="dashboard-panel">
-            <h3><i class="fas fa-headset"></i> لوحة الدعم - الرد على العملاء والتذاكر</h3>
-            <p><i class="fab fa-whatsapp"></i> التواصل عبر واتساب: <a href="https://wa.me/966576251077" target="_blank">+966576251077</a></p>
-            <textarea id="ticketReply" rows="2" placeholder="الرد على التذكرة..." style="width:100%; background:#1e1e2a; border-radius:20px; padding:10px; color:white;"></textarea>
-            <button id="sendReplyBtn" class="btn btn-primary" style="margin-top:8px;">إرسال الرد</button>
-            <p id="ticketFeedback" style="color:var(--purple-light); margin-top:8px;"></p>
-        </div>
-    </div>
-
-    <!-- تقييمات العملاء -->
-    <div class="section-title"><i class="fas fa-comments"></i> تقييمات عملائنا</div>
-    <div style="display: flex; gap:20px; overflow-x: auto; padding-bottom:20px;">
-        <div class="product-card" style="min-width:250px;"><i class="fas fa-star" style="color:gold;"></i> "خدمة خرافية، سرعة وأمان" - أحمد</div>
-        <div class="product-card" style="min-width:250px;"><i class="fas fa-star" style="color:gold;"></i> "أفضل متجر خدمات ديسكورد" - سارة</div>
-        <div class="product-card" style="min-width:250px;"><i class="fas fa-star" style="color:gold;"></i> "دعم فني رهيب" - يوسف</div>
-    </div>
-
-    <!-- قسم الدعم الفني ونظام تذاكر بسيط -->
-    <div id="support" class="section-title"><i class="fas fa-ticket-alt"></i> نظام التذاكر والدعم</div>
-    <div style="background: var(--card-bg); border-radius: 28px; padding: 25px; margin-bottom: 30px;">
-        <p><strong>فتح تذكرة جديدة:</strong></p>
-        <input type="text" id="ticketTitle" placeholder="عنوان التذكرة" style="width:100%; padding:12px; margin:10px 0; background:#222; border-radius:30px; border:none; color:white;">
-        <textarea id="ticketMsg" placeholder="وصف مشكلتك..." rows="2" style="width:100%; background:#222; border-radius:20px; padding:12px; color:white;"></textarea>
-        <button id="openTicketBtn" class="btn btn-primary"><i class="fas fa-paper-plane"></i> فتح تذكرة</button>
-        <div id="ticketResult"></div>
-    </div>
-</div>
-
-<!-- واتساب مباشر -->
-<a href="https://wa.me/966576251077" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
-
-<!-- Login Modal -->
-<div id="loginModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal" id="closeModal">&times;</span>
-        <h3>تسجيل الدخول إلى Rex Store</h3>
-        <input type="email" id="loginEmail" placeholder="البريد الإلكتروني">
-        <input type="password" id="loginPassword" placeholder="كلمة المرور">
-        <button id="doLoginBtn" class="btn btn-primary" style="width:100%;">دخول</button>
-        <p style="margin-top:15px; font-size:13px;">حسابات تجريبية: <br> مالك: owner@rexstore.com / 123456 <br> مشرف: admin@rexstore.com / 123456 <br> دعم: support@rexstore.com / 123456</p>
-    </div>
-</div>
-
-<footer>
-    <div class="container">
-        <p>© 2025 Rex Store - جميع الحقوق محفوظة | للتواصل: support@rexstore.com | admin@rexstore.com | owner@rexstore.com</p>
-        <p><i class="fas fa-shield-alt"></i> حماية ضد السبام وسرعة فائقة</p>
-    </div>
-</footer>
-
-<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-<script>
-    AOS.init({ duration: 800, once: true });
-    
-    // ---------- بيانات المنتجات الافتراضية ----------
-    let products = [
-        { id: 1, name: "Discord Nitro", price: 50, icon: "fab fa-discord" },
-        { id: 2, name: "حزمة التعزيز (Boost Pack)", price: 7000, icon: "fas fa-rocket" }
-    ];
-
-    // متغيرات الجلسة
-    let currentUser = null;   // { email, role }
-    
-    // رندر المنتجات مع إمكانية التعديل حسب الصلاحية
-    function renderProducts() {
-        const grid = document.getElementById("productsGrid");
-        if (!grid) return;
-        let html = "";
-        products.forEach(prod => {
-            let canEdit = (currentUser && (currentUser.role === "owner"));
-            html += `
-                <div class="product-card" data-id="${prod.id}">
-                    <div class="product-icon"><i class="${prod.icon}"></i></div>
-                    <h3>${prod.name}</h3>
-                    <div class="product-price" id="price-${prod.id}">${prod.price} ريال</div>
-                    ${canEdit ? `<input type="number" class="edit-price-input" data-id="${prod.id}" value="${prod.price}" placeholder="سعر جديد"> <button class="btn-update-price" data-id="${prod.id}">تحديث</button>` : ""}
-                    ${canEdit ? `<button class="btn-delete-product" data-id="${prod.id}" style="background:#a00; margin-top:8px;">حذف المنتج</button>` : ""}
-                    <button class="btn-outline buy-product" data-name="${prod.name}" data-price="${prod.price}" style="margin-top:10px;">شراء الآن</button>
+        <!-- شاشة النهاية -->
+        <div class="final-screen" id="finalScreen">
+            <h1>⚠️ SYSTEM COLLAPSE</h1>
+            <div style="color:#aabbcc;font-size:16px;max-width:500px;line-height:2;">
+                تم فتح جميع الملفات<br>
+                النظام لم يعد مستقرًا<br>
+                <span style="color:var(--green);">R-ARCHIVE تم الوصول إليه بالكامل</span>
+            </div>
+            <div class="leak-box">
+                <div class="leak-title">🔴 REX UPDATE LEAK — تسريب حصري</div>
+                <p>✦ ماب جديد بمناطق سرية<br>
+                   ✦ متجر متطور بأسلحة فريدة<br>
+                   ✦ لوكيشن سري يحتوي على كنز نادر</p>
+                <div style="color:#667;font-size:13px;margin-top:14px;border-top:1px solid #332;padding-top:14px;">
+                    سيتم الكشف عن التفاصيل في التحديث القادم
                 </div>
-            `;
-        });
-        grid.innerHTML = html;
+            </div>
+            <div class="thank-text">>> تم فتح التحديث الجديد. شكرًا لك <<</div>
+            <div style="margin-top:25px;font-size:13px;color:#445;letter-spacing:3px;">
+                R-ARCHIVE // NODE-UNKNOWN // SIGNAL LOST
+            </div>
+        </div>
+    </div>
 
-        // إضافة مستمعات الأحداث للتعديل (للمالك)
-        if (currentUser && currentUser.role === "owner") {
-            document.querySelectorAll(".btn-update-price").forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    const id = parseInt(btn.getAttribute("data-id"));
-                    const input = btn.previousElementSibling;
-                    const newPrice = parseFloat(input.value);
-                    if (!isNaN(newPrice) && newPrice >= 0) {
-                        const product = products.find(p => p.id === id);
-                        if (product) product.price = newPrice;
-                        renderProducts();
-                        showNotification("تم تحديث السعر بنجاح!");
-                    } else alert("قيمة غير صالحة");
-                });
-            });
-            document.querySelectorAll(".btn-delete-product").forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    const id = parseInt(btn.getAttribute("data-id"));
-                    products = products.filter(p => p.id !== id);
-                    renderProducts();
-                    showNotification("تم حذف المنتج");
-                });
-            });
+    <script>
+        // ============================================================
+        //  DATA — 30 PUZZLES
+        //  كل لغز يحتوي على: السؤال، الإجابة (للتحقق)، والرمز المُجمَّع
+        // ============================================================
+        const PUZZLES = [
+            // —— المرحلة 1 (1-10) ——
+            { q: "ما هو الرقم الذي يلي 99؟", a: "100", s: "A" },
+            { q: "فك التشفير: 72 69 76 76 79 (ASCII)", a: "HELLO", s: "C" },
+            { q: "حاصل ضرب 7 و 9؟", a: "63", s: "C" },
+            { q: "ما هو الحرف الخامس في الأبجدية الإنجليزية؟", a: "E", s: "E" },
+            { q: "عكس كلمة 'SEE' هو...", a: "EES", s: "S" },
+            { q: "كم عدد أرجل النحلة؟", a: "6", s: "S" },
+            { q: "ما هو العنصر الأول في الجدول الدوري؟", a: "HYDROGEN", s: "G" },
+            { q: "كم عدد الأشهر التي تحتوي على 31 يومًا؟", a: "7", s: "R" },
+            { q: "فك الشفرة الثنائية: 01000001", a: "A", s: "A" },
+            { q: "ما هو الرقم الروماني X؟", a: "10", s: "N" },
+            // —— المرحلة 2 (11-20) ——
+            { q: "ما هو الجذر التربيعي لـ 144؟", a: "12", s: "T" },
+            { q: "ما هو ثاني حرف علة في الأبجدية؟ (A,E,I,O,U)", a: "E", s: "E" },
+            { q: "كم عدد الأيام في الأسبوع؟", a: "7", s: "D" },
+            { q: "ما هو الرقم الذري للهيدروجين؟", a: "1", s: "F" },
+            { q: "كم عدد القارات في العالم؟", a: "7", s: "I" },
+            { q: "فك الشفرة الثنائية: 01001110", a: "N", s: "N" },
+            { q: "ما هو ناتج 9 + 8؟", a: "17", s: "A" },
+            { q: "ما هو الحرف الأخير في كلمة 'FINAL'؟", a: "L", s: "L" },
+            { q: "ما هو الرقم الذي يسبق 10؟", a: "9", s: "K" },
+            { q: "كم عدد أوجه المكعب؟", a: "6", s: "E" },
+            // —— المرحلة 3 (21-29) ——
+            { q: "ما هو الحرف الأول في كلمة 'YES'؟", a: "Y", s: "Y" },
+            { q: "أدخل الرمز التالي: 22", a: "22", s: "#" },
+            { q: "أدخل الرمز التالي: 23", a: "23", s: "@" },
+            { q: "أدخل الرمز التالي: 24", a: "24", s: "!" },
+            { q: "أدخل الرمز التالي: 25", a: "25", s: "$" },
+            { q: "أدخل الرمز التالي: 26", a: "26", s: "%" },
+            { q: "أدخل الرمز التالي: 27", a: "27", s: "^" },
+            { q: "أدخل الرمز التالي: 28", a: "28", s: "&" },
+            { q: "أدخل الرمز التالي: 29", a: "29", s: "*" },
+            // —— المرحلة 4 (30) ——
+            { q: "أدخل الرمز النهائي: 30", a: "30", s: ")" }
+        ];
+
+        // ============================================================
+        //  STATE
+        // ============================================================
+        let currentIndex = 0;
+        let collectedSymbols = [];
+        let isProcessing = false;
+        let typeInterval = null;
+
+        // عناصر DOM
+        const archiveBox = document.getElementById('archiveBox');
+        const puzzleArea = document.getElementById('puzzleArea');
+        const finalScreen = document.getElementById('finalScreen');
+        const puzzleQuestion = document.getElementById('puzzleQuestion');
+        const typeTarget = document.getElementById('typeTarget');
+        const answerInput = document.getElementById('answerInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const systemLog = document.getElementById('systemLog');
+        const fileNum = document.getElementById('fileNum');
+        const statusLed = document.getElementById('statusLed');
+        const sysStatusText = document.getElementById('sysStatusText');
+
+        // ============================================================
+        //  HELPERS: LOG, STAGE, TYPING, SHAKE, SOUND
+        // ============================================================
+        function addLog(message, type = '') {
+            const div = document.createElement('div');
+            div.className = `log-entry ${type}`;
+            div.textContent = `> ${message}`;
+            systemLog.appendChild(div);
+            systemLog.scrollTop = systemLog.scrollHeight;
+            // الاحتفاظ بآخر 15 رسالة
+            while (systemLog.children.length > 15) {
+                systemLog.removeChild(systemLog.firstChild);
+            }
         }
-        // شراء
-        document.querySelectorAll(".buy-product").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                const name = btn.getAttribute("data-name");
-                const price = btn.getAttribute("data-price");
-                alert(`تم إضافة طلب شراء: ${name} - ${price} ريال. سيتم التواصل معك قريبًا عبر الواتساب.`);
-                // تحديث عداد الطلبات وهميًا
-                let countSpan = document.getElementById("orderCount");
-                if(countSpan) {
-                    let current = parseInt(countSpan.innerText);
-                    countSpan.innerText = current + 1;
+
+        function updateStage(index) {
+            const num = index + 1;
+            let stage = 'easy';
+            let ledColor = 'var(--green)';
+            let borderClass = 'stage-easy';
+            let statusText = 'SYSTEM: ACTIVE';
+
+            if (num >= 21 && num <= 29) {
+                stage = 'danger';
+                ledColor = 'var(--red)';
+                borderClass = 'stage-danger';
+                statusText = '⚠️ HIGH RISK';
+            } else if (num >= 11 && num <= 20) {
+                stage = 'warning';
+                ledColor = 'var(--yellow)';
+                borderClass = 'stage-warning';
+                statusText = '⚠️ WARNING ZONE';
+            } else {
+                stage = 'easy';
+                ledColor = 'var(--green)';
+                borderClass = 'stage-easy';
+                statusText = 'SYSTEM: ACTIVE';
+            }
+
+            archiveBox.className = `archive-container ${borderClass}`;
+            statusLed.style.background = ledColor;
+            statusLed.style.boxShadow = `0 0 20px ${ledColor}`;
+            sysStatusText.textContent = statusText;
+
+            // إضافة تحذيرات خاصة بالمراحل
+            if (num === 11) {
+                addLog('تم رصد نشاط غير معروف في النطاق', 'warning');
+            } else if (num === 21) {
+                addLog('⚠️ اختراق غير مصرح به — النظام يحاول إيقافك', 'danger');
+                document.body.style.background = '#080000';
+                setTimeout(() => { document.body.style.background = 'var(--bg)'; }, 600);
+            } else if (num === 30) {
+                addLog('‼️ الملف الأخير غير مستقر — خطر داهم', 'danger');
+            }
+        }
+
+        // تأثير الكتابة حرفًا حرفًا
+        function typeWriter(text, callback) {
+            if (typeInterval) clearInterval(typeInterval);
+            typeTarget.textContent = '';
+            let i = 0;
+            const speed = 35;
+            typeInterval = setInterval(() => {
+                if (i < text.length) {
+                    typeTarget.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(typeInterval);
+                    typeInterval = null;
+                    if (callback) callback();
                 }
-            });
-        });
-    }
-
-    // إظهار لوحات التحكم حسب الدور
-    function updateDashboards() {
-        document.getElementById("ownerPanel").style.display = "none";
-        document.getElementById("adminPanel").style.display = "none";
-        document.getElementById("supportPanel").style.display = "none";
-        if (!currentUser) return;
-        if (currentUser.role === "owner") {
-            document.getElementById("ownerPanel").style.display = "block";
-        } else if (currentUser.role === "admin") {
-            document.getElementById("adminPanel").style.display = "block";
-        } else if (currentUser.role === "support") {
-            document.getElementById("supportPanel").style.display = "block";
+            }, speed);
         }
-    }
 
-    function showNotification(msg) {
-        let notif = document.createElement("div");
-        notif.innerText = msg;
-        notif.style.position = "fixed";
-        notif.style.bottom = "90px";
-        notif.style.right = "20px";
-        notif.style.backgroundColor = "#7B2EFF";
-        notif.style.padding = "12px 20px";
-        notif.style.borderRadius = "30px";
-        notif.style.zIndex = "1000";
-        document.body.appendChild(notif);
-        setTimeout(() => notif.remove(), 2000);
-    }
-
-    // تسجيل الدخول
-    function login(email, password) {
-        // صلاحيات تجريبية:
-        if (email === "owner@rexstore.com" && password === "123456") {
-            currentUser = { email, role: "owner" };
-        } else if (email === "admin@rexstore.com" && password === "123456") {
-            currentUser = { email, role: "admin" };
-        } else if (email === "support@rexstore.com" && password === "123456") {
-            currentUser = { email, role: "support" };
-        } else {
-            alert("بيانات دخول خاطئة، جرب الحسابات التجريبية المذكورة");
-            return false;
+        // تأثير اهتزاز الحقل
+        function shakeInput() {
+            answerInput.classList.add('error-shake');
+            setTimeout(() => {
+                answerInput.classList.remove('error-shake');
+            }, 350);
         }
-        localStorage.setItem("rexUser", JSON.stringify(currentUser));
-        renderProducts();
-        updateDashboards();
-        document.getElementById("loginModal").style.display = "none";
-        showNotification(`مرحبًا ${currentUser.role} ، تم تسجيل الدخول بنجاح`);
-        return true;
-    }
 
-    function logout() {
-        currentUser = null;
-        localStorage.removeItem("rexUser");
-        renderProducts();
-        updateDashboards();
-        showNotification("تم تسجيل الخروج");
-    }
-
-    // اضافة منتج بواسطة المالك
-    function addProduct() {
-        if(!currentUser || currentUser.role !== "owner") return alert("غير مصرح");
-        let newName = prompt("اسم المنتج الجديد:");
-        if(!newName) return;
-        let newPrice = parseFloat(prompt("سعر المنتج:"));
-        if(isNaN(newPrice)) return;
-        const newId = Date.now();
-        products.push({ id: newId, name: newName, price: newPrice, icon: "fas fa-cube" });
-        renderProducts();
-        showNotification(`تم إضافة ${newName}`);
-    }
-
-    // عرض فواتير تجريبية للمالك والمشرف
-    function showInvoices(role) {
-        let dummyInvoices = [{ id: "INV-001", total: 50, product: "Nitro" }, { id: "INV-002", total: 7000, product: "Boost" }];
-        let html = "<ul>";
-        dummyInvoices.forEach(inv => { html += `<li>${inv.id} - ${inv.product} : ${inv.total} ريال</li>`; });
-        html += "</ul>";
-        if(role === "owner") document.getElementById("ownerInvoiceDisplay").innerHTML = html;
-        else alert("فواتير تجريبية: \n" + dummyInvoices.map(i=>`${i.id} - ${i.product} ${i.total} ريال`).join("\n"));
-    }
-
-    // إدارة زر واتساب وتذاكر
-    document.addEventListener("DOMContentLoaded", () => {
-        renderProducts();
-
-        // استعادة جلسة
-        const saved = localStorage.getItem("rexUser");
-        if(saved) {
+        // توليد صوت تشويش بسيط (Web Audio)
+        function playBuzz(frequency = 180, duration = 120, type = 'sawtooth') {
             try {
-                currentUser = JSON.parse(saved);
-                updateDashboards();
-            } catch(e) {}
+                const ctx = new(window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = type;
+                osc.frequency.value = frequency;
+                gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration / 1000);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + duration / 1000);
+            } catch (e) { /* silent fail */ }
         }
-        updateDashboards();
-        
-        // login modal
-        const modal = document.getElementById("loginModal");
-        document.getElementById("loginBtnNav").onclick = () => { modal.style.display = "flex"; };
-        document.getElementById("closeModal").onclick = () => { modal.style.display = "none"; };
-        document.getElementById("doLoginBtn").onclick = () => {
-            const email = document.getElementById("loginEmail").value;
-            const pwd = document.getElementById("loginPassword").value;
-            login(email, pwd);
-        };
-        
-        // اضافة منتج
-        document.getElementById("addProductBtn")?.addEventListener("click", addProduct);
-        document.getElementById("managePricesBtn")?.addEventListener("click", () => {
-            if(currentUser?.role === "owner") alert("يمكنك تعديل الأسعار عن طريق الحقول تحت كل منتج مباشرة (ظهرت أزرار التحديث).");
-            else alert("غير مصرح");
-        });
-        document.getElementById("resetProductsBtn")?.addEventListener("click", () => {
-            if(currentUser?.role === "owner") {
-                products = [
-                    { id: 1, name: "Discord Nitro", price: 50, icon: "fab fa-discord" },
-                    { id: 2, name: "حزمة التعزيز (Boost Pack)", price: 7000, icon: "fas fa-rocket" }
-                ];
-                renderProducts();
-                showNotification("تم إعادة ضبط المنتجات الافتراضية");
-            } else alert("فقط المالك");
-        });
-        document.getElementById("viewInvoicesOwner")?.addEventListener("click", () => showInvoices("owner"));
-        document.getElementById("viewInvoicesAdmin")?.addEventListener("click", () => showInvoices("admin"));
-        document.getElementById("updateOrderBtn")?.addEventListener("click", () => alert("تم تحديث حالة الطلب رقم #101 إلى 'مكتمل' (تجريبي)"));
-        document.getElementById("sendReplyBtn")?.addEventListener("click", () => {
-            let reply = document.getElementById("ticketReply").value;
-            if(reply) document.getElementById("ticketFeedback").innerText = "تم إرسال الرد للعميل عبر النظام";
-            else alert("اكتب ردًا أولاً");
-        });
-        // نظام التذاكر
-        document.getElementById("openTicketBtn")?.addEventListener("click", () => {
-            let title = document.getElementById("ticketTitle").value;
-            let msg = document.getElementById("ticketMsg").value;
-            if(title && msg) {
-                document.getElementById("ticketResult").innerHTML = `<div style="color:green;">✓ تم فتح تذكرة: ${title} . سيقوم الدعم بالرد قريبًا.</div>`;
-                document.getElementById("ticketTitle").value = "";
-                document.getElementById("ticketMsg").value = "";
-                // Webhook discord تجريبي
-                console.log(`[Webhook] تذكرة جديدة: ${title} - ${msg}`);
-            } else alert("املأ العنوان والوصف");
-        });
-        
-        // حماية ضد السبام (نقوم بمنع الإرسال السريع للتذاكر)
-        let lastTicket = 0;
-        const oldOpenTicket = document.getElementById("openTicketBtn").onclick;
-        document.getElementById("openTicketBtn").addEventListener("click", (e) => {
-            const now = Date.now();
-            if(now - lastTicket < 10000 && lastTicket !== 0) {
-                e.stopPropagation();
-                alert("يرجى الانتظار 10 ثوانٍ قبل فتح تذكرة أخرى (حماية ضد السبام)");
+
+        function playSuccess() {
+            playBuzz(800, 80, 'sine');
+            setTimeout(() => playBuzz(1000, 100, 'sine'), 100);
+        }
+
+        function playError() {
+            playBuzz(120, 250, 'sawtooth');
+            setTimeout(() => playBuzz(90, 300, 'sawtooth'), 120);
+        }
+
+        // تشويش بصري عند الانتقال (glitch flicker)
+        function glitchTransition() {
+            puzzleQuestion.classList.add('glitch-text');
+            archiveBox.style.filter = 'blur(1px)';
+            setTimeout(() => {
+                puzzleQuestion.classList.remove('glitch-text');
+                archiveBox.style.filter = 'blur(0px)';
+            }, 300);
+        }
+
+        // ============================================================
+        //  CORE: LOAD PUZZLE
+        // ============================================================
+        function loadPuzzle(index) {
+            if (index >= PUZZLES.length) {
+                showFinalScreen();
                 return;
             }
-            lastTicket = now;
-        }, true);
-    });
-</script>
+
+            const puzzle = PUZZLES[index];
+            fileNum.textContent = index + 1;
+            updateStage(index);
+
+            // عرض السؤال بكتابة تدريجية
+            const questionText = `[${index+1}] ${puzzle.q}`;
+            typeWriter(questionText, () => {
+                // بعد الانتهاء من الكتابة، ننشط حقل الإدخال
+                answerInput.disabled = false;
+                answerInput.value = '';
+                answerInput.focus();
+            });
+
+            // رسالة النظام حسب المرحلة
+            if (index === 0) {
+                addLog('فتح الملف رقم 1 — وصول أولي', 'success');
+            } else if (index === 9) {
+                addLog('❗ تم اجتياز المرحلة الأولى. انتقال إلى النطاق الأصفر', 'warning');
+            } else if (index === 19) {
+                addLog('🚨 دخول المنطقة الحمراء — خطر مرتفع', 'danger');
+            } else if (index === 29) {
+                addLog('⚡ الملف الأخير — اقتراب من النهاية', 'danger');
+            } else {
+                addLog(`فتح الملف رقم ${index+1}`, '');
+            }
+
+            // تأثير glitch بسيط عند التحميل
+            glitchTransition();
+
+            // إشارة صوتية خفيفة عند فتح الملف
+            playBuzz(300, 60, 'sine');
+
+            isProcessing = false;
+        }
+
+        // ============================================================
+        //  CHECK ANSWER
+        // ============================================================
+        function checkAnswer() {
+            if (isProcessing) return;
+            if (currentIndex >= PUZZLES.length) return;
+
+            const puzzle = PUZZLES[currentIndex];
+            const userAnswer = answerInput.value.trim().toUpperCase();
+            const correct = puzzle.a.toUpperCase();
+
+            if (userAnswer === '') {
+                addLog('الرجاء إدخال إجابة.', 'warning');
+                shakeInput();
+                return;
+            }
+
+            isProcessing = true;
+            answerInput.disabled = true;
+
+            if (userAnswer === correct) {
+                // ✅ صحيح
+                playSuccess();
+                addLog(`✓ إجابة صحيحة! تم جمع الرمز: ${puzzle.s}`, 'success');
+                collectedSymbols.push(puzzle.s);
+
+                // تأخير قصير ثم الانتقال للملف التالي
+                setTimeout(() => {
+                    currentIndex++;
+                    if (currentIndex < PUZZLES.length) {
+                        loadPuzzle(currentIndex);
+                    } else {
+                        // تم حل جميع الألغاز
+                        showFinalScreen();
+                    }
+                    isProcessing = false;
+                }, 500);
+
+            } else {
+                // ❌ خطأ
+                playError();
+                addLog(`✗ إجابة خاطئة. حاول مرة أخرى.`, 'danger');
+                shakeInput();
+                // وميض تحذيري
+                archiveBox.classList.add('flicker-warning');
+                setTimeout(() => {
+                    archiveBox.classList.remove('flicker-warning');
+                }, 400);
+
+                answerInput.disabled = false;
+                answerInput.value = '';
+                answerInput.focus();
+                isProcessing = false;
+            }
+        }
+
+        // ============================================================
+        //  FINAL SCREEN
+        // ============================================================
+        function showFinalScreen() {
+            puzzleArea.style.display = 'none';
+            finalScreen.classList.add('active');
+
+            // عرض كلمة السر المجمعة
+            const fullKey = collectedSymbols.join('');
+            addLog(`🔐 كلمة السر النهائية: ${fullKey}`, 'success');
+            addLog('تم فتح بوابة التحديث الجديد.', 'success');
+
+            // تأثير انهيار النظام
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    archiveBox.style.filter = `blur(${Math.random()*3}px) brightness(${0.7+Math.random()*0.6})`;
+                    document.body.style.background = `#${Math.floor(Math.random()*0x100000).toString(16).padStart(6,'0')}`;
+                }, i * 300);
+            }
+            setTimeout(() => {
+                archiveBox.style.filter = 'blur(0px) brightness(1)';
+                document.body.style.background = 'var(--bg)';
+                addLog('⏹ النظام استقر مؤقتًا. شكرًا لك.', '');
+                // تشغيل صوت نهاية
+                playBuzz(500, 200, 'square');
+                setTimeout(() => playBuzz(700, 300, 'square'), 250);
+            }, 2000);
+
+            // طباعة التسريب في الكونسول أيضًا
+            console.log('🔴 REX UPDATE LEAK: ماب جديد + متجر + لوكيشن سري');
+        }
+
+        // ============================================================
+        //  EVENT LISTENERS
+        // ============================================================
+        submitBtn.addEventListener('click', checkAnswer);
+
+        answerInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                checkAnswer();
+            }
+        });
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        // بدء اللعبة
+        loadPuzzle(0);
+
+        // إضافة رسالة ترحيب غامضة
+        setTimeout(() => {
+            addLog('R-ARCHIVE v.1.0 — نظام أرشيف سري', '');
+            addLog('تم رصد جهة اتصال غير معروفة...', 'warning');
+        }, 800);
+    </script>
+
 </body>
 </html>
-```
