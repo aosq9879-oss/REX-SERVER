@@ -3,811 +3,684 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R-ARCHIVE — DARK PUZZLE SYSTEM</title>
+    <title>R-ARCHIVE — VAULT 2.0</title>
+    <!-- Fonts فخمة -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* ----------------------------------------------
-                   ROOT & RESET
-                ------------------------------------------------ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
-        }
-
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
-        :root {
-            --bg: #050505;
-            --panel: #0a0a0a;
-            --border-dim: #1a1a1a;
-            --green: #00ff88;
-            --green-dim: #008844;
-            --red: #ff2244;
-            --red-dim: #881122;
-            --yellow: #ffcc00;
-            --blue: #4488ff;
-            --gray: #8899aa;
-            --text-main: #ccdddd;
-            --font: 'Share Tech Mono', 'Courier New', monospace;
-            --glitch-duration: 0.4s;
         }
 
         body {
-            background: var(--bg);
-            color: var(--text-main);
-            font-family: var(--font);
+            background: #070b1a;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-family: 'Rajdhani', sans-serif;
             padding: 20px;
             margin: 0;
-            transition: background 0.8s;
+            color: #e8edf5;
         }
 
-        /* حاوية رئيسية تشبه شاشة نظام قديم */
-        .archive-container {
+        /* الحاوية الرئيسية - زجاجية داكنة فخمة */
+        .vault-container {
             width: 100%;
-            max-width: 820px;
-            background: var(--panel);
-            border: 2px solid var(--border-dim);
-            padding: 25px 30px 30px;
-            border-radius: 12px;
-            box-shadow: 0 0 40px rgba(0, 255, 136, 0.03), inset 0 0 60px rgba(0, 0, 0, 0.8);
+            max-width: 780px;
+            background: rgba(10, 25, 47, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(74, 144, 226, 0.25);
+            border-radius: 32px;
+            padding: 35px 40px 40px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(10, 25, 47, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            transition: border-color 0.6s ease, box-shadow 0.6s ease;
             position: relative;
-            transition: border-color 0.9s ease, box-shadow 0.9s;
         }
 
-        /* شريط الحالة العلوي */
-        .status-bar {
+        /* شريط الحالة العلوي - أنيق جداً */
+        .header-status {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13px;
-            letter-spacing: 1px;
-            color: var(--gray);
-            border-bottom: 1px solid #1a1a1a;
-            padding-bottom: 12px;
-            margin-bottom: 22px;
-            text-transform: uppercase;
+            border-bottom: 1px solid rgba(74, 144, 226, 0.15);
+            padding-bottom: 18px;
+            margin-bottom: 32px;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 10px;
         }
-        .status-bar .archive-label {
-            color: var(--green);
-            font-weight: bold;
-            text-shadow: 0 0 8px var(--green-dim);
+
+        .archive-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        .status-bar .status-led {
-            display: inline-block;
+        .archive-brand .logo {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 20px;
+            color: #ffffff;
+            letter-spacing: 3px;
+            text-shadow: 0 0 20px rgba(74, 144, 226, 0.3);
+        }
+        .archive-brand .logo span {
+            color: #4a90e2;
+        }
+        .archive-brand .status-dot {
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background: var(--green);
-            box-shadow: 0 0 12px var(--green);
-            margin-right: 6px;
-            transition: 0.4s;
-        }
-        .status-bar .status-led.danger {
-            background: var(--red);
-            box-shadow: 0 0 20px var(--red);
-        }
-        .status-bar .status-led.warning {
-            background: var(--yellow);
-            box-shadow: 0 0 16px var(--yellow);
-        }
-
-        /* عداد الملفات */
-        .file-counter {
-            font-size: 15px;
-            color: var(--gray);
-            border: 1px solid #222;
-            padding: 4px 14px;
-            border-radius: 30px;
-            background: #0d0d0d;
+            background: #4a90e2;
+            box-shadow: 0 0 15px #4a90e2;
             display: inline-block;
-        }
-        .file-counter span {
-            color: var(--text-main);
-            font-weight: bold;
+            margin-right: 6px;
+            transition: 0.3s;
         }
 
-        /* منطقة اللغز الرئيسية */
-        .puzzle-area {
-            min-height: 240px;
+        .file-badge {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            color: #aab8d0;
+            letter-spacing: 1px;
+        }
+        .file-badge strong {
+            color: #ffffff;
+            font-weight: 700;
+        }
+
+        /* منطقة السؤال */
+        .puzzle-section {
+            min-height: 200px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 10px 0 16px;
-            position: relative;
+            padding: 6px 0 20px;
         }
 
         .puzzle-question {
             font-size: 22px;
-            line-height: 1.6;
-            color: #d0e4e4;
-            margin-bottom: 30px;
-            min-height: 80px;
-            padding: 8px 4px;
-            border-left: 3px solid var(--green);
-            padding-left: 18px;
-            transition: border-color 0.6s;
+            font-weight: 500;
+            line-height: 1.7;
+            color: #d6e2f5;
+            margin-bottom: 40px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            border-left: 4px solid #4a90e2;
+            min-height: 85px;
+            display: flex;
+            align-items: center;
             word-break: break-word;
-        }
-        .puzzle-question.glitch-text {
-            animation: glitchText 0.15s infinite alternate;
+            letter-spacing: 0.3px;
         }
 
-        /* حقل الإدخال والإرسال */
-        .input-group {
+        /* حاويات الإدخال (OTP) */
+        .input-code-container {
             display: flex;
-            gap: 14px;
-            flex-wrap: wrap;
+            flex-direction: column;
             align-items: center;
-            margin-top: 8px;
+            gap: 25px;
+            margin-top: 5px;
         }
-        .input-group input {
-            flex: 1;
-            min-width: 180px;
-            background: #0f0f0f;
-            border: 1px solid #2a2a2a;
-            padding: 14px 18px;
-            font-family: var(--font);
-            font-size: 18px;
-            color: #b0f0e0;
-            border-radius: 6px;
+
+        .otp-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .otp-box {
+            width: 70px;
+            height: 85px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(74, 144, 226, 0.25);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            transition: all 0.2s ease;
+            caret-color: #4a90e2;
+            box-shadow: inset 0 4px 10px rgba(0,0,0,0.6);
+        }
+        .otp-box:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 25px rgba(74, 144, 226, 0.2), inset 0 0 20px rgba(74, 144, 226, 0.05);
+            background: rgba(0, 20, 50, 0.7);
             outline: none;
+        }
+        .otp-box.error {
+            border-color: #d45c5c;
+            color: #d45c5c;
+            box-shadow: 0 0 30px rgba(212, 92, 92, 0.15);
+        }
+        .otp-box.success-box {
+            border-color: #4a90e2;
+            color: #4a90e2;
+        }
+
+        .btn-submit-code {
+            background: transparent;
+            border: 1.5px solid rgba(74, 144, 226, 0.5);
+            color: #ffffff;
+            padding: 14px 50px;
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            border-radius: 60px;
+            cursor: pointer;
             transition: 0.3s;
             letter-spacing: 2px;
+            background: rgba(74, 144, 226, 0.05);
         }
-        .input-group input:focus {
-            border-color: var(--green);
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.08);
+        .btn-submit-code:hover {
+            background: #4a90e2;
+            color: #070b1a;
+            border-color: #4a90e2;
+            box-shadow: 0 0 40px rgba(74, 144, 226, 0.2);
         }
-        .input-group input.error-shake {
-            animation: shake 0.3s ease;
-            border-color: var(--red) !important;
-            box-shadow: 0 0 30px rgba(255, 34, 68, 0.3);
-        }
-        .input-group button {
-            background: transparent;
-            border: 1px solid var(--green);
-            color: var(--green);
-            padding: 14px 32px;
-            font-family: var(--font);
-            font-size: 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.25s;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            background: rgba(0, 255, 136, 0.03);
-        }
-        .input-group button:hover {
-            background: var(--green);
-            color: #000;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
-        }
-        .input-group button:active {
-            transform: scale(0.95);
+        .btn-submit-code:active {
+            transform: scale(0.96);
         }
 
-        /* سجل النظام (الملاحظات) */
-        .system-log {
-            margin-top: 28px;
-            padding-top: 16px;
-            border-top: 1px dashed #1f1f1f;
-            font-size: 14px;
-            color: #6a7a7a;
-            min-height: 50px;
-            line-height: 1.8;
-            max-height: 90px;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #222 transparent;
+        /* سجل النظام */
+        .system-feedback {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 15px;
+            color: #7a8ba8;
+            min-height: 45px;
+            font-family: 'JetBrains Mono', monospace;
+            text-align: center;
+            letter-spacing: 0.5px;
         }
-        .system-log::-webkit-scrollbar {
-            width: 4px;
+        .feedback-success {
+            color: #4a90e2;
         }
-        .system-log::-webkit-scrollbar-thumb {
-            background: #2a2a2a;
+        .feedback-error {
+            color: #d45c5c;
         }
-
-        .log-entry {
-            opacity: 0;
-            animation: fadeInLog 0.5s forwards;
-        }
-        .log-entry.danger {
-            color: var(--red);
-        }
-        .log-entry.warning {
-            color: var(--yellow);
-        }
-        .log-entry.success {
-            color: var(--green);
+        .feedback-info {
+            color: #8fa8c8;
         }
 
-        /* شاشة النهاية / التحديث */
+        /* شاشة النهاية - فخمة جداً */
         .final-screen {
             display: none;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            padding: 40px 10px 20px;
-            animation: glitchFinal 2s infinite;
+            padding: 20px 10px 10px;
+            animation: fadeInGlow 1.5s ease;
         }
         .final-screen.active {
             display: flex;
         }
 
-        .final-screen h1 {
-            font-size: 28px;
-            color: var(--red);
-            text-shadow: 0 0 30px var(--red-dim);
+        @keyframes fadeInGlow {
+            0% { opacity: 0; transform: scale(0.95); filter: blur(4px); }
+            100% { opacity: 1; transform: scale(1); filter: blur(0); }
+        }
+
+        .final-screen .collapse-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 32px;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 0 0 40px rgba(74, 144, 226, 0.3);
             letter-spacing: 4px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
-        .final-screen .leak-box {
-            background: #0a0505;
-            border: 2px solid var(--red);
-            padding: 24px 30px;
-            border-radius: 10px;
-            margin: 25px 0;
-            width: 100%;
-            box-shadow: 0 0 60px rgba(255, 34, 68, 0.15);
-        }
-        .final-screen .leak-box p {
-            color: #ff8899;
+        .final-screen .collapse-sub {
+            color: #8fa8c8;
             font-size: 18px;
-            letter-spacing: 1px;
+            margin-bottom: 25px;
+            line-height: 1.8;
         }
-        .final-screen .leak-box .leak-title {
-            color: var(--yellow);
+        .final-screen .leak-card {
+            background: rgba(0, 10, 30, 0.7);
+            border: 1px solid rgba(74, 144, 226, 0.3);
+            border-radius: 28px;
+            padding: 30px 35px;
+            width: 100%;
+            margin: 15px 0 25px;
+            box-shadow: 0 0 70px rgba(10, 25, 47, 0.8);
+            backdrop-filter: blur(4px);
+        }
+        .final-screen .leak-card .leak-title {
+            font-family: 'Orbitron', monospace;
             font-size: 14px;
-            letter-spacing: 3px;
-            margin-bottom: 8px;
+            color: #4a90e2;
+            letter-spacing: 4px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 12px;
         }
-        .final-screen .thank-text {
-            color: var(--green);
-            font-size: 20px;
-            margin-top: 12px;
-            opacity: 0.7;
+        .final-screen .leak-card p {
+            font-size: 19px;
+            font-weight: 400;
+            color: #e0ecff;
+            line-height: 2;
         }
-
-        /* ----------------------------------------------
-                   تأثيرات متحركة (GLITCH, SHAKE, FLICKER)
-                ------------------------------------------------ */
-        @keyframes shake {
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-            20% {
-                transform: translateX(-12px);
-            }
-            40% {
-                transform: translateX(12px);
-            }
-            60% {
-                transform: translateX(-6px);
-            }
-            80% {
-                transform: translateX(6px);
-            }
+        .final-screen .leak-card .highlight {
+            color: #ffffff;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4a90e2, #7b68ee);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .final-screen .final-thanks {
+            font-family: 'Orbitron', monospace;
+            font-size: 18px;
+            color: #4a90e2;
+            opacity: 0.8;
+            letter-spacing: 2px;
+            margin-top: 8px;
         }
 
-        @keyframes glitchText {
-            0% {
-                transform: skew(0deg, 0deg);
-                opacity: 1;
-            }
-            25% {
-                transform: skew(2deg, -1deg);
-                opacity: 0.9;
-            }
-            50% {
-                transform: skew(-2deg, 1deg);
-                opacity: 1;
-            }
-            75% {
-                transform: skew(1deg, -2deg);
-                opacity: 0.95;
-            }
-            100% {
-                transform: skew(0deg, 0deg);
-                opacity: 1;
-            }
-        }
-
-        @keyframes glitchFinal {
-            0% {
-                filter: blur(0px) brightness(1);
-            }
-            5% {
-                filter: blur(1px) brightness(1.3);
-            }
-            10% {
-                filter: blur(0px) brightness(1);
-            }
-            15% {
-                filter: blur(2px) brightness(0.7);
-            }
-            20% {
-                filter: blur(0px) brightness(1);
-            }
-            100% {
-                filter: blur(0px) brightness(1);
-            }
-        }
-
-        @keyframes fadeInLog {
-            0% {
-                opacity: 0;
-                transform: translateY(6px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .flicker-warning {
-            animation: flickerBg 0.08s infinite alternate;
-        }
-        @keyframes flickerBg {
-            0% {
-                background: rgba(255, 34, 68, 0.05);
-            }
-            100% {
-                background: rgba(255, 34, 68, 0.15);
-            }
-        }
-
-        /* تدرج المراحل في الإطار */
-        .stage-easy {
-            border-color: var(--green) !important;
-            box-shadow: 0 0 40px rgba(0, 255, 136, 0.05);
+        /* مراحل النظام (لون الإطار) */
+        .stage-safe {
+            border-color: rgba(74, 144, 226, 0.25);
         }
         .stage-warning {
-            border-color: var(--yellow) !important;
-            box-shadow: 0 0 50px rgba(255, 204, 0, 0.06);
+            border-color: rgba(255, 193, 7, 0.25);
+            box-shadow: 0 0 60px rgba(255, 193, 7, 0.02);
         }
         .stage-danger {
-            border-color: var(--red) !important;
-            box-shadow: 0 0 70px rgba(255, 34, 68, 0.08);
-            animation: borderPulse 1.2s infinite alternate;
-        }
-        @keyframes borderPulse {
-            0% {
-                border-color: var(--red);
-            }
-            100% {
-                border-color: #ff6688;
-            }
+            border-color: rgba(212, 92, 92, 0.3);
+            box-shadow: 0 0 80px rgba(212, 92, 92, 0.03);
         }
 
-        /* responsive */
-        @media (max-width: 600px) {
-            .archive-container {
-                padding: 16px;
-            }
-            .puzzle-question {
-                font-size: 18px;
-                padding-left: 12px;
-            }
-            .input-group input {
-                font-size: 16px;
-                padding: 12px 14px;
-            }
-            .input-group button {
-                padding: 12px 20px;
-                font-size: 14px;
-                width: 100%;
-            }
-            .status-bar {
-                font-size: 11px;
-            }
-            .final-screen h1 {
-                font-size: 22px;
-            }
+        /* ريسponsive */
+        @media (max-width: 650px) {
+            .vault-container { padding: 20px; }
+            .otp-box { width: 55px; height: 70px; font-size: 26px; gap: 10px; }
+            .puzzle-question { font-size: 18px; padding: 12px; }
+            .final-screen .collapse-title { font-size: 24px; }
+            .final-screen .leak-card p { font-size: 16px; }
+            .archive-brand .logo { font-size: 16px; }
+        }
+        @media (max-width: 400px) {
+            .otp-box { width: 45px; height: 60px; font-size: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="archive-container" id="archiveBox">
-        <!-- شريط الحالة -->
-        <div class="status-bar">
-            <div>
-                <span class="archive-label">⏺ R-ARCHIVE</span>
-                <span style="margin:0 10px;color:#333;">|</span>
-                <span id="sysStatusText">SYSTEM: ACTIVE</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:14px;">
-                <span class="file-counter">FILE <span id="fileNum">1</span> / 30</span>
-                <span class="status-led" id="statusLed"></span>
-            </div>
+<div class="vault-container" id="vaultBox">
+    <!-- الرأس -->
+    <div class="header-status">
+        <div class="archive-brand">
+            <span class="logo">R-<span>ARCHIVE</span></span>
+            <span class="status-dot" id="statusLed"></span>
         </div>
-
-        <!-- منطقة اللغز (تختفي عند النهاية) -->
-        <div id="puzzleArea" class="puzzle-area">
-            <div class="puzzle-question" id="puzzleQuestion">
-                <span id="typeTarget"></span>
-            </div>
-
-            <div class="input-group">
-                <input type="text" id="answerInput" placeholder="أدخل الإجابة..." autofocus spellcheck="false">
-                <button id="submitBtn">⏎ تحقق</button>
-            </div>
-
-            <div class="system-log" id="systemLog">
-                <div class="log-entry success">> النظام جاهز. انتظر التعليمات...</div>
-            </div>
-        </div>
-
-        <!-- شاشة النهاية -->
-        <div class="final-screen" id="finalScreen">
-            <h1>⚠️ SYSTEM COLLAPSE</h1>
-            <div style="color:#aabbcc;font-size:16px;max-width:500px;line-height:2;">
-                تم فتح جميع الملفات<br>
-                النظام لم يعد مستقرًا<br>
-                <span style="color:var(--green);">R-ARCHIVE تم الوصول إليه بالكامل</span>
-            </div>
-            <div class="leak-box">
-                <div class="leak-title">🔴 REX UPDATE LEAK — تسريب حصري</div>
-                <p>✦ ماب جديد بمناطق سرية<br>
-                   ✦ متجر متطور بأسلحة فريدة<br>
-                   ✦ لوكيشن سري يحتوي على كنز نادر</p>
-                <div style="color:#667;font-size:13px;margin-top:14px;border-top:1px solid #332;padding-top:14px;">
-                    سيتم الكشف عن التفاصيل في التحديث القادم
-                </div>
-            </div>
-            <div class="thank-text">>> تم فتح التحديث الجديد. شكرًا لك <<</div>
-            <div style="margin-top:25px;font-size:13px;color:#445;letter-spacing:3px;">
-                R-ARCHIVE // NODE-UNKNOWN // SIGNAL LOST
-            </div>
-        </div>
+        <div class="file-badge">ملف <strong id="fileNum">1</strong> / 30</div>
     </div>
 
-    <script>
-        // ============================================================
-        //  DATA — 30 PUZZLES
-        //  كل لغز يحتوي على: السؤال، الإجابة (للتحقق)، والرمز المُجمَّع
-        // ============================================================
-        const PUZZLES = [
-            // —— المرحلة 1 (1-10) ——
-            { q: "ما هو الرقم الذي يلي 99؟", a: "100", s: "A" },
-            { q: "فك التشفير: 72 69 76 76 79 (ASCII)", a: "HELLO", s: "C" },
-            { q: "حاصل ضرب 7 و 9؟", a: "63", s: "C" },
-            { q: "ما هو الحرف الخامس في الأبجدية الإنجليزية؟", a: "E", s: "E" },
-            { q: "عكس كلمة 'SEE' هو...", a: "EES", s: "S" },
-            { q: "كم عدد أرجل النحلة؟", a: "6", s: "S" },
-            { q: "ما هو العنصر الأول في الجدول الدوري؟", a: "HYDROGEN", s: "G" },
-            { q: "كم عدد الأشهر التي تحتوي على 31 يومًا؟", a: "7", s: "R" },
-            { q: "فك الشفرة الثنائية: 01000001", a: "A", s: "A" },
-            { q: "ما هو الرقم الروماني X؟", a: "10", s: "N" },
-            // —— المرحلة 2 (11-20) ——
-            { q: "ما هو الجذر التربيعي لـ 144؟", a: "12", s: "T" },
-            { q: "ما هو ثاني حرف علة في الأبجدية؟ (A,E,I,O,U)", a: "E", s: "E" },
-            { q: "كم عدد الأيام في الأسبوع؟", a: "7", s: "D" },
-            { q: "ما هو الرقم الذري للهيدروجين؟", a: "1", s: "F" },
-            { q: "كم عدد القارات في العالم؟", a: "7", s: "I" },
-            { q: "فك الشفرة الثنائية: 01001110", a: "N", s: "N" },
-            { q: "ما هو ناتج 9 + 8؟", a: "17", s: "A" },
-            { q: "ما هو الحرف الأخير في كلمة 'FINAL'؟", a: "L", s: "L" },
-            { q: "ما هو الرقم الذي يسبق 10؟", a: "9", s: "K" },
-            { q: "كم عدد أوجه المكعب؟", a: "6", s: "E" },
-            // —— المرحلة 3 (21-29) ——
-            { q: "ما هو الحرف الأول في كلمة 'YES'؟", a: "Y", s: "Y" },
-            { q: "أدخل الرمز التالي: 22", a: "22", s: "#" },
-            { q: "أدخل الرمز التالي: 23", a: "23", s: "@" },
-            { q: "أدخل الرمز التالي: 24", a: "24", s: "!" },
-            { q: "أدخل الرمز التالي: 25", a: "25", s: "$" },
-            { q: "أدخل الرمز التالي: 26", a: "26", s: "%" },
-            { q: "أدخل الرمز التالي: 27", a: "27", s: "^" },
-            { q: "أدخل الرمز التالي: 28", a: "28", s: "&" },
-            { q: "أدخل الرمز التالي: 29", a: "29", s: "*" },
-            // —— المرحلة 4 (30) ——
-            { q: "أدخل الرمز النهائي: 30", a: "30", s: ")" }
-        ];
+    <!-- منطقة اللغز -->
+    <div id="puzzleArea" class="puzzle-section">
+        <div class="puzzle-question" id="puzzleQuestion">
+            <span id="questionText">جاري تحميل الأرشيف...</span>
+        </div>
 
-        // ============================================================
-        //  STATE
-        // ============================================================
-        let currentIndex = 0;
-        let collectedSymbols = [];
-        let isProcessing = false;
-        let typeInterval = null;
+        <div class="input-code-container">
+            <div class="otp-boxes" id="otpContainer"></div>
+            <button class="btn-submit-code" id="submitCodeBtn">⏎ تأكيد الشفرة</button>
+        </div>
 
-        // عناصر DOM
-        const archiveBox = document.getElementById('archiveBox');
-        const puzzleArea = document.getElementById('puzzleArea');
-        const finalScreen = document.getElementById('finalScreen');
-        const puzzleQuestion = document.getElementById('puzzleQuestion');
-        const typeTarget = document.getElementById('typeTarget');
-        const answerInput = document.getElementById('answerInput');
-        const submitBtn = document.getElementById('submitBtn');
-        const systemLog = document.getElementById('systemLog');
-        const fileNum = document.getElementById('fileNum');
-        const statusLed = document.getElementById('statusLed');
-        const sysStatusText = document.getElementById('sysStatusText');
+        <div class="system-feedback" id="feedbackMessage">>> النظام ينتظر إدخال المفتاح</div>
+    </div>
 
-        // ============================================================
-        //  HELPERS: LOG, STAGE, TYPING, SHAKE, SOUND
-        // ============================================================
-        function addLog(message, type = '') {
-            const div = document.createElement('div');
-            div.className = `log-entry ${type}`;
-            div.textContent = `> ${message}`;
-            systemLog.appendChild(div);
-            systemLog.scrollTop = systemLog.scrollHeight;
-            // الاحتفاظ بآخر 15 رسالة
-            while (systemLog.children.length > 15) {
-                systemLog.removeChild(systemLog.firstChild);
-            }
+    <!-- شاشة النهاية -->
+    <div class="final-screen" id="finalScreen">
+        <div class="collapse-title">⛔ ARCHIVE UNLOCKED</div>
+        <div class="collapse-sub">
+            تم فتح جميع الملفات<br>
+            النظام تجاوز مرحلة الحماية القصوى
+        </div>
+        <div class="leak-card">
+            <div class="leak-title">🔹 REX 2.0 — LEAK // تسريب حصري 🔹</div>
+            <p>
+                ✦ <span class="highlight">تحديث 2.0</span> قادم إلى سيرفر ديسكورد قريبًا<br>
+                ✦ <span class="highlight">متجر إلكتروني</span> خاص بالسيرفر يفتح أبوابه<br>
+                ✦ <span class="highlight">خصم 50%</span> على جميع الاشتراكات والرتب في المتجر<br>
+                ✦ <span class="highlight">ماب جديد</span> يحتوي على لوكيشن سري جدًا<br>
+                ✦ <span class="highlight">شخصية مشهورة عالميًا</span> ستنضم إلى السيرفر قريبًا!
+            </p>
+        </div>
+        <div class="final-thanks">>> تم فتح بوابة التحديث الجديد. شكرًا لك <<</div>
+        <div style="margin-top:25px;font-size:12px;color:#3a4a6a;letter-spacing:2px;font-family:'Orbitron',monospace;">
+            R-ARCHIVE // NODE-UNKNOWN // SIGNAL LOST
+        </div>
+    </div>
+</div>
+
+<script>
+    // ================================================================
+    //  البيانات — 30 لغز صعب جداً (أرقام، حروف، رموز)
+    //  الإجابات تطابق طلبك تماماً
+    // ================================================================
+    const PUZZLES = [
+        // 1  -> 4 خانات
+        { q: "فك تشفير النص السداسي عشري: 0x131C إلى قيمته العشرية الحقيقية.", a: "4892" },
+        // 2
+        { q: "ما هو المصطلح الشائع لعلم تعمية الرسائل الذي يبدأ بحرف C ويتكون من 6 حروف؟", a: "CIPHER" },
+        // 3
+        { q: "خوارزمية التشفير الغير متماثل الشهيرة التي تعتمد على الأعداد الأولية (اختصار 3 حروف).", a: "RSA" },
+        // 4
+        { q: "جوهر نظام التشغيل الذي يدير العمليات والذاكرة (6 حروف).", a: "KERNEL" },
+        // 5 -> طلبك: 5!g
+        { q: "حوّل الرقم الثنائي 101 إلى نظام العد الثماني، ثم أضف الرمز '!g' في النهاية.", a: "5!g" },
+        // 6
+        { q: "نظام العد ذو الأساس 16، المستخدم بكثرة في تمثيل الألوان والعناوين (4 حروف).", a: "HEXA" },
+        // 7
+        { q: "نظام العد الذي يستخدم فقط الرقمين 0 و 1 (6 حروف).", a: "BINARY" },
+        // 8
+        { q: "نوع من شيفرات قيصر بإزاحة مقدارها 13 حرفاً (اختصار شائع من 5 حروف).", a: "ROT13" },
+        // 9
+        { q: "اكتب القيمة السداسية العشرية للرقم العشري 127 (بصيغة 0x...).", a: "0x7F" },
+        // 10
+        { q: "طريقة تحويل البيانات الثنائية إلى نص آمن باستخدام 64 حرفاً (6 حروف).", a: "BASE64" },
+        // 11
+        { q: "دالة رياضية تحول أي بيانات إلى قيمة ثابتة الطول، تستخدم في التوقيعات (4 حروف).", a: "HASH" },
+        // 12
+        { q: "واجهة الأوامر النصية القوية في أنظمة يونكس (5 حروف).", a: "SHELL" },
+        // 13 -> طلبك: 693
+        { q: "ما هو مقلوب الرقم 396؟", a: "693" },
+        // 14
+        { q: "في الفيزياء والبرمجة، الكمية التي لها اتجاه وقيمة (6 حروف).", a: "VECTOR" },
+        // 15 -> طلبك: Rex
+        { q: "ما هو اسم الديناصور الشهير بدون الجزء الأول (T-)؟ (3 حروف)", a: "Rex" },
+        // 16
+        { q: "الوحدة الأساسية لتخزين البيانات في الحاسوب، تتكون من 8 بت (4 حروف).", a: "BYTE" },
+        // 17
+        { q: "نقطة اتصال في الشبكة أو دائرة كهربائية، وتستخدم في البلوكشين أيضاً (4 حروف).", a: "NODE" },
+        // 18 -> طلبك: 5!g (مرة أخرى حسب طلبك)
+        { q: "ناتج المضروب (5!) مقسومًا على 24، ثم أضف الرمز '!g' إلى الناتج.", a: "5!g" },
+        // 19 -> شفرة قوية مني: NEO
+        { q: "مصطلح يطلق على الجيل الجديد في التقنية، اختصار لـ 'Near-Earth Object' (3 حروف).", a: "NEO" },
+        // 20
+        { q: "في الأساطير، اسم أول امرأة في بعض المعتقدات، ويستخدم في البرمجة لاختبار التطبيقات (3 حروف).", a: "EVE" },
+        // 21
+        { q: "اختصار نظام التشغيل الأساسي (حرفان).", a: "OS" },
+        // 22
+        { q: "وحدة المعالجة المركزية، اختصار من 3 حروف.", a: "CPU" },
+        // 23
+        { q: "وحدة معالجة الرسوميات، اختصار من 3 حروف.", a: "GPU" },
+        // 24
+        { q: "الذاكرة عشوائية الوصول، اختصار من 3 حروف.", a: "RAM" },
+        // 25
+        { q: "خوارزمية التشفير الغير متماثل (اختصار 3 حروف).", a: "RSA" },
+        // 26
+        { q: "اختصار الذكاء الاصطناعي (حرفان).", a: "AI" },
+        // 27
+        { q: "المتحكم المنطقي القابل للبرمجة، اختصار من 3 حروف.", a: "PLC" },
+        // 28
+        { q: "بروتوكول نقل بيانات غير موثوق، اختصار من 3 حروف.", a: "UDP" },
+        // 29
+        { q: "بروتوكول نقل الملفات الشهير، اختصار من 3 حروف.", a: "FTP" },
+        // 30
+        { q: "كلمة السر النهائية لفتح الأرشيف بالكامل (6 حروف).", a: "ACCESS" }
+    ];
+
+    // ================================================================
+    //  الحالة العامة
+    // ================================================================
+    let currentIndex = 0;
+    let isProcessing = false;
+
+    // عناصر DOM
+    const vaultBox = document.getElementById('vaultBox');
+    const puzzleArea = document.getElementById('puzzleArea');
+    const finalScreen = document.getElementById('finalScreen');
+    const questionText = document.getElementById('questionText');
+    const otpContainer = document.getElementById('otpContainer');
+    const submitBtn = document.getElementById('submitCodeBtn');
+    const feedback = document.getElementById('feedbackMessage');
+    const fileNum = document.getElementById('fileNum');
+    const statusLed = document.getElementById('statusLed');
+
+    // ================================================================
+    //  المساعدات
+    // ================================================================
+    function setFeedback(msg, type = 'info') {
+        feedback.textContent = `> ${msg}`;
+        feedback.className = `system-feedback feedback-${type}`;
+    }
+
+    function updateStatus(index) {
+        const num = index + 1;
+        let color = '#4a90e2';
+        let cls = 'stage-safe';
+        let dotColor = '#4a90e2';
+
+        if (num >= 21 && num <= 29) {
+            cls = 'stage-danger';
+            dotColor = '#d45c5c';
+        } else if (num >= 11 && num <= 20) {
+            cls = 'stage-warning';
+            dotColor = '#ffc107';
+        } else {
+            cls = 'stage-safe';
+            dotColor = '#4a90e2';
         }
 
-        function updateStage(index) {
-            const num = index + 1;
-            let stage = 'easy';
-            let ledColor = 'var(--green)';
-            let borderClass = 'stage-easy';
-            let statusText = 'SYSTEM: ACTIVE';
+        vaultBox.className = `vault-container ${cls}`;
+        statusLed.style.background = dotColor;
+        statusLed.style.boxShadow = `0 0 18px ${dotColor}`;
+        fileNum.textContent = num;
 
-            if (num >= 21 && num <= 29) {
-                stage = 'danger';
-                ledColor = 'var(--red)';
-                borderClass = 'stage-danger';
-                statusText = '⚠️ HIGH RISK';
-            } else if (num >= 11 && num <= 20) {
-                stage = 'warning';
-                ledColor = 'var(--yellow)';
-                borderClass = 'stage-warning';
-                statusText = '⚠️ WARNING ZONE';
-            } else {
-                stage = 'easy';
-                ledColor = 'var(--green)';
-                borderClass = 'stage-easy';
-                statusText = 'SYSTEM: ACTIVE';
-            }
+        if (num === 11) setFeedback('⚠️ تم رصد نشاط غير معروف في النطاق.', 'info');
+        else if (num === 21) setFeedback('🚨 منطقة خطر قصوى — تأكد من الشفرة بدقة.', 'error');
+        else if (num === 30) setFeedback('⚡ الملف الأخير! الشفرة النهائية تقترب.', 'info');
+    }
 
-            archiveBox.className = `archive-container ${borderClass}`;
-            statusLed.style.background = ledColor;
-            statusLed.style.boxShadow = `0 0 20px ${ledColor}`;
-            sysStatusText.textContent = statusText;
-
-            // إضافة تحذيرات خاصة بالمراحل
-            if (num === 11) {
-                addLog('تم رصد نشاط غير معروف في النطاق', 'warning');
-            } else if (num === 21) {
-                addLog('⚠️ اختراق غير مصرح به — النظام يحاول إيقافك', 'danger');
-                document.body.style.background = '#080000';
-                setTimeout(() => { document.body.style.background = 'var(--bg)'; }, 600);
-            } else if (num === 30) {
-                addLog('‼️ الملف الأخير غير مستقر — خطر داهم', 'danger');
-            }
+    // بناء مربعات الإدخال حسب طول الإجابة
+    function buildOtpBoxes(length) {
+        otpContainer.innerHTML = '';
+        for (let i = 0; i < length; i++) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.maxLength = 1;
+            input.className = 'otp-box';
+            input.dataset.index = i;
+            input.autofocus = (i === 0);
+            input.addEventListener('input', handleOtpInput);
+            input.addEventListener('keydown', handleOtpKeydown);
+            input.addEventListener('focus', (e) => e.target.select());
+            otpContainer.appendChild(input);
         }
-
-        // تأثير الكتابة حرفًا حرفًا
-        function typeWriter(text, callback) {
-            if (typeInterval) clearInterval(typeInterval);
-            typeTarget.textContent = '';
-            let i = 0;
-            const speed = 35;
-            typeInterval = setInterval(() => {
-                if (i < text.length) {
-                    typeTarget.textContent += text.charAt(i);
-                    i++;
-                } else {
-                    clearInterval(typeInterval);
-                    typeInterval = null;
-                    if (callback) callback();
-                }
-            }, speed);
-        }
-
-        // تأثير اهتزاز الحقل
-        function shakeInput() {
-            answerInput.classList.add('error-shake');
-            setTimeout(() => {
-                answerInput.classList.remove('error-shake');
-            }, 350);
-        }
-
-        // توليد صوت تشويش بسيط (Web Audio)
-        function playBuzz(frequency = 180, duration = 120, type = 'sawtooth') {
-            try {
-                const ctx = new(window.AudioContext || window.webkitAudioContext)();
-                const osc = ctx.createOscillator();
-                const gain = ctx.createGain();
-                osc.type = type;
-                osc.frequency.value = frequency;
-                gain.gain.setValueAtTime(0.08, ctx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration / 1000);
-                osc.connect(gain);
-                gain.connect(ctx.destination);
-                osc.start();
-                osc.stop(ctx.currentTime + duration / 1000);
-            } catch (e) { /* silent fail */ }
-        }
-
-        function playSuccess() {
-            playBuzz(800, 80, 'sine');
-            setTimeout(() => playBuzz(1000, 100, 'sine'), 100);
-        }
-
-        function playError() {
-            playBuzz(120, 250, 'sawtooth');
-            setTimeout(() => playBuzz(90, 300, 'sawtooth'), 120);
-        }
-
-        // تشويش بصري عند الانتقال (glitch flicker)
-        function glitchTransition() {
-            puzzleQuestion.classList.add('glitch-text');
-            archiveBox.style.filter = 'blur(1px)';
-            setTimeout(() => {
-                puzzleQuestion.classList.remove('glitch-text');
-                archiveBox.style.filter = 'blur(0px)';
-            }, 300);
-        }
-
-        // ============================================================
-        //  CORE: LOAD PUZZLE
-        // ============================================================
-        function loadPuzzle(index) {
-            if (index >= PUZZLES.length) {
-                showFinalScreen();
-                return;
-            }
-
-            const puzzle = PUZZLES[index];
-            fileNum.textContent = index + 1;
-            updateStage(index);
-
-            // عرض السؤال بكتابة تدريجية
-            const questionText = `[${index+1}] ${puzzle.q}`;
-            typeWriter(questionText, () => {
-                // بعد الانتهاء من الكتابة، ننشط حقل الإدخال
-                answerInput.disabled = false;
-                answerInput.value = '';
-                answerInput.focus();
-            });
-
-            // رسالة النظام حسب المرحلة
-            if (index === 0) {
-                addLog('فتح الملف رقم 1 — وصول أولي', 'success');
-            } else if (index === 9) {
-                addLog('❗ تم اجتياز المرحلة الأولى. انتقال إلى النطاق الأصفر', 'warning');
-            } else if (index === 19) {
-                addLog('🚨 دخول المنطقة الحمراء — خطر مرتفع', 'danger');
-            } else if (index === 29) {
-                addLog('⚡ الملف الأخير — اقتراب من النهاية', 'danger');
-            } else {
-                addLog(`فتح الملف رقم ${index+1}`, '');
-            }
-
-            // تأثير glitch بسيط عند التحميل
-            glitchTransition();
-
-            // إشارة صوتية خفيفة عند فتح الملف
-            playBuzz(300, 60, 'sine');
-
-            isProcessing = false;
-        }
-
-        // ============================================================
-        //  CHECK ANSWER
-        // ============================================================
-        function checkAnswer() {
-            if (isProcessing) return;
-            if (currentIndex >= PUZZLES.length) return;
-
-            const puzzle = PUZZLES[currentIndex];
-            const userAnswer = answerInput.value.trim().toUpperCase();
-            const correct = puzzle.a.toUpperCase();
-
-            if (userAnswer === '') {
-                addLog('الرجاء إدخال إجابة.', 'warning');
-                shakeInput();
-                return;
-            }
-
-            isProcessing = true;
-            answerInput.disabled = true;
-
-            if (userAnswer === correct) {
-                // ✅ صحيح
-                playSuccess();
-                addLog(`✓ إجابة صحيحة! تم جمع الرمز: ${puzzle.s}`, 'success');
-                collectedSymbols.push(puzzle.s);
-
-                // تأخير قصير ثم الانتقال للملف التالي
-                setTimeout(() => {
-                    currentIndex++;
-                    if (currentIndex < PUZZLES.length) {
-                        loadPuzzle(currentIndex);
-                    } else {
-                        // تم حل جميع الألغاز
-                        showFinalScreen();
-                    }
-                    isProcessing = false;
-                }, 500);
-
-            } else {
-                // ❌ خطأ
-                playError();
-                addLog(`✗ إجابة خاطئة. حاول مرة أخرى.`, 'danger');
-                shakeInput();
-                // وميض تحذيري
-                archiveBox.classList.add('flicker-warning');
-                setTimeout(() => {
-                    archiveBox.classList.remove('flicker-warning');
-                }, 400);
-
-                answerInput.disabled = false;
-                answerInput.value = '';
-                answerInput.focus();
-                isProcessing = false;
-            }
-        }
-
-        // ============================================================
-        //  FINAL SCREEN
-        // ============================================================
-        function showFinalScreen() {
-            puzzleArea.style.display = 'none';
-            finalScreen.classList.add('active');
-
-            // عرض كلمة السر المجمعة
-            const fullKey = collectedSymbols.join('');
-            addLog(`🔐 كلمة السر النهائية: ${fullKey}`, 'success');
-            addLog('تم فتح بوابة التحديث الجديد.', 'success');
-
-            // تأثير انهيار النظام
-            for (let i = 0; i < 5; i++) {
-                setTimeout(() => {
-                    archiveBox.style.filter = `blur(${Math.random()*3}px) brightness(${0.7+Math.random()*0.6})`;
-                    document.body.style.background = `#${Math.floor(Math.random()*0x100000).toString(16).padStart(6,'0')}`;
-                }, i * 300);
-            }
-            setTimeout(() => {
-                archiveBox.style.filter = 'blur(0px) brightness(1)';
-                document.body.style.background = 'var(--bg)';
-                addLog('⏹ النظام استقر مؤقتًا. شكرًا لك.', '');
-                // تشغيل صوت نهاية
-                playBuzz(500, 200, 'square');
-                setTimeout(() => playBuzz(700, 300, 'square'), 250);
-            }, 2000);
-
-            // طباعة التسريب في الكونسول أيضًا
-            console.log('🔴 REX UPDATE LEAK: ماب جديد + متجر + لوكيشن سري');
-        }
-
-        // ============================================================
-        //  EVENT LISTENERS
-        // ============================================================
-        submitBtn.addEventListener('click', checkAnswer);
-
-        answerInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                checkAnswer();
-            }
-        });
-
-        // ============================================================
-        //  INIT
-        // ============================================================
-        // بدء اللعبة
-        loadPuzzle(0);
-
-        // إضافة رسالة ترحيب غامضة
+        // بعد البناء، نضع التركيز على الأول
         setTimeout(() => {
-            addLog('R-ARCHIVE v.1.0 — نظام أرشيف سري', '');
-            addLog('تم رصد جهة اتصال غير معروفة...', 'warning');
-        }, 800);
-    </script>
+            const first = otpContainer.querySelector('.otp-box');
+            if (first) first.focus();
+        }, 100);
+    }
+
+    // الحصول على الشفرة المدخلة كاملة
+    function getEnteredCode() {
+        const boxes = otpContainer.querySelectorAll('.otp-box');
+        let code = '';
+        boxes.forEach(b => code += b.value);
+        return code;
+    }
+
+    // حدث الكتابة في المربع
+    function handleOtpInput(e) {
+        const input = e.target;
+        const val = input.value;
+        // نسمح فقط بالأحرف والأرقام والرموز الخاصة
+        if (val && !/^[a-zA-Z0-9!#@%^&*()\-+={}[\]|;:'",.<>/?]$/.test(val)) {
+            input.value = '';
+            return;
+        }
+        // إذا تم إدخال حرف، ننتقل للمربع التالي
+        if (val.length === 1) {
+            const next = input.nextElementSibling;
+            if (next && next.classList.contains('otp-box')) {
+                next.focus();
+            }
+        }
+        // إزالة حالة الخطأ عند التعديل
+        input.classList.remove('error');
+        setFeedback('جاري إدخال الشفرة...', 'info');
+    }
+
+    // حدث الضغط على لوحة المفاتيح (مسافة للخلف)
+    function handleOtpKeydown(e) {
+        const input = e.target;
+        if (e.key === 'Backspace') {
+            if (input.value === '') {
+                const prev = input.previousElementSibling;
+                if (prev && prev.classList.contains('otp-box')) {
+                    prev.focus();
+                    prev.value = '';
+                }
+            } else {
+                input.value = '';
+            }
+            e.preventDefault();
+        }
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            submitCode();
+        }
+    }
+
+    // ================================================================
+    //  تحميل اللغز
+    // ================================================================
+    function loadPuzzle(index) {
+        if (index >= PUZZLES.length) {
+            showFinalScreen();
+            return;
+        }
+
+        const puzzle = PUZZLES[index];
+        questionText.textContent = puzzle.q;
+        updateStatus(index);
+        buildOtpBoxes(puzzle.a.length);
+        setFeedback(`أدخل الشفرة المطلوبة (${puzzle.a.length} خانات)`, 'info');
+        isProcessing = false;
+    }
+
+    // ================================================================
+    //  التحقق من الإجابة
+    // ================================================================
+    function submitCode() {
+        if (isProcessing) return;
+        if (currentIndex >= PUZZLES.length) return;
+
+        const puzzle = PUZZLES[currentIndex];
+        const entered = getEnteredCode();
+        const expected = puzzle.a;
+
+        // التحقق من اكتمال الخانات
+        const boxes = otpContainer.querySelectorAll('.otp-box');
+        let filled = true;
+        boxes.forEach(b => { if (b.value === '') filled = false; });
+        if (!filled) {
+            setFeedback('⚠️ الرجاء إدخال جميع خانات الشفرة.', 'error');
+            boxes.forEach(b => b.classList.add('error'));
+            setTimeout(() => boxes.forEach(b => b.classList.remove('error')), 600);
+            return;
+        }
+
+        isProcessing = true;
+        setFeedback('🔍 جاري فك التشفير...', 'info');
+
+        // مقارنة دقيقة (حساسية الأحرف)
+        if (entered === expected) {
+            // ✅ صحيح
+            boxes.forEach(b => b.classList.add('success-box'));
+            setFeedback(`✅ شفرة صحيحة! تم فتح الملف رقم ${currentIndex+1}`, 'success');
+
+            setTimeout(() => {
+                currentIndex++;
+                if (currentIndex < PUZZLES.length) {
+                    loadPuzzle(currentIndex);
+                } else {
+                    showFinalScreen();
+                }
+                isProcessing = false;
+            }, 500);
+
+        } else {
+            // ❌ خطأ
+            boxes.forEach(b => b.classList.add('error'));
+            setFeedback(`❌ شفرة خاطئة! الملف رقم ${currentIndex+1} ما زال مغلقاً.`, 'error');
+
+            // نعيد ضبط المربعات بعد ثانية
+            setTimeout(() => {
+                boxes.forEach(b => {
+                    b.classList.remove('error');
+                    b.value = '';
+                });
+                const first = otpContainer.querySelector('.otp-box');
+                if (first) first.focus();
+                isProcessing = false;
+            }, 800);
+        }
+    }
+
+    // ================================================================
+    //  شاشة النهاية (التسريب)
+    // ================================================================
+    function showFinalScreen() {
+        puzzleArea.style.display = 'none';
+        finalScreen.classList.add('active');
+        setFeedback('تم فتح الأرشيف بالكامل.', 'success');
+
+        // تأثير بسيط فخم على الإطار
+        vaultBox.style.borderColor = 'rgba(74, 144, 226, 0.6)';
+        vaultBox.style.boxShadow = '0 0 80px rgba(74, 144, 226, 0.1)';
+    }
+
+    // ================================================================
+    //  ربط الأزرار والأحداث
+    // ================================================================
+    submitBtn.addEventListener('click', submitCode);
+
+    // إمكانية اللصق في المربعات (لصق الشفرة كاملة)
+    otpContainer.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const paste = (e.clipboardData || window.clipboardData).getData('text');
+        if (!paste) return;
+        const boxes = otpContainer.querySelectorAll('.otp-box');
+        const chars = paste.trim().split('');
+        for (let i = 0; i < Math.min(boxes.length, chars.length); i++) {
+            boxes[i].value = chars[i];
+        }
+        // التركيز على أول مربع فارغ أو الأخير
+        for (let i = 0; i < boxes.length; i++) {
+            if (boxes[i].value === '') { boxes[i].focus(); break; }
+            if (i === boxes.length - 1) boxes[i].focus();
+        }
+        setFeedback('تم لصق الشفرة. اضغط تأكيد.', 'info');
+    });
+
+    // ================================================================
+    //  بدء التشغيل
+    // ================================================================
+    loadPuzzle(0);
+
+    // رسالة ترحيبية فخمة
+    setTimeout(() => {
+        setFeedback('>> R-ARCHIVE v2.0 جاهز. الشفرات محمية بتقنيات متقدمة.', 'info');
+    }, 600);
+</script>
 
 </body>
 </html>
