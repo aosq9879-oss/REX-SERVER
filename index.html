@@ -1,686 +1,813 @@
 <!DOCTYPE html>
-<html lang="ar" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>R-ARCHIVE — VAULT 2.0</title>
-    <!-- Fonts فخمة -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>مجتمع Discord | لوحة التحكم</title>
+  <!-- خطوط عربية حديثة -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome للأيقونات -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* ========== إعدادات أساسية ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            background: #070b1a;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Rajdhani', sans-serif;
-            padding: 20px;
-            margin: 0;
-            color: #e8edf5;
-        }
+    :root {
+      --primary: #5865F2;
+      --primary-dark: #4752c4;
+      --primary-light: #787ff6;
+      --bg-dark: #1a1b2e;
+      --bg-darker: #12131f;
+      --bg-card: #1f2036;
+      --bg-card-hover: #262840;
+      --bg-glass: rgba(30, 31, 48, 0.75);
+      --text-primary: #ffffff;
+      --text-secondary: #b0b3c7;
+      --text-muted: #7c7f9a;
+      --accent-green: #3ba55c;
+      --accent-gold: #f0b232;
+      --accent-red: #ed4245;
+      --accent-cyan: #00b0f4;
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --border-active: rgba(255, 255, 255, 0.12);
+      --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-        /* الحاوية الرئيسية - زجاجية داكنة فخمة */
-        .vault-container {
-            width: 100%;
-            max-width: 780px;
-            background: rgba(10, 25, 47, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(74, 144, 226, 0.25);
-            border-radius: 32px;
-            padding: 35px 40px 40px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(10, 25, 47, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-            transition: border-color 0.6s ease, box-shadow 0.6s ease;
-            position: relative;
-        }
+    body {
+      font-family: 'Cairo', 'Tajawal', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(ellipse at 20% 20%, rgba(88, 101, 242, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(88, 101, 242, 0.05) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 0%, rgba(120, 127, 246, 0.04) 0%, transparent 40%);
+    }
 
-        /* شريط الحالة العلوي - أنيق جداً */
-        .header-status {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(74, 144, 226, 0.15);
-            padding-bottom: 18px;
-            margin-bottom: 32px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+    /* ========== شريط التمرير المخصص ========== */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-darker);
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 10px;
+    }
 
-        .archive-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .archive-brand .logo {
-            font-family: 'Orbitron', monospace;
-            font-weight: 900;
-            font-size: 20px;
-            color: #ffffff;
-            letter-spacing: 3px;
-            text-shadow: 0 0 20px rgba(74, 144, 226, 0.3);
-        }
-        .archive-brand .logo span {
-            color: #4a90e2;
-        }
-        .archive-brand .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #4a90e2;
-            box-shadow: 0 0 15px #4a90e2;
-            display: inline-block;
-            margin-right: 6px;
-            transition: 0.3s;
-        }
+    /* ========== حاوية التطبيق ========== */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
 
-        .file-badge {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            padding: 6px 18px;
-            border-radius: 40px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            color: #aab8d0;
-            letter-spacing: 1px;
-        }
-        .file-badge strong {
-            color: #ffffff;
-            font-weight: 700;
-        }
+    /* ========== الشريط الجانبي ========== */
+    .sidebar {
+      width: 280px;
+      background: var(--bg-darker);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-left: 1px solid var(--border-subtle);
+      padding: 1.5rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      position: fixed;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      z-index: 100;
+      transition: var(--transition);
+      box-shadow: var(--shadow-lg);
+    }
 
-        /* منطقة السؤال */
-        .puzzle-section {
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 6px 0 20px;
-        }
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+    .sidebar-logo i {
+      color: var(--primary);
+      font-size: 2rem;
+      filter: drop-shadow(0 0 10px rgba(88, 101, 242, 0.5));
+    }
 
-        .puzzle-question {
-            font-size: 22px;
-            font-weight: 500;
-            line-height: 1.7;
-            color: #d6e2f5;
-            margin-bottom: 40px;
-            padding: 12px 20px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 16px;
-            border-left: 4px solid #4a90e2;
-            min-height: 85px;
-            display: flex;
-            align-items: center;
-            word-break: break-word;
-            letter-spacing: 0.3px;
-        }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 0.85rem 1.1rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.95rem;
+      border: 1px solid transparent;
+      background: transparent;
+      text-decoration: none;
+    }
+    .nav-item i {
+      width: 22px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    .nav-item:hover {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border-color: var(--border-active);
+      transform: translateX(-4px);
+    }
+    .nav-item.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      box-shadow: 0 8px 20px rgba(88, 101, 242, 0.35);
+      font-weight: 700;
+      transform: translateX(-4px);
+    }
 
-        /* حاويات الإدخال (OTP) */
-        .input-code-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 25px;
-            margin-top: 5px;
-        }
+    .sidebar-footer {
+      margin-top: auto;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 1rem;
+    }
+    .user-mini-card {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      cursor: pointer;
+    }
+    .user-mini-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .user-mini-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .user-mini-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .user-mini-role {
+      font-size: 0.7rem;
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
 
-        .otp-boxes {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
+    /* ========== المحتوى الرئيسي ========== */
+    .main-content {
+      flex: 1;
+      margin-right: 280px;
+      padding: 2rem 2.5rem;
+      transition: var(--transition);
+      min-height: 100vh;
+      width: 100%;
+    }
 
-        .otp-box {
-            width: 70px;
-            height: 85px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid rgba(74, 144, 226, 0.25);
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 32px;
-            font-weight: 700;
-            color: #ffffff;
-            transition: all 0.2s ease;
-            caret-color: #4a90e2;
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.6);
-        }
-        .otp-box:focus {
-            border-color: #4a90e2;
-            box-shadow: 0 0 25px rgba(74, 144, 226, 0.2), inset 0 0 20px rgba(74, 144, 226, 0.05);
-            background: rgba(0, 20, 50, 0.7);
-            outline: none;
-        }
-        .otp-box.error {
-            border-color: #d45c5c;
-            color: #d45c5c;
-            box-shadow: 0 0 30px rgba(212, 92, 92, 0.15);
-        }
-        .otp-box.success-box {
-            border-color: #4a90e2;
-            color: #4a90e2;
-        }
+    /* ========== شريط التنقل العلوي للجوال ========== */
+    .mobile-header {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.2rem;
+      background: var(--bg-glass);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 90;
+    }
+    .menu-toggle {
+      background: var(--bg-card);
+      border: 1px solid var(--border-active);
+      color: var(--text-primary);
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
 
-        .btn-submit-code {
-            background: transparent;
-            border: 1.5px solid rgba(74, 144, 226, 0.5);
-            color: #ffffff;
-            padding: 14px 50px;
-            font-family: 'Orbitron', monospace;
-            font-size: 16px;
-            border-radius: 60px;
-            cursor: pointer;
-            transition: 0.3s;
-            letter-spacing: 2px;
-            background: rgba(74, 144, 226, 0.05);
-        }
-        .btn-submit-code:hover {
-            background: #4a90e2;
-            color: #070b1a;
-            border-color: #4a90e2;
-            box-shadow: 0 0 40px rgba(74, 144, 226, 0.2);
-        }
-        .btn-submit-code:active {
-            transform: scale(0.96);
-        }
+    /* ========== البطاقات والعناصر المشتركة ========== */
+    .page {
+      display: none;
+      animation: fadeSlide 0.4s ease;
+    }
+    .page.active-page {
+      display: block;
+    }
+    @keyframes fadeSlide {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
-        /* سجل النظام */
-        .system-feedback {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            font-size: 15px;
-            color: #7a8ba8;
-            min-height: 45px;
-            font-family: 'JetBrains Mono', monospace;
-            text-align: center;
-            letter-spacing: 0.5px;
-        }
-        .feedback-success {
-            color: #4a90e2;
-        }
-        .feedback-error {
-            color: #d45c5c;
-        }
-        .feedback-info {
-            color: #8fa8c8;
-        }
+    .glass-card {
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.8rem;
+      box-shadow: var(--shadow-card);
+      transition: var(--transition);
+    }
+    .glass-card:hover {
+      border-color: var(--border-active);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
 
-        /* شاشة النهاية - فخمة جداً */
-        .final-screen {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 20px 10px 10px;
-            animation: fadeInGlow 1.5s ease;
-        }
-        .final-screen.active {
-            display: flex;
-        }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.6rem;
+      border-radius: 50px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      font-size: 0.9rem;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 6px 20px rgba(88, 101, 242, 0.3);
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(88, 101, 242, 0.45);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 2px solid var(--border-active);
+      color: var(--text-primary);
+    }
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary-light);
+    }
+    .btn-sm {
+      padding: 0.45rem 1.1rem;
+      font-size: 0.8rem;
+    }
 
-        @keyframes fadeInGlow {
-            0% { opacity: 0; transform: scale(0.95); filter: blur(4px); }
-            100% { opacity: 1; transform: scale(1); filter: blur(0); }
-        }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.7rem;
+      border-radius: 50px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .badge-gold { background: rgba(240,178,50,0.2); color: var(--accent-gold); }
+    .badge-green { background: rgba(59,165,92,0.2); color: var(--accent-green); }
+    .badge-purple { background: rgba(88,101,242,0.2); color: var(--primary-light); }
 
-        .final-screen .collapse-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 32px;
-            font-weight: 900;
-            color: #ffffff;
-            text-shadow: 0 0 40px rgba(74, 144, 226, 0.3);
-            letter-spacing: 4px;
-            margin-bottom: 15px;
-        }
-        .final-screen .collapse-sub {
-            color: #8fa8c8;
-            font-size: 18px;
-            margin-bottom: 25px;
-            line-height: 1.8;
-        }
-        .final-screen .leak-card {
-            background: rgba(0, 10, 30, 0.7);
-            border: 1px solid rgba(74, 144, 226, 0.3);
-            border-radius: 28px;
-            padding: 30px 35px;
-            width: 100%;
-            margin: 15px 0 25px;
-            box-shadow: 0 0 70px rgba(10, 25, 47, 0.8);
-            backdrop-filter: blur(4px);
-        }
-        .final-screen .leak-card .leak-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 14px;
-            color: #4a90e2;
-            letter-spacing: 4px;
-            margin-bottom: 18px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding-bottom: 12px;
-        }
-        .final-screen .leak-card p {
-            font-size: 19px;
-            font-weight: 400;
-            color: #e0ecff;
-            line-height: 2;
-        }
-        .final-screen .leak-card .highlight {
-            color: #ffffff;
-            font-weight: 700;
-            background: linear-gradient(135deg, #4a90e2, #7b68ee);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .final-screen .final-thanks {
-            font-family: 'Orbitron', monospace;
-            font-size: 18px;
-            color: #4a90e2;
-            opacity: 0.8;
-            letter-spacing: 2px;
-            margin-top: 8px;
-        }
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      border-radius: 20px;
+      transition: width 0.5s ease;
+      box-shadow: 0 0 10px rgba(88,101,242,0.5);
+    }
 
-        /* مراحل النظام (لون الإطار) */
-        .stage-safe {
-            border-color: rgba(74, 144, 226, 0.25);
-        }
-        .stage-warning {
-            border-color: rgba(255, 193, 7, 0.25);
-            box-shadow: 0 0 60px rgba(255, 193, 7, 0.02);
-        }
-        .stage-danger {
-            border-color: rgba(212, 92, 92, 0.3);
-            box-shadow: 0 0 80px rgba(212, 92, 92, 0.03);
-        }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
 
-        /* ريسponsive */
-        @media (max-width: 650px) {
-            .vault-container { padding: 20px; }
-            .otp-box { width: 55px; height: 70px; font-size: 26px; gap: 10px; }
-            .puzzle-question { font-size: 18px; padding: 12px; }
-            .final-screen .collapse-title { font-size: 24px; }
-            .final-screen .leak-card p { font-size: 16px; }
-            .archive-brand .logo { font-size: 16px; }
-        }
-        @media (max-width: 400px) {
-            .otp-box { width: 45px; height: 60px; font-size: 20px; }
-        }
-    </style>
+    /* ========== الصفحة الرئيسية ========== */
+    .hero-section {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+    .hero-title {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, #b0b8ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-card {
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--primary-light);
+    }
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* ========== الملف الشخصي ========== */
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      font-weight: 800;
+      border: 3px solid var(--primary-light);
+      box-shadow: 0 0 30px rgba(88,101,242,0.4);
+    }
+    .level-badge {
+      background: var(--accent-gold);
+      color: #000;
+      font-weight: 800;
+      padding: 0.3rem 0.8rem;
+      border-radius: 50px;
+      font-size: 0.8rem;
+    }
+
+    /* ========== المتجر ========== */
+    .shop-item {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid var(--border-subtle);
+      transition: var(--transition);
+    }
+    .shop-item:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-4px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    }
+    .shop-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .price-tag {
+      background: var(--accent-gold);
+      color: #000;
+      font-weight: 700;
+      padding: 0.3rem 0.9rem;
+      border-radius: 50px;
+      display: inline-block;
+      font-size: 0.85rem;
+    }
+
+    /* ========== لوحة التحكم ========== */
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .admin-table th, .admin-table td {
+      padding: 0.8rem 1rem;
+      text-align: right;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .admin-table th {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+    }
+    input[type="text"], input[type="number"], select {
+      background: var(--bg-darker);
+      border: 1px solid var(--border-active);
+      color: white;
+      padding: 0.6rem 1rem;
+      border-radius: 50px;
+      font-family: inherit;
+      width: 100%;
+      max-width: 200px;
+    }
+
+    /* ========== الألعاب ========== */
+    .game-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      padding: 1.8rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 2px solid transparent;
+    }
+    .game-card:hover {
+      border-color: var(--primary);
+      background: var(--bg-card-hover);
+      transform: scale(1.02);
+    }
+    .game-emoji {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* ========== تسجيل الدخول ========== */
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .discord-login-btn {
+      background: #5865F2;
+      color: white;
+      padding: 1rem 2.5rem;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      cursor: pointer;
+      border: none;
+      transition: var(--transition);
+    }
+    .discord-login-btn:hover {
+      background: #4752c4;
+      transform: scale(1.05);
+    }
+
+    /* ========== تجاوب ========== */
+    @media (max-width: 1024px) {
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(100%);
+        width: 260px;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-right: 0;
+        padding: 1rem 1.2rem;
+      }
+      .mobile-header {
+        display: flex;
+      }
+      .grid-2, .grid-3, .grid-4 {
+        grid-template-columns: 1fr;
+      }
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      .hero-title {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
-
-<div class="vault-container" id="vaultBox">
-    <!-- الرأس -->
-    <div class="header-status">
-        <div class="archive-brand">
-            <span class="logo">R-<span>ARCHIVE</span></span>
-            <span class="status-dot" id="statusLed"></span>
-        </div>
-        <div class="file-badge">ملف <strong id="fileNum">1</strong> / 30</div>
+  <!-- طبقة تسجيل الدخول (تظهر أول مرة) -->
+  <div class="login-overlay" id="loginOverlay">
+    <div style="text-align: center; background: var(--bg-card); padding: 3rem 2rem; border-radius: var(--radius-lg); max-width: 400px; width: 90%;">
+      <i class="fab fa-discord" style="font-size: 4rem; color: #5865F2; margin-bottom: 1rem;"></i>
+      <h2 style="margin-bottom: 0.5rem;">مرحباً بك في مجتمعنا</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">سجل دخولك بحساب Discord للمتابعة</p>
+      <button class="discord-login-btn" onclick="loginWithDiscord()">
+        <i class="fab fa-discord"></i> تسجيل الدخول عبر Discord
+      </button>
+      <p style="font-size: 0.7rem; color: var(--text-muted); margin-top: 1rem;">سيتم ربط حسابك تلقائياً</p>
     </div>
+  </div>
 
-    <!-- منطقة اللغز -->
-    <div id="puzzleArea" class="puzzle-section">
-        <div class="puzzle-question" id="puzzleQuestion">
-            <span id="questionText">جاري تحميل الأرشيف...</span>
+  <div class="app-container" id="appContainer">
+    <!-- الشريط الجانبي -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <i class="fab fa-discord"></i> <span>مجتمعنا</span>
+      </div>
+      <a class="nav-item active" data-page="home" onclick="navigateTo('home', this)">
+        <i class="fas fa-home"></i> الرئيسية
+      </a>
+      <a class="nav-item" data-page="profile" onclick="navigateTo('profile', this)">
+        <i class="fas fa-user"></i> الملف الشخصي
+      </a>
+      <a class="nav-item" data-page="levels" onclick="navigateTo('levels', this)">
+        <i class="fas fa-star"></i> المستويات و XP
+      </a>
+      <a class="nav-item" data-page="shop" onclick="navigateTo('shop', this)">
+        <i class="fas fa-store"></i> المتجر والمكافآت
+      </a>
+      <a class="nav-item" data-page="games" onclick="navigateTo('games', this)">
+        <i class="fas fa-gamepad"></i> الألعاب والتحديات
+      </a>
+      <a class="nav-item" data-page="admin" onclick="navigateTo('admin', this)">
+        <i class="fas fa-crown"></i> لوحة التحكم
+      </a>
+      <div class="sidebar-footer">
+        <div class="user-mini-card" id="userMiniCard">
+          <div class="user-mini-avatar" id="miniAvatar">ع</div>
+          <div class="user-mini-info">
+            <div class="user-mini-name" id="miniName">عضو مميز</div>
+            <div class="user-mini-role" id="miniRole">✨ عضو ذهبي</div>
+          </div>
+          <i class="fas fa-chevron-left" style="color: var(--text-muted); font-size: 0.7rem;"></i>
         </div>
+      </div>
+    </aside>
 
-        <div class="input-code-container">
-            <div class="otp-boxes" id="otpContainer"></div>
-            <button class="btn-submit-code" id="submitCodeBtn">⏎ تأكيد الشفرة</button>
+    <!-- المحتوى الرئيسي -->
+    <main class="main-content" id="mainContent">
+      <!-- هيدر الجوال -->
+      <div class="mobile-header">
+        <span style="font-weight: 800; font-size: 1.2rem;"><i class="fab fa-discord" style="color: var(--primary); margin-left: 0.4rem;"></i>مجتمعنا</span>
+        <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+      </div>
+
+      <!-- الصفحة الرئيسية -->
+      <div class="page active-page" id="page-home">
+        <div class="hero-section">
+          <h1 class="hero-title">مرحباً بك في مجتمع Discord</h1>
+          <p style="color: var(--text-secondary); margin: 1rem 0; font-size: 1.1rem;">ارتقِ بمستواك، اجمع العملات، وشارك في التحديات</p>
+          <button class="btn btn-primary" onclick="navigateTo('profile', document.querySelector('[data-page=profile]'))"><i class="fas fa-user"></i> عرض ملفي الشخصي</button>
         </div>
-
-        <div class="system-feedback" id="feedbackMessage">>> النظام ينتظر إدخال المفتاح</div>
-    </div>
-
-    <!-- شاشة النهاية -->
-    <div class="final-screen" id="finalScreen">
-        <div class="collapse-title">⛔ ARCHIVE UNLOCKED</div>
-        <div class="collapse-sub">
-            تم فتح جميع الملفات<br>
-            النظام تجاوز مرحلة الحماية القصوى
+        <div class="grid-4" style="margin-top: 1rem;">
+          <div class="glass-card stat-card"><div class="stat-value" id="homeLevel">15</div><div class="stat-label">المستوى</div></div>
+          <div class="glass-card stat-card"><div class="stat-value" id="homeXP">2,450</div><div class="stat-label">نقاط XP</div></div>
+          <div class="glass-card stat-card"><div class="stat-value" id="homeCoins">850</div><div class="stat-label">عملات</div></div>
+          <div class="glass-card stat-card"><div class="stat-value">3</div><div class="stat-label">تحديات مكتملة</div></div>
         </div>
-        <div class="leak-card">
-            <div class="leak-title">🔹 REX 2.0 — LEAK // تسريب حصري 🔹</div>
-            <p>
-                ✦ <span class="highlight">تحديث 2.0</span> قادم إلى سيرفر ديسكورد قريبًا<br>
-                ✦ <span class="highlight">متجر إلكتروني</span> خاص بالسيرفر يفتح أبوابه<br>
-                ✦ <span class="highlight">خصم 50%</span> على جميع الاشتراكات والرتب في المتجر<br>
-                ✦ <span class="highlight">ماب جديد</span> يحتوي على لوكيشن سري جدًا<br>
-                ✦ <span class="highlight">شخصية مشهورة عالميًا</span> ستنضم إلى السيرفر قريبًا!
-            </p>
+      </div>
+
+      <!-- صفحة الملف الشخصي -->
+      <div class="page" id="page-profile">
+        <div class="glass-card">
+          <div class="profile-header">
+            <div class="profile-avatar" id="profileAvatar">ع</div>
+            <div>
+              <h2 style="font-size: 1.8rem;" id="profileName">عضو مميز</h2>
+              <p style="color: var(--text-secondary);"><i class="fab fa-discord"></i> @username</p>
+              <span class="badge badge-gold">✨ عضو ذهبي</span>
+              <span class="badge badge-purple" style="margin-right: 0.3rem;">💎 ناشط</span>
+            </div>
+            <div style="margin-right: auto; text-align: center;">
+              <div class="level-badge" id="profileLevel">مستوى 15</div>
+              <p style="font-size: 0.8rem; color: var(--text-muted);">2,450 / 3,000 XP</p>
+            </div>
+          </div>
+          <div class="progress-bar" style="margin-top: 1.2rem;"><div class="progress-fill" style="width: 81%;" id="profileProgress"></div></div>
         </div>
-        <div class="final-thanks">>> تم فتح بوابة التحديث الجديد. شكرًا لك <<</div>
-        <div style="margin-top:25px;font-size:12px;color:#3a4a6a;letter-spacing:2px;font-family:'Orbitron',monospace;">
-            R-ARCHIVE // NODE-UNKNOWN // SIGNAL LOST
+      </div>
+
+      <!-- صفحة المستويات -->
+      <div class="page" id="page-levels">
+        <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-chart-line" style="color: var(--primary);"></i> نظام التقدم</h2>
+        <div class="grid-2">
+          <div class="glass-card"><h3>المستوى الحالي</h3><div style="font-size: 3rem; font-weight: 800; color: var(--accent-gold);" id="levelNumber">15</div><p>تحتاج <strong>550 XP</strong> للمستوى التالي</p></div>
+          <div class="glass-card"><h3>إجمالي XP</h3><div style="font-size: 3rem; font-weight: 800;" id="totalXP">2,450</div><p>المركز <strong>#12</strong> في السيرفر</p></div>
         </div>
-    </div>
-</div>
+      </div>
 
-<script>
-    // ================================================================
-    //  البيانات — 30 لغز صعب جداً (أرقام، حروف، رموز)
-    //  الإجابات تطابق طلبك تماماً
-    // ================================================================
-    const PUZZLES = [
-        // 1  -> 4 خانات
-        { q: "فك تشفير النص السداسي عشري: 0x131C إلى قيمته العشرية الحقيقية.", a: "4892" },
-        // 2
-        { q: "ما هو المصطلح الشائع لعلم تعمية الرسائل الذي يبدأ بحرف C ويتكون من 6 حروف؟", a: "CIPHER" },
-        // 3
-        { q: "خوارزمية التشفير الغير متماثل الشهيرة التي تعتمد على الأعداد الأولية (اختصار 3 حروف).", a: "RSA" },
-        // 4
-        { q: "جوهر نظام التشغيل الذي يدير العمليات والذاكرة (6 حروف).", a: "KERNEL" },
-        // 5 -> طلبك: 5!g
-        { q: "حوّل الرقم الثنائي 101 إلى نظام العد الثماني، ثم أضف الرمز '!g' في النهاية.", a: "5!g" },
-        // 6
-        { q: "نظام العد ذو الأساس 16، المستخدم بكثرة في تمثيل الألوان والعناوين (4 حروف).", a: "HEXA" },
-        // 7
-        { q: "نظام العد الذي يستخدم فقط الرقمين 0 و 1 (6 حروف).", a: "BINARY" },
-        // 8
-        { q: "نوع من شيفرات قيصر بإزاحة مقدارها 13 حرفاً (اختصار شائع من 5 حروف).", a: "ROT13" },
-        // 9
-        { q: "اكتب القيمة السداسية العشرية للرقم العشري 127 (بصيغة 0x...).", a: "0x7F" },
-        // 10
-        { q: "طريقة تحويل البيانات الثنائية إلى نص آمن باستخدام 64 حرفاً (6 حروف).", a: "BASE64" },
-        // 11
-        { q: "دالة رياضية تحول أي بيانات إلى قيمة ثابتة الطول، تستخدم في التوقيعات (4 حروف).", a: "HASH" },
-        // 12
-        { q: "واجهة الأوامر النصية القوية في أنظمة يونكس (5 حروف).", a: "SHELL" },
-        // 13 -> طلبك: 693
-        { q: "ما هو مقلوب الرقم 396؟", a: "693" },
-        // 14
-        { q: "في الفيزياء والبرمجة، الكمية التي لها اتجاه وقيمة (6 حروف).", a: "VECTOR" },
-        // 15 -> طلبك: Rex
-        { q: "ما هو اسم الديناصور الشهير بدون الجزء الأول (T-)؟ (3 حروف)", a: "Rex" },
-        // 16
-        { q: "الوحدة الأساسية لتخزين البيانات في الحاسوب، تتكون من 8 بت (4 حروف).", a: "BYTE" },
-        // 17
-        { q: "نقطة اتصال في الشبكة أو دائرة كهربائية، وتستخدم في البلوكشين أيضاً (4 حروف).", a: "NODE" },
-        // 18 -> طلبك: 5!g (مرة أخرى حسب طلبك)
-        { q: "ناتج المضروب (5!) مقسومًا على 24، ثم أضف الرمز '!g' إلى الناتج.", a: "5!g" },
-        // 19 -> شفرة قوية مني: NEO
-        { q: "مصطلح يطلق على الجيل الجديد في التقنية، اختصار لـ 'Near-Earth Object' (3 حروف).", a: "NEO" },
-        // 20
-        { q: "في الأساطير، اسم أول امرأة في بعض المعتقدات، ويستخدم في البرمجة لاختبار التطبيقات (3 حروف).", a: "EVE" },
-        // 21
-        { q: "اختصار نظام التشغيل الأساسي (حرفان).", a: "OS" },
-        // 22
-        { q: "وحدة المعالجة المركزية، اختصار من 3 حروف.", a: "CPU" },
-        // 23
-        { q: "وحدة معالجة الرسوميات، اختصار من 3 حروف.", a: "GPU" },
-        // 24
-        { q: "الذاكرة عشوائية الوصول، اختصار من 3 حروف.", a: "RAM" },
-        // 25
-        { q: "خوارزمية التشفير الغير متماثل (اختصار 3 حروف).", a: "RSA" },
-        // 26
-        { q: "اختصار الذكاء الاصطناعي (حرفان).", a: "AI" },
-        // 27
-        { q: "المتحكم المنطقي القابل للبرمجة، اختصار من 3 حروف.", a: "PLC" },
-        // 28
-        { q: "بروتوكول نقل بيانات غير موثوق، اختصار من 3 حروف.", a: "UDP" },
-        // 29
-        { q: "بروتوكول نقل الملفات الشهير، اختصار من 3 حروف.", a: "FTP" },
-        // 30
-        { q: "كلمة السر النهائية لفتح الأرشيف بالكامل (6 حروف).", a: "ACCESS" }
-    ];
+      <!-- صفحة المتجر -->
+      <div class="page" id="page-shop">
+        <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-shopping-bag"></i> المتجر والمكافآت</h2>
+        <div class="grid-3" id="shopGrid">
+          <div class="shop-item"><div class="shop-icon">🌟</div><h3>رتبة مميزة</h3><p style="color:var(--text-muted);">لمدة شهر</p><span class="price-tag">500 عملة</span></div>
+          <div class="shop-item"><div class="shop-icon">🎨</div><h3>لون اسم خاص</h3><p style="color:var(--text-muted);">دائم</p><span class="price-tag">300 عملة</span></div>
+          <div class="shop-item"><div class="shop-icon">🏆</div><h3>شارة التميز</h3><p style="color:var(--text-muted);">أسبوع</p><span class="price-tag">200 عملة</span></div>
+        </div>
+      </div>
 
-    // ================================================================
-    //  الحالة العامة
-    // ================================================================
-    let currentIndex = 0;
-    let isProcessing = false;
+      <!-- صفحة الألعاب -->
+      <div class="page" id="page-games">
+        <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-dice"></i> الألعاب والتحديات</h2>
+        <div class="grid-2">
+          <div class="game-card" onclick="alert('🎰 جاري تحميل لعبة الحظ...')"><div class="game-emoji">🎰</div><h3>لعبة الحظ</h3><p style="color:var(--text-muted);">اربح عملات إضافية</p></div>
+          <div class="game-card" onclick="alert('🧩 جاري تحميل التحدي الأسبوعي...')"><div class="game-emoji">🧩</div><h3>التحدي الأسبوعي</h3><p style="color:var(--text-muted);">أكمل المهام واربح XP</p></div>
+        </div>
+      </div>
 
-    // عناصر DOM
-    const vaultBox = document.getElementById('vaultBox');
-    const puzzleArea = document.getElementById('puzzleArea');
-    const finalScreen = document.getElementById('finalScreen');
-    const questionText = document.getElementById('questionText');
-    const otpContainer = document.getElementById('otpContainer');
-    const submitBtn = document.getElementById('submitCodeBtn');
-    const feedback = document.getElementById('feedbackMessage');
-    const fileNum = document.getElementById('fileNum');
-    const statusLed = document.getElementById('statusLed');
+      <!-- لوحة التحكم -->
+      <div class="page" id="page-admin">
+        <h2 style="margin-bottom: 1.5rem;"><i class="fas fa-crown" style="color: var(--accent-gold);"></i> لوحة تحكم الإدارة</h2>
+        <div class="glass-card" style="margin-bottom: 1.5rem;">
+          <h3>إدارة الأعضاء</h3>
+          <table class="admin-table">
+            <thead><tr><th>العضو</th><th>المستوى</th><th>XP</th><th>عملات</th><th>إجراء</th></tr></thead>
+            <tbody>
+              <tr><td>👑 Admin</td><td>50</td><td>12,000</td><td>2,500</td><td><button class="btn btn-outline btn-sm">تعديل</button></td></tr>
+              <tr><td>⭐ عضو مميز</td><td>15</td><td>2,450</td><td>850</td><td><button class="btn btn-outline btn-sm">تعديل</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="glass-card">
+          <h3>إضافة تعديل يدوي</h3>
+          <div style="display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center;">
+            <input type="text" placeholder="معرف العضو">
+            <input type="number" placeholder="XP" style="max-width:90px;">
+            <input type="number" placeholder="عملات" style="max-width:90px;">
+            <button class="btn btn-primary btn-sm">حفظ</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 
-    // ================================================================
-    //  المساعدات
-    // ================================================================
-    function setFeedback(msg, type = 'info') {
-        feedback.textContent = `> ${msg}`;
-        feedback.className = `system-feedback feedback-${type}`;
+  <script>
+    // ========== بيانات تجريبية ==========
+    const userData = {
+      loggedIn: false,
+      username: 'عضو مميز',
+      discordTag: '@gold_member',
+      avatarLetter: 'ع',
+      level: 15,
+      xp: 2450,
+      xpNeeded: 3000,
+      coins: 850,
+      role: '✨ عضو ذهبي',
+      rank: 12
+    };
+
+    // ========== وظائف التنقل ==========
+    function navigateTo(pageName, element) {
+      // إخفاء جميع الصفحات
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+      // إظهار الصفحة المطلوبة
+      const targetPage = document.getElementById(`page-${pageName}`);
+      if (targetPage) targetPage.classList.add('active-page');
+      
+      // تحديث نشاط القائمة
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      if (element) element.classList.add('active');
+      
+      // إغلاق الشريط الجانبي في الجوال
+      if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+      }
+      
+      // تحديث البيانات في الصفحات
+      updateAllUI();
     }
 
-    function updateStatus(index) {
-        const num = index + 1;
-        let color = '#4a90e2';
-        let cls = 'stage-safe';
-        let dotColor = '#4a90e2';
-
-        if (num >= 21 && num <= 29) {
-            cls = 'stage-danger';
-            dotColor = '#d45c5c';
-        } else if (num >= 11 && num <= 20) {
-            cls = 'stage-warning';
-            dotColor = '#ffc107';
-        } else {
-            cls = 'stage-safe';
-            dotColor = '#4a90e2';
-        }
-
-        vaultBox.className = `vault-container ${cls}`;
-        statusLed.style.background = dotColor;
-        statusLed.style.boxShadow = `0 0 18px ${dotColor}`;
-        fileNum.textContent = num;
-
-        if (num === 11) setFeedback('⚠️ تم رصد نشاط غير معروف في النطاق.', 'info');
-        else if (num === 21) setFeedback('🚨 منطقة خطر قصوى — تأكد من الشفرة بدقة.', 'error');
-        else if (num === 30) setFeedback('⚡ الملف الأخير! الشفرة النهائية تقترب.', 'info');
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
     }
 
-    // بناء مربعات الإدخال حسب طول الإجابة
-    function buildOtpBoxes(length) {
-        otpContainer.innerHTML = '';
-        for (let i = 0; i < length; i++) {
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.maxLength = 1;
-            input.className = 'otp-box';
-            input.dataset.index = i;
-            input.autofocus = (i === 0);
-            input.addEventListener('input', handleOtpInput);
-            input.addEventListener('keydown', handleOtpKeydown);
-            input.addEventListener('focus', (e) => e.target.select());
-            otpContainer.appendChild(input);
-        }
-        // بعد البناء، نضع التركيز على الأول
-        setTimeout(() => {
-            const first = otpContainer.querySelector('.otp-box');
-            if (first) first.focus();
-        }, 100);
+    // ========== تسجيل الدخول ==========
+    function loginWithDiscord() {
+      // محاكاة OAuth2 Discord
+      userData.loggedIn = true;
+      document.getElementById('loginOverlay').style.display = 'none';
+      updateAllUI();
+      // تأثير ترحيبي
+      showToast('تم تسجيل الدخول بنجاح! مرحباً بك 🎉');
     }
 
-    // الحصول على الشفرة المدخلة كاملة
-    function getEnteredCode() {
-        const boxes = otpContainer.querySelectorAll('.otp-box');
-        let code = '';
-        boxes.forEach(b => code += b.value);
-        return code;
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed; bottom: 2rem; left: 2rem; background: var(--accent-green);
+        color: white; padding: 1rem 2rem; border-radius: 50px; font-weight: 600;
+        z-index: 999; box-shadow: var(--shadow-lg); animation: fadeSlide 0.4s ease;
+      `;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
     }
 
-    // حدث الكتابة في المربع
-    function handleOtpInput(e) {
-        const input = e.target;
-        const val = input.value;
-        // نسمح فقط بالأحرف والأرقام والرموز الخاصة
-        if (val && !/^[a-zA-Z0-9!#@%^&*()\-+={}[\]|;:'",.<>/?]$/.test(val)) {
-            input.value = '';
-            return;
-        }
-        // إذا تم إدخال حرف، ننتقل للمربع التالي
-        if (val.length === 1) {
-            const next = input.nextElementSibling;
-            if (next && next.classList.contains('otp-box')) {
-                next.focus();
-            }
-        }
-        // إزالة حالة الخطأ عند التعديل
-        input.classList.remove('error');
-        setFeedback('جاري إدخال الشفرة...', 'info');
+    // ========== تحديث واجهة المستخدم ==========
+    function updateAllUI() {
+      if (!userData.loggedIn) return;
+      
+      // تحديث البطاقة المصغرة
+      document.getElementById('miniAvatar').textContent = userData.avatarLetter;
+      document.getElementById('miniName').textContent = userData.username;
+      document.getElementById('miniRole').textContent = userData.role;
+      
+      // تحديث الصفحة الرئيسية
+      const homeLevel = document.getElementById('homeLevel');
+      const homeXP = document.getElementById('homeXP');
+      const homeCoins = document.getElementById('homeCoins');
+      if (homeLevel) homeLevel.textContent = userData.level;
+      if (homeXP) homeXP.textContent = userData.xp.toLocaleString();
+      if (homeCoins) homeCoins.textContent = userData.coins.toLocaleString();
+      
+      // تحديث الملف الشخصي
+      const profileAvatar = document.getElementById('profileAvatar');
+      const profileName = document.getElementById('profileName');
+      const profileLevel = document.getElementById('profileLevel');
+      const profileProgress = document.getElementById('profileProgress');
+      if (profileAvatar) profileAvatar.textContent = userData.avatarLetter;
+      if (profileName) profileName.textContent = userData.username;
+      if (profileLevel) profileLevel.textContent = `مستوى ${userData.level}`;
+      if (profileProgress) {
+        const progressPercent = (userData.xp / userData.xpNeeded) * 100;
+        profileProgress.style.width = `${Math.min(progressPercent, 100)}%`;
+      }
+      
+      // تحديث صفحة المستويات
+      const levelNumber = document.getElementById('levelNumber');
+      const totalXP = document.getElementById('totalXP');
+      if (levelNumber) levelNumber.textContent = userData.level;
+      if (totalXP) totalXP.textContent = userData.xp.toLocaleString();
     }
 
-    // حدث الضغط على لوحة المفاتيح (مسافة للخلف)
-    function handleOtpKeydown(e) {
-        const input = e.target;
-        if (e.key === 'Backspace') {
-            if (input.value === '') {
-                const prev = input.previousElementSibling;
-                if (prev && prev.classList.contains('otp-box')) {
-                    prev.focus();
-                    prev.value = '';
-                }
-            } else {
-                input.value = '';
-            }
-            e.preventDefault();
+    // ========== إغلاق الشريط عند النقر خارجه في الجوال ==========
+    document.addEventListener('click', function(e) {
+      const sidebar = document.getElementById('sidebar');
+      const toggle = document.querySelector('.menu-toggle');
+      if (window.innerWidth <= 768 && sidebar.classList.contains('open')) {
+        if (!sidebar.contains(e.target) && !toggle.contains(e.target)) {
+          sidebar.classList.remove('open');
         }
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            submitCode();
-        }
-    }
-
-    // ================================================================
-    //  تحميل اللغز
-    // ================================================================
-    function loadPuzzle(index) {
-        if (index >= PUZZLES.length) {
-            showFinalScreen();
-            return;
-        }
-
-        const puzzle = PUZZLES[index];
-        questionText.textContent = puzzle.q;
-        updateStatus(index);
-        buildOtpBoxes(puzzle.a.length);
-        setFeedback(`أدخل الشفرة المطلوبة (${puzzle.a.length} خانات)`, 'info');
-        isProcessing = false;
-    }
-
-    // ================================================================
-    //  التحقق من الإجابة
-    // ================================================================
-    function submitCode() {
-        if (isProcessing) return;
-        if (currentIndex >= PUZZLES.length) return;
-
-        const puzzle = PUZZLES[currentIndex];
-        const entered = getEnteredCode();
-        const expected = puzzle.a;
-
-        // التحقق من اكتمال الخانات
-        const boxes = otpContainer.querySelectorAll('.otp-box');
-        let filled = true;
-        boxes.forEach(b => { if (b.value === '') filled = false; });
-        if (!filled) {
-            setFeedback('⚠️ الرجاء إدخال جميع خانات الشفرة.', 'error');
-            boxes.forEach(b => b.classList.add('error'));
-            setTimeout(() => boxes.forEach(b => b.classList.remove('error')), 600);
-            return;
-        }
-
-        isProcessing = true;
-        setFeedback('🔍 جاري فك التشفير...', 'info');
-
-        // مقارنة دقيقة (حساسية الأحرف)
-        if (entered === expected) {
-            // ✅ صحيح
-            boxes.forEach(b => b.classList.add('success-box'));
-            setFeedback(`✅ شفرة صحيحة! تم فتح الملف رقم ${currentIndex+1}`, 'success');
-
-            setTimeout(() => {
-                currentIndex++;
-                if (currentIndex < PUZZLES.length) {
-                    loadPuzzle(currentIndex);
-                } else {
-                    showFinalScreen();
-                }
-                isProcessing = false;
-            }, 500);
-
-        } else {
-            // ❌ خطأ
-            boxes.forEach(b => b.classList.add('error'));
-            setFeedback(`❌ شفرة خاطئة! الملف رقم ${currentIndex+1} ما زال مغلقاً.`, 'error');
-
-            // نعيد ضبط المربعات بعد ثانية
-            setTimeout(() => {
-                boxes.forEach(b => {
-                    b.classList.remove('error');
-                    b.value = '';
-                });
-                const first = otpContainer.querySelector('.otp-box');
-                if (first) first.focus();
-                isProcessing = false;
-            }, 800);
-        }
-    }
-
-    // ================================================================
-    //  شاشة النهاية (التسريب)
-    // ================================================================
-    function showFinalScreen() {
-        puzzleArea.style.display = 'none';
-        finalScreen.classList.add('active');
-        setFeedback('تم فتح الأرشيف بالكامل.', 'success');
-
-        // تأثير بسيط فخم على الإطار
-        vaultBox.style.borderColor = 'rgba(74, 144, 226, 0.6)';
-        vaultBox.style.boxShadow = '0 0 80px rgba(74, 144, 226, 0.1)';
-    }
-
-    // ================================================================
-    //  ربط الأزرار والأحداث
-    // ================================================================
-    submitBtn.addEventListener('click', submitCode);
-
-    // إمكانية اللصق في المربعات (لصق الشفرة كاملة)
-    otpContainer.addEventListener('paste', (e) => {
-        e.preventDefault();
-        const paste = (e.clipboardData || window.clipboardData).getData('text');
-        if (!paste) return;
-        const boxes = otpContainer.querySelectorAll('.otp-box');
-        const chars = paste.trim().split('');
-        for (let i = 0; i < Math.min(boxes.length, chars.length); i++) {
-            boxes[i].value = chars[i];
-        }
-        // التركيز على أول مربع فارغ أو الأخير
-        for (let i = 0; i < boxes.length; i++) {
-            if (boxes[i].value === '') { boxes[i].focus(); break; }
-            if (i === boxes.length - 1) boxes[i].focus();
-        }
-        setFeedback('تم لصق الشفرة. اضغط تأكيد.', 'info');
+      }
     });
 
-    // ================================================================
-    //  بدء التشغيل
-    // ================================================================
-    loadPuzzle(0);
+    // ========== محاكاة تحديث XP تلقائي (بوت مرتبط) ==========
+    setInterval(() => {
+      if (userData.loggedIn) {
+        // محاكاة إضافة XP من البوت
+        userData.xp += Math.floor(Math.random() * 5) + 1;
+        if (userData.xp >= userData.xpNeeded) {
+          userData.level++;
+          userData.xp = userData.xp - userData.xpNeeded;
+          userData.xpNeeded = Math.floor(userData.xpNeeded * 1.5);
+          showToast(`🎉 لقد ارتقيت إلى المستوى ${userData.level}!`);
+        }
+        // محاكاة إضافة عملات
+        if (Math.random() > 0.7) userData.coins += Math.floor(Math.random() * 10) + 1;
+        updateAllUI();
+      }
+    }, 8000);
 
-    // رسالة ترحيبية فخمة
-    setTimeout(() => {
-        setFeedback('>> R-ARCHIVE v2.0 جاهز. الشفرات محمية بتقنيات متقدمة.', 'info');
-    }, 600);
-</script>
+    // ========== التهيئة الأولية ==========
+    document.addEventListener('DOMContentLoaded', () => {
+      // يظهر overlay تسجيل الدخول
+      document.getElementById('loginOverlay').style.display = 'flex';
+      // تجهيز الروابط
+      updateAllUI();
+    });
 
+    // دعم الضغط على البطاقة المصغرة للذهاب للملف الشخصي
+    document.getElementById('userMiniCard').addEventListener('click', () => {
+      navigateTo('profile', document.querySelector('[data-page=profile]'));
+    });
+  </script>
 </body>
 </html>
